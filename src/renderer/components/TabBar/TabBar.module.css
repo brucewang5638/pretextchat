@@ -49,20 +49,6 @@
   color: var(--color-text-primary);
 }
 
-.tabIcon {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  background: var(--color-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-}
-
 .tabLabel {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -113,19 +99,27 @@
   50% { opacity: 1; }
 }
 
-.newTabBtn {
+.appMenu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 8px;
+  -webkit-app-region: no-drag;
+}
+
+.appMenuItem {
   background: none;
-  border: none;
+  border: 1px solid transparent;
   color: var(--color-text-secondary);
-  font-size: 18px;
+  font-size: 11px;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  -webkit-app-region: no-drag;
-  transition: color var(--transition-fast), background var(--transition-fast);
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
-.newTabBtn:hover {
+.appMenuItem:hover {
   color: var(--color-text-primary);
   background: var(--color-bg-card);
+  border-color: var(--color-border);
 }

@@ -28,20 +28,23 @@ export function useStateSync(): void {
 /** 初始化：获取应用列表和恢复会话 */
 export function useInitialize(): void {
   const setSnapshot = useUIStore((s) => s.setSnapshot);
+  const setCurrentPage = useUIStore((s) => s.setCurrentPage);
 
   useEffect(() => {
     async function init() {
-      // 先获取应用列表构建初始快照
-      const apps = await window.api.getAppList();
-      const recent = await window.api.getRecent();
+      const snapshot = await window.api.getInitialState();
+      setSnapshot(snapshot);
 
-      setSnapshot({
-        workspace: { instances: [], tabOrder: [], activeInstanceId: null },
-        runtimeStates: {},
-        apps,
-        preferences: { recentApps: recent.recentApps, restoreOnStartup: true },
-      });
+      if (
+        snapshot.preferences.startupMode === 'restoreLastSession' &&
+        snapshot.workspace.instances.length > 0
+      ) {
+        setCurrentPage('workbench');
+        await window.api.restoreSession();
+      } else {
+        setCurrentPage('launch');
+      }
     }
     init();
-  }, [setSnapshot]);
+  }, [setCurrentPage, setSnapshot]);
 }

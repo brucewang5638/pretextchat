@@ -20,6 +20,8 @@ export function createMainWindow(): BrowserWindow {
     minWidth: 800,
     minHeight: 600,
     title: 'PretextChat',
+    show: false,
+    backgroundColor: '#0f0f12',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -43,6 +45,12 @@ export function createMainWindow(): BrowserWindow {
   // 响应窗口 resize，更新 WebContentsView 布局
   mainWindow.on('resize', () => {
     updateContentBounds(mainWindow);
+  });
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.center();
+    mainWindow.show();
+    mainWindow.focus();
   });
 
   // 关闭前保存会话快照

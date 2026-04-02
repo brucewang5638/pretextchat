@@ -52,6 +52,10 @@ export function registerIpcHandlers(): void {
     return appRegistry.getAll();
   });
 
+  ipcMain.handle(IPC.GET_INITIAL_STATE, () => {
+    return buildStateSnapshot();
+  });
+
   // ─── [instance] 实例生命周期 ──────────────────────────
 
   ipcMain.handle(IPC.CREATE_INSTANCE, (_event, appId: unknown) => {
@@ -68,6 +72,26 @@ export function registerIpcHandlers(): void {
     viewManager.show(instance.id);
 
     eventLogger.log('instance_created', { appId, instanceId: instance.id });
+    return instance;
+  });
+
+  ipcMain.handle(IPC.REOPEN_RECENT_INSTANCE, (_event, recentId: unknown) => {
+    if (typeof recentId !== 'string') {
+      throw new Error(`Invalid recent instance id: ${String(recentId)}`);
+    }
+
+    const existing = instanceStore.getInstance(recentId);
+    const instance = instanceStore.reopenRecentInstance(recentId);
+    const app = appRegistry.get(instance.applicationId);
+    if (!app) {
+      throw new Error(`Unknown appId: ${instance.applicationId}`);
+    }
+
+    if (!existing) {
+      viewManager.create(instance.id, app);
+    }
+    viewManager.show(instance.id);
+    syncState();
     return instance;
   });
 
@@ -155,6 +179,7 @@ export function registerIpcHandlers(): void {
       });
     }
 
+    syncState();
     return snapshot;
   });
 
@@ -164,6 +189,15 @@ export function registerIpcHandlers(): void {
     const prefs = localStore.getPreferences();
     return {
       recentApps: prefs.recentApps,
+      recentInstances: prefs.recentInstances,
     };
+  });
+
+  ipcMain.handle(IPC.SET_STARTUP_MODE, (_event, mode: unknown) => {
+    if (mode !== 'home' && mode !== 'restoreLastSession') {
+      throw new Error(`Invalid startup mode: ${String(mode)}`);
+    }
+    localStore.setStartupMode(mode);
+    syncState();
   });
 }

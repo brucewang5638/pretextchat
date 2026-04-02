@@ -8,6 +8,7 @@ import { randomUUID } from 'node:crypto';
 import type {
   PersistedInstance,
   PersistedWorkspaceState,
+  RecentInstanceEntry,
   RuntimeInstanceState,
 } from '../shared/types';
 import { localStore } from './local-store';
@@ -33,19 +34,24 @@ class InstanceStore {
 
   // ─── 实例生命周期 ──────────────────────────────────────
 
-  createInstance(appId: string): PersistedInstance {
+  createInstance(
+    appId: string,
+    options?: { title?: string; titleSource?: 'user' | 'page' },
+  ): PersistedInstance {
     const app = appRegistry.get(appId);
     if (!app) throw new Error(`Unknown appId: ${appId}`);
 
     // 计算默认名（如 "ChatGPT 1", "ChatGPT 2"）
     const count = this.workspace.instances.filter((i) => i.applicationId === appId).length;
-    const title = count === 0 ? app.name : `${app.name} ${count + 1}`;
+    const fallbackTitle = count === 0 ? app.name : `${app.name} ${count + 1}`;
+    const title = options?.title ?? fallbackTitle;
+    const titleSource = options?.titleSource ?? 'page';
 
     const instance: PersistedInstance = {
       id: randomUUID(),
       applicationId: appId,
       title,
-      titleSource: 'page',
+      titleSource,
       createdAt: Date.now(),
       lastOpenedAt: Date.now(),
     };
@@ -61,16 +67,18 @@ class InstanceStore {
       isVisible: true,
       lastLoadError: null,
       viewBounds: null,
-      titleSource: 'page',
+      titleSource,
     });
 
     this.persist();
     localStore.updateRecentApps(appId);
+    this.touchRecentInstance(instance);
     this.notifyChange();
     return instance;
   }
 
   closeInstance(id: string): void {
+    const inst = this.workspace.instances.find((i) => i.id === id);
     this.workspace.instances = this.workspace.instances.filter((i) => i.id !== id);
     this.workspace.tabOrder = this.workspace.tabOrder.filter((tabId) => tabId !== id);
     this.runtimeStates.delete(id);
@@ -83,6 +91,7 @@ class InstanceStore {
     }
 
     this.persist();
+    if (inst) this.touchRecentInstance(inst);
     this.notifyChange();
   }
 
@@ -103,7 +112,10 @@ class InstanceStore {
 
     // 更新 lastOpenedAt
     const inst = this.workspace.instances.find((i) => i.id === id);
-    if (inst) inst.lastOpenedAt = Date.now();
+    if (inst) {
+      inst.lastOpenedAt = Date.now();
+      this.touchRecentInstance(inst);
+    }
 
     this.persist();
     this.notifyChange();
@@ -120,6 +132,7 @@ class InstanceStore {
     if (runtime) runtime.titleSource = 'user';
 
     this.persist();
+    this.touchRecentInstance(inst);
     this.notifyChange();
   }
 
@@ -132,6 +145,7 @@ class InstanceStore {
     if (inst.titleSource === 'page') {
       inst.title = pageTitle;
       this.persist();
+      this.touchRecentInstance(inst);
       this.notifyChange();
     }
   }
@@ -169,6 +183,24 @@ class InstanceStore {
     return this.workspace.instances.find((i) => i.id === id);
   }
 
+  reopenRecentInstance(recentId: string): PersistedInstance {
+    const openInstance = this.getInstance(recentId);
+    if (openInstance) {
+      this.switchTo(openInstance.id);
+      return openInstance;
+    }
+
+    const recent = localStore.getPreferences().recentInstances.find((item) => item.instanceId === recentId);
+    if (!recent) {
+      throw new Error(`Recent instance not found: ${recentId}`);
+    }
+
+    return this.createInstance(recent.applicationId, {
+      title: recent.title,
+      titleSource: 'user',
+    });
+  }
+
   // ─── 会话恢复 ──────────────────────────────────────────
 
   saveSnapshot(): void {
@@ -201,6 +233,16 @@ class InstanceStore {
       viewBounds: null,
       titleSource,
     };
+  }
+
+  private touchRecentInstance(instance: PersistedInstance): void {
+    const entry: RecentInstanceEntry = {
+      instanceId: instance.id,
+      applicationId: instance.applicationId,
+      title: instance.title,
+      lastOpenedAt: instance.lastOpenedAt,
+    };
+    localStore.updateRecentInstance(entry);
   }
 }
 

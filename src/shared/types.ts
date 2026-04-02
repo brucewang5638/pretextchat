@@ -58,7 +58,16 @@ export interface PersistedWorkspaceState {
 
 export interface Preferences {
   recentApps: string[];
+  recentInstances: RecentInstanceEntry[];
+  startupMode: 'home' | 'restoreLastSession';
   restoreOnStartup: boolean;
+}
+
+export interface RecentInstanceEntry {
+  instanceId: string;
+  applicationId: string;
+  title: string;
+  lastOpenedAt: number;
 }
 
 // ─── 运行时实例状态（main 内存，不落盘）──────────────────

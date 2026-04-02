@@ -1,0 +1,52 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: white;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.sm {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  border-radius: 6px;
+}
+
+.md {
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+.lg {
+  width: 56px;
+  height: 56px;
+  font-size: 20px;
+}
+
+.defaultVariant {
+  background: linear-gradient(135deg, #475569, #0f172a);
+}
+
+.chatgpt {
+  background: linear-gradient(135deg, #10a37f, #0f766e);
+}
+
+.claude {
+  background: linear-gradient(135deg, #d97706, #92400e);
+}
+
+.gemini {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+.perplexity {
+  background: linear-gradient(135deg, #0891b2, #164e63);
+}
+
+.deepseek {
+  background: linear-gradient(135deg, #2563eb, #1e3a8a);
+}

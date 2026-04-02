@@ -1,3 +1,4 @@
+import { AppIcon } from '../AppIcon/AppIcon';
 import { useUIStore } from '../../store';
 import styles from './TabBar.module.css';
 
@@ -10,7 +11,7 @@ interface TabItemProps {
   isLoading: boolean;
 }
 
-export function TabItem({ id, label, appName, isActive, isLoading }: TabItemProps) {
+export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabItemProps) {
   const hoveredTabId = useUIStore((s) => s.hoveredTabId);
   const setHoveredTab = useUIStore((s) => s.setHoveredTab);
   const renamingTabId = useUIStore((s) => s.renamingTabId);
@@ -57,7 +58,7 @@ export function TabItem({ id, label, appName, isActive, isLoading }: TabItemProp
       onMouseEnter={() => setHoveredTab(id)}
       onMouseLeave={() => setHoveredTab(null)}
     >
-      <span className={styles.tabIcon}>{appName.charAt(0)}</span>
+      <AppIcon name={appName} icon={icon} size="sm" />
 
       {isRenaming ? (
         <input

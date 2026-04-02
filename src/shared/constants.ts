@@ -10,8 +10,11 @@ export const IPC = {
   CLOSE_INSTANCE:  'instance:close',
   SWITCH_INSTANCE: 'instance:switch',
   RENAME_INSTANCE: 'instance:rename',
+  REOPEN_RECENT_INSTANCE: 'instance:reopenRecent',
   RESTORE_SESSION: 'session:restore',
   GET_RECENT:      'recent:get',
+  GET_INITIAL_STATE: 'state:initial',
+  SET_STARTUP_MODE: 'preferences:setStartupMode',
 
   // Main → Renderer（send，推送式）
   STATE_SYNC:      'state:sync',

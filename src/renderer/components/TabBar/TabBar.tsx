@@ -22,12 +22,6 @@ export function TabBar() {
     };
   });
 
-  const handleNewTab = () => {
-    // 切换回启动页：关闭所有实例的激活状态
-    // 实际上这需要通知 main 清除 activeInstanceId
-    // Phase 1 简化：点击 + 号暂不处理，用户回到启动页通过关闭所有标签
-  };
-
   return (
     <div className={styles.tabBar}>
       <div className={styles.tabs}>
@@ -35,9 +29,18 @@ export function TabBar() {
           <TabItem key={tab.id} {...tab} />
         ))}
       </div>
-      <button className={styles.newTabBtn} onClick={handleNewTab} title="新建标签">
-        +
-      </button>
+      <div className={styles.appMenu}>
+        {apps.map((app) => (
+          <button
+            key={app.id}
+            className={styles.appMenuItem}
+            onClick={() => window.api.createInstance(app.id)}
+            title={`新建 ${app.name} 实例`}
+          >
+            {app.name}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

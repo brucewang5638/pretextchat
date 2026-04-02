@@ -4,13 +4,22 @@
 
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC } from '../shared/constants';
-import type { StateSnapshot, Application, PersistedInstance, PersistedWorkspaceState } from '../shared/types';
+import type {
+  StateSnapshot,
+  Application,
+  PersistedInstance,
+  PersistedWorkspaceState,
+  Preferences,
+} from '../shared/types';
 
 const api = {
   // ─── Renderer → Main（invoke）─────────────────────────
 
   getAppList: (): Promise<Application[]> =>
     ipcRenderer.invoke(IPC.GET_APP_LIST),
+
+  getInitialState: (): Promise<StateSnapshot> =>
+    ipcRenderer.invoke(IPC.GET_INITIAL_STATE),
 
   createInstance: (appId: string): Promise<PersistedInstance> =>
     ipcRenderer.invoke(IPC.CREATE_INSTANCE, appId),
@@ -24,11 +33,17 @@ const api = {
   renameInstance: (id: string, title: string): Promise<void> =>
     ipcRenderer.invoke(IPC.RENAME_INSTANCE, id, title),
 
+  reopenRecentInstance: (recentId: string): Promise<PersistedInstance> =>
+    ipcRenderer.invoke(IPC.REOPEN_RECENT_INSTANCE, recentId),
+
   restoreSession: (): Promise<PersistedWorkspaceState | null> =>
     ipcRenderer.invoke(IPC.RESTORE_SESSION),
 
-  getRecent: (): Promise<{ recentApps: string[] }> =>
+  getRecent: (): Promise<Pick<Preferences, 'recentApps' | 'recentInstances'>> =>
     ipcRenderer.invoke(IPC.GET_RECENT),
+
+  setStartupMode: (mode: Preferences['startupMode']): Promise<void> =>
+    ipcRenderer.invoke(IPC.SET_STARTUP_MODE, mode),
 
   // ─── Main → Renderer（subscribe）──────────────────────
 

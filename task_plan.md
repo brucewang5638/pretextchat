@@ -1,20 +1,20 @@
 # 阶段性任务清单
 
 ## Goal
-- 把 `@chenglou/pretext` 真正接入当前产品，而不是只停留在概念层。
-- 先完成一个对 `v0.1.0-beta` 有直接价值的最小闭环：renderer 文本测量能力 + 应用卡片描述布局稳定化。
+- 补全对外发布所需的核心文档体系，让第一次看到仓库的人能快速理解产品、安装、运行、发布和路线图。
+- 形成一份可以直接执行的增长与传播方案，支撑 `v0.1.0-beta` 发布后的冷启动。
 
-## Phase 8: Pretext Integration (In Progress)
-- [x] 安装并接入 `@chenglou/pretext` 依赖。
-- [x] 在 renderer 侧封装可复用的文本测量/布局工具，避免组件直接散落调用。
-- [x] 将 `LaunchPage` / `AppCard` 的描述文本改为基于 Pretext 的稳定两行布局。
-- [x] 让卡片在不同宽度、不同语言文本下保持一致高度和更可控的截断表现。
-- [x] 跑通 `npm run lint`，确认集成没有打破现有 Electron + Vite + React 构建。
-
-## Next Candidates
-- [ ] 把 `PretextBlock` 扩展到 `TabBar` 标签标题，在窄宽度下做更可控的单行/双行策略。
-- [ ] 用 `prepare()` / `layout()` 给搜索结果或未来聊天列表做虚拟化高度预测。
+## Phase 9: Public Docs & GTM (In Progress)
+- [x] 审核当前 README / PRD / roadmap，识别公开文档缺口。
+- [x] 研究当前 GitHub Releases / README / Product Hunt Launch Guide 等最佳实践。
+- [x] 重写 `README.md`，补齐项目介绍、价值主张、安装运行、发布、路线图、贡献入口。
+- [x] 新增 `docs/go-to-market.md`，明确定位、渠道、内容策略、上线节奏和执行动作。
+- [x] 新增 `docs/release-checklist.md`，把 beta 发布前、中、后的动作标准化。
+- [x] 新增 `docs/positioning.md`，统一产品对外叙事与信息架构。
+- [x] 新增 `docs/launch-copy.md`，提供可直接发布的首发文案模板。
+- [x] 新增 `README.zh-CN.md`，补齐中文公开入口，并与英文 README 双向链接。
+- [x] 更新 `findings.md` / `progress.md` 记录这轮结论和产物。
 
 ## Notes
-- 当前仓库已有 `task_plan.md` / `findings.md` / `progress.md`，沿用并同步更新。
-- 工作树里存在与本任务无关的改动：`.github/workflows/release.yml`，不触碰。
+- 当前仓库文档严重不足：根 README 几乎为空，无法支撑公开访问者快速理解产品。
+- 文档将优先服务三类读者：首次访问者、早期测试用户、潜在传播者/合作方。

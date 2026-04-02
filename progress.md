@@ -13,3 +13,7 @@
 - Installed `@chenglou/pretext`, added a cached renderer-side measurement adapter, and introduced a reusable `PretextBlock` component.
 - Swapped `AppCard` description rendering from CSS-only `line-clamp` to Pretext-powered line layout with fixed two-line reservation.
 - Re-ran `npm run lint` successfully after the integration.
+- Audited the current public docs surface and confirmed the repository is not yet ready for broad public distribution.
+- Researched current GitHub README / Releases guidance and Product Hunt launch guidance to inform docs and launch planning.
+- Rewrote the root README and added positioning, GTM, release checklist, and launch-copy documents for public distribution readiness.
+- Added a Chinese README and linked it bidirectionally with the English README for bilingual public-facing docs.

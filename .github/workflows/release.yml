@@ -5,27 +5,35 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   build:
-    name: Build & Release (${{ matrix.os }} - ${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.name }})
+    runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
-        # 矩阵配置：覆盖三大主流系统及其核心架构
         include:
-          - os: ubuntu-latest
+          - name: linux-x64
+            runner: ubuntu-latest
             arch: x64
-          - os: ubuntu-latest
+          - name: linux-arm64
+            runner: ubuntu-24.04-arm
             arch: arm64
-          - os: macos-latest
-            arch: universal
-          - os: windows-latest
+          - name: macos-x64
+            runner: macos-13
             arch: x64
-          - os: windows-latest
+          - name: macos-arm64
+            runner: macos-latest
             arch: arm64
+          - name: windows-x64
+            runner: windows-latest
+            arch: x64
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -35,29 +43,47 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Install Linux Build Tools
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install Linux build tools
+        if: startsWith(matrix.runner, 'ubuntu-')
         run: |
           sudo apt-get update
           sudo apt-get install -y rpm fakeroot dpkg
 
-      - name: Build Project
-        # 使用 --arch 指定目标架构，macOS 传 universal 会生成通用包
+      - name: Build distributables
         run: npm run make -- --arch ${{ matrix.arch }}
 
-      - name: Release Artifacts
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
         with:
-          files: |
+          name: ${{ matrix.name }}
+          path: |
             out/make/**/*.deb
             out/make/**/*.rpm
             out/make/**/*.exe
             out/make/**/*.zip
             out/make/**/*.dmg
+          if-no-files-found: error
+
+  publish:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/**
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

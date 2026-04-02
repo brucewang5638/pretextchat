@@ -1,5 +1,6 @@
 import { useUIStore } from '../../store';
 import { AppIcon } from '../AppIcon/AppIcon';
+import { PretextBlock } from '../PretextBlock/PretextBlock';
 import styles from './AppCard.module.css';
 
 interface AppCardProps {
@@ -66,7 +67,15 @@ export function AppCard({ id, name, icon, image, category, description, isPinned
       </div>
       <div className={styles.copy}>
         <span className={styles.name}>{name}</span>
-        <span className={styles.description}>{description || '强大的 AI 助手'}</span>
+        <PretextBlock
+          text={description || '强大的 AI 助手'}
+          className={styles.description}
+          maxLines={2}
+          reserveLines={2}
+          fontSizePx={12}
+          lineHeightPx={17}
+          backgroundColor="var(--color-bg-card)"
+        />
       </div>
     </button>
   );

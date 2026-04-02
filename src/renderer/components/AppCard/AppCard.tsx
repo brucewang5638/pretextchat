@@ -6,19 +6,15 @@ interface AppCardProps {
   id: string;
   name: string;
   icon: string;
+  category?: string;
+  description?: string;
 }
 
-const appDescriptions: Record<string, string> = {
-  ChatGPT: '通用创作与代码协作',
-  Claude: '长文本分析与写作整理',
-  Gemini: 'Google 生态与多模态辅助',
-  Perplexity: '检索型问答与资料探索',
-  DeepSeek: '推理与技术问题拆解',
-};
-
-export function AppCard({ id, name, icon }: AppCardProps) {
+export function AppCard({ id, name, icon, category, description }: AppCardProps) {
   const setCurrentPage = useUIStore((s) => s.setCurrentPage);
-  const description = appDescriptions[name] || '打开一个新的独立任务实例';
+  
+  // Use category or description as the secondary text (Termius uses "ssh, root" format)
+  const metaText = [category, description].filter(Boolean).join(' · ') || 'Web Application';
 
   const handleClick = async () => {
     await window.api.createInstance(id);
@@ -38,9 +34,8 @@ export function AppCard({ id, name, icon }: AppCardProps) {
       </div>
       <div className={styles.copy}>
         <span className={styles.name}>{name}</span>
-        <span className={styles.description}>{description}</span>
+        <span className={styles.description}>{metaText}</span>
       </div>
-      <span className={styles.action}>Open Instance</span>
     </button>
   );
 }

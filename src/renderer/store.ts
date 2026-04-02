@@ -13,6 +13,7 @@ interface UIState {
   currentPage: 'launch' | 'workbench';
 
   // ─── 纯 UI 状态 ────────────────────────────────────
+  activeAppFilter: string | null;
   hoveredTabId: string | null;
   renamingTabId: string | null;
   renameDraft: string;
@@ -21,6 +22,7 @@ interface UIState {
   // ─── Actions ───────────────────────────────────────
   setSnapshot: (snapshot: StateSnapshot) => void;
   setCurrentPage: (page: 'launch' | 'workbench') => void;
+  setActiveAppFilter: (appId: string | null) => void;
   setHoveredTab: (id: string | null) => void;
   startRenaming: (id: string, currentTitle: string) => void;
   updateRenameDraft: (draft: string) => void;
@@ -31,6 +33,7 @@ interface UIState {
 export const useUIStore = create<UIState>((set) => ({
   snapshot: null,
   currentPage: 'launch',
+  activeAppFilter: null,
   hoveredTabId: null,
   renamingTabId: null,
   renameDraft: '',
@@ -38,6 +41,7 @@ export const useUIStore = create<UIState>((set) => ({
 
   setSnapshot: (snapshot) => set({ snapshot }),
   setCurrentPage: (page) => set({ currentPage: page }),
+  setActiveAppFilter: (appId) => set({ activeAppFilter: appId }),
   setHoveredTab: (id) => set({ hoveredTabId: id }),
   startRenaming: (id, currentTitle) => set({ renamingTabId: id, renameDraft: currentTitle }),
   updateRenameDraft: (draft) => set({ renameDraft: draft }),

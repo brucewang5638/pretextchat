@@ -3,7 +3,10 @@
     "id": "chatgpt",
     "name": "ChatGPT",
     "icon": "chatgpt.svg",
+    "image": "/images/chatgpt.jpeg",
     "startUrl": "https://chatgpt.com",
+    "category": "AI 助手",
+    "description": "OpenAI's flagship conversational model.",
     "navigation": {
       "allowedHosts": [
         "chatgpt.com",
@@ -31,7 +34,10 @@
     "id": "claude",
     "name": "Claude",
     "icon": "claude.svg",
+    "image": "/images/claude.png",
     "startUrl": "https://claude.ai",
+    "category": "AI 助手",
+    "description": "Anthropic's advanced reasoning & coding assistant.",
     "navigation": {
       "allowedHosts": [
         "claude.ai",
@@ -52,7 +58,10 @@
     "id": "gemini",
     "name": "Gemini",
     "icon": "gemini.svg",
+    "image": "/images/gemini.png",
     "startUrl": "https://gemini.google.com",
+    "category": "AI 助手",
+    "description": "Google's direct multimodal AI model.",
     "navigation": {
       "allowedHosts": [
         "gemini.google.com",
@@ -73,7 +82,10 @@
     "id": "perplexity",
     "name": "Perplexity",
     "icon": "perplexity.svg",
+    "image": "/images/perplexity.webp",
     "startUrl": "https://www.perplexity.ai",
+    "category": "搜索引擎",
+    "description": "AI-powered conversational search engine.",
     "navigation": {
       "allowedHosts": [
         "perplexity.ai",
@@ -92,7 +104,10 @@
     "id": "deepseek",
     "name": "DeepSeek",
     "icon": "deepseek.svg",
+    "image": "/images/deepseek.png",
     "startUrl": "https://chat.deepseek.com",
+    "category": "AI 助手",
+    "description": "Powerful AI and reasoning model.",
     "navigation": {
       "allowedHosts": [
         "chat.deepseek.com",
@@ -102,6 +117,96 @@
       "allowedPopupHosts": [
         "accounts.google.com"
       ],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "kimi",
+    "name": "Kimi",
+    "icon": "kimi.webp",
+    "image": "/images/kimi.webp",
+    "startUrl": "https://kimi.moonshot.cn/",
+    "category": "AI 助手",
+    "description": "Moonshot AI 的智能助手",
+    "navigation": {
+      "allowedHosts": ["kimi.moonshot.cn", "*.moonshot.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "doubao",
+    "name": "豆包",
+    "icon": "doubao.png",
+    "image": "/images/doubao.png",
+    "startUrl": "https://www.doubao.com/",
+    "category": "AI 助手",
+    "description": "字节跳动旗下的 AI 助手",
+    "navigation": {
+      "allowedHosts": ["www.doubao.com", "*.doubao.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "qwen",
+    "name": "通义千问",
+    "icon": "qwenlm.webp",
+    "image": "/images/qwenlm.webp",
+    "startUrl": "https://tongyi.aliyun.com/qianwen/",
+    "category": "AI 助手",
+    "description": "阿里云通义千问",
+    "navigation": {
+      "allowedHosts": ["tongyi.aliyun.com", "*.aliyun.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "qingyan",
+    "name": "智谱清言",
+    "icon": "qingyan.png",
+    "image": "/images/qingyan.png",
+    "startUrl": "https://chatglm.cn/",
+    "category": "AI 助手",
+    "description": "智谱 AI 的对话大模型",
+    "navigation": {
+      "allowedHosts": ["chatglm.cn", "*.chatglm.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "yuanbao",
+    "name": "腾讯元宝",
+    "icon": "yuanbao.webp",
+    "image": "/images/yuanbao.webp",
+    "startUrl": "https://yuanbao.tencent.com/",
+    "category": "AI 助手",
+    "description": "腾讯的 AI 助手",
+    "navigation": {
+      "allowedHosts": ["yuanbao.tencent.com", "*.tencent.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "metaso",
+    "name": "秘塔AI搜索",
+    "icon": "metaso.webp",
+    "image": "/images/metaso.webp",
+    "startUrl": "https://metaso.cn/",
+    "category": "搜索引擎",
+    "description": "秘塔 AI 搜索",
+    "navigation": {
+      "allowedHosts": ["metaso.cn", "*.metaso.cn"],
+      "allowedPopupHosts": [],
       "externalHostnames": [],
       "externalUrlPrefixes": []
     }

@@ -29,7 +29,10 @@ export interface Application {
   id: string;
   name: string;
   icon: string;
+  image?: string;
   startUrl: string;
+  category?: string;
+  description?: string;
   navigation: NavigationConfig;
   // partition 由 app.id 派生：`persist:${app.id}`
   // 不在配置中额外存 partitionKey

@@ -99,27 +99,27 @@
   50% { opacity: 1; }
 }
 
-.appMenu {
+.newTabBtn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding-left: 8px;
+  padding: 4px 10px;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
   -webkit-app-region: no-drag;
 }
 
-.appMenuItem {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--color-text-secondary);
-  font-size: 11px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
-}
-
-.appMenuItem:hover {
+.newTabBtn:hover {
+  background-color: var(--color-bg-card);
   color: var(--color-text-primary);
-  background: var(--color-bg-card);
-  border-color: var(--color-border);
+  border-color: var(--color-text-primary);
 }

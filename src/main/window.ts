@@ -73,10 +73,11 @@ export function createMainWindow(): BrowserWindow {
 
 function updateContentBounds(window: BrowserWindow): void {
   const [width, height] = window.getContentSize();
+  const SIDEBAR_WIDTH = 68; // 窄侧边栏宽度
   viewManager.setContentBounds({
-    x: 0,
+    x: SIDEBAR_WIDTH,
     y: TAB_BAR_HEIGHT,
-    width,
+    width: width - SIDEBAR_WIDTH,
     height: height - TAB_BAR_HEIGHT,
   });
 }

@@ -3,27 +3,40 @@
    ============================================================ */
 
 :root {
-  --color-bg-primary: #0c0e12;
-  --color-bg-secondary: #151920;
-  --color-bg-card: #1b2029;
-  --color-bg-card-hover: #232935;
-  --color-text-primary: #f2eee7;
-  --color-text-secondary: #a79f92;
-  --color-accent: #d7722c;
-  --color-accent-hover: #f2a15d;
-  --color-border: #2c3038;
-  --color-danger: #f05c45;
+  /* Colors - Light Theme (Termius inspired) */
+  --color-bg-primary: #f1f5f9;  /* slate-100: Sidebar / Main App Bg */
+  --color-bg-secondary: #f8fafc; /* slate-50: Content Area Bg */
+  --color-bg-card: #ffffff;      
+  --color-bg-card-hover: #f8fafc;
+  
+  --color-text-primary: #0f172a; /* slate-900 */
+  --color-text-secondary: #64748b; /* slate-500 */
+  --color-text-muted: #94a3b8;   /* slate-400 */
+  
+  --color-accent: #3b82f6;       /* Default blue accent */
+  --color-accent-hover: #2563eb;
+  --color-border: #e2e8f0;       /* slate-200 */
+  --color-danger: #ef4444;       /* red-500 */
 
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+
+  /* Geometry */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
 
-  --font-sans: 'IBM Plex Sans', 'Segoe UI', sans-serif;
-  --font-display: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  /* Typography */
+  --font-sans: 'Inter', 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --font-display: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  --transition-fast: 120ms ease;
-  --transition-normal: 200ms ease;
+  /* Animation */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {

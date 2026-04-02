@@ -95,8 +95,8 @@ class InstanceStore {
     this.notifyChange();
   }
 
-  switchTo(id: string): void {
-    if (!this.has(id)) throw new Error(`Instance not found: ${id}`);
+  switchTo(id: string | null): void {
+    if (id !== null && !this.has(id)) throw new Error(`Instance not found: ${id}`);
 
     // 隐藏当前实例
     if (this.workspace.activeInstanceId) {
@@ -105,16 +105,19 @@ class InstanceStore {
     }
 
     this.workspace.activeInstanceId = id;
-    const runtime = this.runtimeStates.get(id);
-    if (runtime) {
-      runtime.isVisible = true;
-    }
+    
+    if (id !== null) {
+      const runtime = this.runtimeStates.get(id);
+      if (runtime) {
+        runtime.isVisible = true;
+      }
 
-    // 更新 lastOpenedAt
-    const inst = this.workspace.instances.find((i) => i.id === id);
-    if (inst) {
-      inst.lastOpenedAt = Date.now();
-      this.touchRecentInstance(inst);
+      // 更新 lastOpenedAt
+      const inst = this.workspace.instances.find((i) => i.id === id);
+      if (inst) {
+        inst.lastOpenedAt = Date.now();
+        this.touchRecentInstance(inst);
+      }
     }
 
     this.persist();

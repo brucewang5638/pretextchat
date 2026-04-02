@@ -50,6 +50,12 @@ class ViewManager {
       },
     });
 
+    // 突破 Google 等严格的 OAuth 限制：伪装为纯净 Chrome
+    const defaultUA = view.webContents.userAgent;
+    view.webContents.userAgent = defaultUA
+      .replace(/PretextChat\/[0-9\.-]+ /, '')
+      .replace(/Electron\/[0-9\.-]+ /, '');
+
     // 绑定导航策略
     const policy = new NavigationPolicy(app);
     policy.attach(view);
@@ -86,13 +92,13 @@ class ViewManager {
     return view;
   }
 
-  /** 显示指定实例的 View */
-  show(instanceId: string): void {
+  /** 显示指定实例的 View，传 null 隐藏所有 */
+  show(instanceId: string | null): void {
     if (!this.mainWindow) return;
 
     // 隐藏所有其他 View
     for (const [id, view] of this.views) {
-      if (id === instanceId) {
+      if (instanceId !== null && id === instanceId) {
         view.setBounds(this.contentBounds);
       } else {
         view.setBounds({ x: -10000, y: -10000, width: 0, height: 0 });
@@ -169,6 +175,12 @@ class ViewManager {
         sandbox: true,
       },
     });
+
+    // 同样为弹窗伪装 UA
+    const defaultUA = popup.webContents.userAgent;
+    popup.webContents.userAgent = defaultUA
+      .replace(/PretextChat\/[0-9\.-]+ /, '')
+      .replace(/Electron\/[0-9\.-]+ /, '');
 
     popup.loadURL(url);
 

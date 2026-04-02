@@ -6,18 +6,18 @@ interface AppCardProps {
   id: string;
   name: string;
   icon: string;
+  image?: string;
   category?: string;
   description?: string;
 }
 
-export function AppCard({ id, name, icon, category, description }: AppCardProps) {
+export function AppCard({ id, name, icon, image, category, description }: AppCardProps) {
   const setCurrentPage = useUIStore((s) => s.setCurrentPage);
+  const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
   
-  // Use category or description as the secondary text (Termius uses "ssh, root" format)
-  const metaText = [category, description].filter(Boolean).join(' · ') || 'Web Application';
-
   const handleClick = async () => {
     await window.api.createInstance(id);
+    setActiveAppFilter(id);
     setCurrentPage('workbench');
   };
 
@@ -30,11 +30,15 @@ export function AppCard({ id, name, icon, category, description }: AppCardProps)
       type="button"
     >
       <div className={styles.iconWrapper}>
-        <AppIcon name={name} icon={icon} size="lg" />
+        {image ? (
+          <img src={image} alt={name} className={styles.imageIcon} />
+        ) : (
+          <AppIcon name={name} icon={icon} size="lg" />
+        )}
       </div>
       <div className={styles.copy}>
         <span className={styles.name}>{name}</span>
-        <span className={styles.description}>{metaText}</span>
+        <span className={styles.description}>{description || '强大的 AI 助手'}</span>
       </div>
     </button>
   );

@@ -27,7 +27,7 @@ const api = {
   closeInstance: (id: string): Promise<void> =>
     ipcRenderer.invoke(IPC.CLOSE_INSTANCE, id),
 
-  switchInstance: (id: string): Promise<void> =>
+  switchInstance: (id: string | null): Promise<void> =>
     ipcRenderer.invoke(IPC.SWITCH_INSTANCE, id),
 
   renameInstance: (id: string, title: string): Promise<void> =>

@@ -54,8 +54,13 @@ export class NavigationPolicy {
         return;
       }
 
-      // 允许站内导航
-      if (matchesAnyHost(parsed.hostname, navigation.allowedHosts)) return;
+      // 允许站内导航，或者允许的 OAuth 域名（某些站点直接在本窗口跳转 OAuth）
+      if (
+        matchesAnyHost(parsed.hostname, navigation.allowedHosts) ||
+        matchesAnyHost(parsed.hostname, navigation.allowedPopupHosts)
+      ) {
+        return;
+      }
 
       // 外部域名 → 系统浏览器
       if (matchesAnyHost(parsed.hostname, navigation.externalHostnames)) {

@@ -120,6 +120,13 @@ export function registerIpcHandlers(): void {
   });
 
   ipcMain.handle(IPC.SWITCH_INSTANCE, (_event, id: unknown) => {
+    if (id === null) {
+      instanceStore.switchTo(null);
+      viewManager.show(null);
+      eventLogger.log('instance_switched', { instanceId: null });
+      return;
+    }
+
     if (typeof id !== 'string' || !instanceStore.has(id)) {
       throw new Error(`Invalid instanceId: ${String(id)}`);
     }

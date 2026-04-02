@@ -8,15 +8,28 @@ export function Sidebar() {
   const activeAppFilter = useUIStore((s) => s.activeAppFilter);
   const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
 
-  const apps = snapshot?.apps || [];
+  // Filter apps to strictly those that have running instances
+  const activeAppIds = new Set(snapshot?.workspace.instances.map(inst => inst.applicationId) || []);
+  const apps = (snapshot?.apps || []).filter(app => activeAppIds.has(app.id));
   
-  const handleGoHome = () => {
+  const handleGoHome = async () => {
+    await window.api.switchInstance(null);
     setActiveAppFilter(null);
     setCurrentPage('launch');
   };
 
-  const handleSelectApp = (appId: string) => {
+  const handleSelectApp = async (appId: string) => {
     setActiveAppFilter(appId);
+    
+    const instancesForApp = snapshot?.workspace.instances.filter(i => i.applicationId === appId) || [];
+    if (instancesForApp.length > 0) {
+      // Jump to the first instance of this app
+      await window.api.switchInstance(instancesForApp[0].id);
+    } else {
+      // Auto-create if none exists
+      await window.api.createInstance(appId);
+    }
+    
     setCurrentPage('workbench');
   };
 
@@ -27,7 +40,7 @@ export function Sidebar() {
         onClick={handleGoHome}
         title="应用主页"
       >
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
       </button>

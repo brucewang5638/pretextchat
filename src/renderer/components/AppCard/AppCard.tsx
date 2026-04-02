@@ -1,6 +1,7 @@
 import { useUIStore } from '../../store';
 import { AppIcon } from '../AppIcon/AppIcon';
 import { PretextBlock } from '../PretextBlock/PretextBlock';
+import { resolveAssetPath } from '../../lib/assets';
 import styles from './AppCard.module.css';
 
 interface AppCardProps {
@@ -60,7 +61,7 @@ export function AppCard({ id, name, icon, image, category, description, isPinned
       
       <div className={styles.iconWrapper}>
         {image ? (
-          <img src={image} alt={name} className={styles.imageIcon} />
+          <img src={resolveAssetPath(image)} alt={name} className={styles.imageIcon} />
         ) : (
           <AppIcon name={name} icon={icon} size="lg" />
         )}

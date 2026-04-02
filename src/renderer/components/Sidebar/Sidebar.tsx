@@ -1,4 +1,5 @@
 import { useUIStore } from '../../store';
+import { resolveAssetPath } from '../../lib/assets';
 import styles from './Sidebar.module.css';
 
 export function Sidebar() {
@@ -42,7 +43,11 @@ export function Sidebar() {
         onClick={handleGoHome}
         title="应用主页"
       >
-        <img src="/branding/pretextchat-logo.svg" alt="PretextChat" className={styles.homeLogo} />
+        <img
+          src={resolveAssetPath('/branding/pretextchat-logo.svg')}
+          alt="PretextChat"
+          className={styles.homeLogo}
+        />
       </button>
 
       <div className={styles.divider}></div>
@@ -59,7 +64,7 @@ export function Sidebar() {
             <div className={styles.activeIndicator}></div>
             <div className={styles.appIcon}>
               {app.image ? (
-                <img src={app.image} alt={app.name} />
+                <img src={resolveAssetPath(app.image)} alt={app.name} />
               ) : (
                 app.name.charAt(0)
               )}

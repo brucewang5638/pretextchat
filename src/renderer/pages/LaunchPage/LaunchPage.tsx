@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useUIStore } from '../../store';
 import { AppCard } from '../../components/AppCard/AppCard';
+import { resolveAssetPath } from '../../lib/assets';
 import styles from './LaunchPage.module.css';
 
 export function LaunchPage() {
@@ -58,7 +59,7 @@ export function LaunchPage() {
         <section className={styles.brandHero}>
           <div className={styles.brandMarkWrap}>
             <img
-              src="/branding/pretextchat-logo.svg"
+              src={resolveAssetPath('/branding/pretextchat-logo.svg')}
               alt="PretextChat"
               className={styles.brandMark}
             />

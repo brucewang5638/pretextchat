@@ -4,7 +4,7 @@
 
 import { useEffect } from 'react';
 import { useUIStore } from '../store';
-import type { PretextChatAPI } from '../../preload/index';
+import type { PretextChatAPI } from '../../preload/preload';
 
 // 从 window.api 获取类型安全的 API
 declare global {

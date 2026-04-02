@@ -5,6 +5,8 @@ import { LaunchPage } from './pages/LaunchPage/LaunchPage';
 import { WorkbenchPage } from './pages/WorkbenchPage/WorkbenchPage';
 
 export function App() {
+  console.log('React App rendering. window.api present:', !!window.api);
+  
   useStateSync();
   useInitialize();
 

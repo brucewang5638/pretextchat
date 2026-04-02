@@ -2,10 +2,10 @@
 // Window — BrowserWindow 创建与管理
 // ============================================================
 
-import { BrowserWindow } from 'electron';
-import path from 'node:path';
-import { viewManager } from './view-manager';
-import { instanceStore } from './instance-store';
+import { BrowserWindow } from "electron";
+import path from "node:path";
+import { viewManager } from "./view-manager";
+import { instanceStore } from "./instance-store";
 
 // Forge Vite plugin 注入的全局变量
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
@@ -19,11 +19,12 @@ export function createMainWindow(): BrowserWindow {
     height: 800,
     minWidth: 800,
     minHeight: 600,
-    title: 'PretextChat',
+    title: "PretextChat",
+    // 隐藏窗口，等待内容加载完成再显示
     show: false,
-    backgroundColor: '#0f0f12',
+    backgroundColor: "#0f0f12",
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       sandbox: true,
     },
@@ -42,19 +43,28 @@ export function createMainWindow(): BrowserWindow {
   viewManager.setMainWindow(mainWindow);
   updateContentBounds(mainWindow);
 
+  mainWindow.webContents.on(
+    "console-message",
+    (event, level, message, line, sourceId) => {
+      console.log(
+        `[Renderer] [${level}] ${message} (line: ${line}, source: ${sourceId})`,
+      );
+    },
+  );
+
   // 响应窗口 resize，更新 WebContentsView 布局
-  mainWindow.on('resize', () => {
+  mainWindow.on("resize", () => {
     updateContentBounds(mainWindow);
   });
 
-  mainWindow.once('ready-to-show', () => {
+  mainWindow.once("ready-to-show", () => {
     mainWindow.center();
     mainWindow.show();
     mainWindow.focus();
   });
 
   // 关闭前保存会话快照
-  mainWindow.on('close', () => {
+  mainWindow.on("close", () => {
     instanceStore.saveSnapshot();
   });
 

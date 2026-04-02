@@ -3,7 +3,7 @@
   "productName": "PretextChat",
   "version": "0.1.0",
   "description": "AI-only multi-instance work client powered by Pretext",
-  "main": ".vite/build/index.js",
+  "main": ".vite/build/main.js",
   "private": true,
   "scripts": {
     "start": "electron-forge start",

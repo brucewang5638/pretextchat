@@ -12,8 +12,13 @@ export function LaunchPage() {
   }
 
   const { apps, preferences, workspace } = snapshot;
-  const hasSnapshot = workspace.instances.length > 0;
-  const startupMode = preferences.startupMode;
+  // 这里统一做一层 UI 兜底：
+  // 即使 main 进程拿到的是旧配置或缺字段数据，启动页也应该尽量渲染出来，
+  // 而不是因为访问 undefined.length / undefined.map 直接黑屏。
+  const hasSnapshot = workspace?.instances?.length > 0;
+  const startupMode = preferences?.startupMode || 'home';
+  const recentApps = preferences?.recentApps || [];
+  const recentInstances = preferences?.recentInstances || [];
 
   const handleRestore = async () => {
     await window.api.restoreSession();
@@ -62,11 +67,11 @@ export function LaunchPage() {
         </div>
       </section>
 
-      {preferences.recentApps.length > 0 && (
+      {recentApps.length > 0 && (
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>最近使用</h2>
           <div className={styles.recentList}>
-            {preferences.recentApps.slice(0, 5).map((appId) => {
+            {recentApps.slice(0, 5).map((appId) => {
               const app = apps.find((a) => a.id === appId);
               if (!app) return null;
               return (
@@ -87,11 +92,11 @@ export function LaunchPage() {
         </section>
       )}
 
-      {preferences.recentInstances.length > 0 && (
+      {recentInstances.length > 0 && (
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>最近任务</h2>
           <div className={styles.recentInstances}>
-            {preferences.recentInstances.slice(0, 6).map((entry) => {
+            {recentInstances.slice(0, 6).map((entry) => {
               const app = apps.find((item) => item.id === entry.applicationId);
               if (!app) return null;
               const isOpen = workspace.instances.some((instance) => instance.id === entry.instanceId);

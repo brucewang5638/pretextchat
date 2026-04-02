@@ -6,7 +6,8 @@
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { IPC } from '../shared/constants';
-import type { PersistedWorkspaceState, StateSnapshot } from '../shared/types';
+import type { Application, PersistedWorkspaceState, PersistedInstance, StateSnapshot } from '../shared/types';
+import { isRendererManagedApp } from '../shared/app-runtime';
 import { appRegistry } from './app-registry';
 import { instanceStore } from './instance-store';
 import { viewManager } from './view-manager';
@@ -42,6 +43,22 @@ function syncState(): void {
   });
 }
 
+function ensureNativeView(instance: PersistedInstance, app: Application): void {
+  if (!isRendererManagedApp(app) && !viewManager.hasView(instance.id)) {
+    viewManager.create(instance.id, app);
+  }
+}
+
+function showInstance(instanceId: string | null, app?: Application): void {
+  viewManager.show(isRendererManagedApp(app) ? null : instanceId);
+}
+
+function markRendererManagedReady(instanceId: string, app?: Application): void {
+  if (isRendererManagedApp(app)) {
+    instanceStore.updateRuntimeStatus(instanceId, 'ready');
+  }
+}
+
 export function registerIpcHandlers(): void {
   // 注册状态变更回调
   instanceStore.onChange(() => syncState());
@@ -67,14 +84,9 @@ export function registerIpcHandlers(): void {
     const instance = instanceStore.createInstance(appId);
     const app = appRegistry.get(appId)!;
 
-    if (app.renderMode === 'webview') {
-      viewManager.show(null);
-      instanceStore.updateRuntimeStatus(instance.id, 'ready');
-    } else {
-      // 创建 WebContentsView（非懒创建，因为是用户主动操作）
-      viewManager.create(instance.id, app);
-      viewManager.show(instance.id);
-    }
+    markRendererManagedReady(instance.id, app);
+    ensureNativeView(instance, app);
+    showInstance(instance.id, app);
 
     eventLogger.log('instance_created', { appId, instanceId: instance.id });
     return instance;
@@ -93,13 +105,10 @@ export function registerIpcHandlers(): void {
     }
 
     if (!existing) {
-      if (app.renderMode === 'webview') {
-        instanceStore.updateRuntimeStatus(instance.id, 'ready');
-      } else {
-        viewManager.create(instance.id, app);
-      }
+      markRendererManagedReady(instance.id, app);
+      ensureNativeView(instance, app);
     }
-    viewManager.show(app.renderMode === 'webview' ? null : instance.id);
+    showInstance(instance.id, app);
     syncState();
     return instance;
   });
@@ -112,7 +121,7 @@ export function registerIpcHandlers(): void {
     const instance = instanceStore.getInstance(id);
     const app = instance ? appRegistry.get(instance.applicationId) : undefined;
 
-    if (app?.renderMode !== 'webview') {
+    if (!isRendererManagedApp(app)) {
       viewManager.destroy(id);
     }
     instanceStore.closeInstance(id);
@@ -126,12 +135,12 @@ export function registerIpcHandlers(): void {
         const inst = instanceStore.getInstance(state.activeInstanceId);
         if (inst) {
           const app = appRegistry.get(inst.applicationId);
-          if (app && app.renderMode !== 'webview') viewManager.create(inst.id, app);
+          if (app) ensureNativeView(inst, app);
         }
       }
       const activeInstance = instanceStore.getInstance(state.activeInstanceId);
       const activeApp = activeInstance ? appRegistry.get(activeInstance.applicationId) : undefined;
-      viewManager.show(activeApp?.renderMode === 'webview' ? null : state.activeInstanceId);
+      showInstance(state.activeInstanceId, activeApp);
     }
   });
 
@@ -151,19 +160,18 @@ export function registerIpcHandlers(): void {
 
     const inst = instanceStore.getInstance(id);
     const app = inst ? appRegistry.get(inst.applicationId) : undefined;
-    if (app?.renderMode === 'webview') {
-      instanceStore.updateRuntimeStatus(id, 'ready');
-      viewManager.show(null);
+    if (isRendererManagedApp(app)) {
+      markRendererManagedReady(id, app);
+      showInstance(id, app);
       eventLogger.log('instance_switched', { instanceId: id });
       return;
     }
 
-    // 懒创建：如果目标实例的 View 还不存在（恢复场景）
-    if (!viewManager.hasView(id) && inst && app) {
-      viewManager.create(inst.id, app);
+    if (inst && app) {
+      ensureNativeView(inst, app);
     }
 
-    viewManager.show(id);
+    showInstance(id, app);
     eventLogger.log('instance_switched', { instanceId: id });
   });
 
@@ -196,13 +204,9 @@ export function registerIpcHandlers(): void {
         if (inst) {
           const app = appRegistry.get(inst.applicationId);
           if (app) {
-            if (app.renderMode === 'webview') {
-              instanceStore.updateRuntimeStatus(inst.id, 'ready');
-              viewManager.show(null);
-            } else {
-              viewManager.create(inst.id, app);
-              viewManager.show(inst.id);
-            }
+            markRendererManagedReady(inst.id, app);
+            ensureNativeView(inst, app);
+            showInstance(inst.id, app);
           }
         }
       }

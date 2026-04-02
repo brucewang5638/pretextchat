@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useUIStore } from '../../store';
 import { TabBar } from '../../components/TabBar/TabBar';
 import { WebviewSurface } from '../../components/WebviewSurface/WebviewSurface';
+import { getAppPartition, GOOGLE_WEBVIEW_USER_AGENT, isRendererManagedApp } from '../../../shared/app-runtime';
 import styles from './WorkbenchPage.module.css';
 
 export function WorkbenchPage() {
@@ -18,17 +19,17 @@ export function WorkbenchPage() {
     [activeInstance?.applicationId, snapshot?.apps],
   );
 
-  const isGoogleWebview = activeApp?.id === 'google' && activeApp.renderMode === 'webview';
+  const isRendererWebview = isRendererManagedApp(activeApp);
 
   return (
     <div className={styles.workbench}>
       <TabBar />
       <div className={styles.viewArea}>
-        {isGoogleWebview ? (
+        {activeApp && isRendererWebview ? (
           <WebviewSurface
             src={activeApp.startUrl}
-            partition="persist:auth-google"
-            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36"
+            partition={getAppPartition(activeApp)}
+            userAgent={GOOGLE_WEBVIEW_USER_AGENT}
             title={activeApp.name}
           />
         ) : (

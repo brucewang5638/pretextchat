@@ -8,13 +8,12 @@
 import { BrowserWindow, WebContentsView, session, shell } from 'electron';
 import type { Session, WebContents } from 'electron';
 import type { Rectangle, Application } from '../shared/types';
+import { getAppPartition, GOOGLE_WEBVIEW_USER_AGENT } from '../shared/app-runtime';
 import { NavigationPolicy } from './navigation-policy';
 import { instanceStore } from './instance-store';
 import { eventLogger } from './event-logger';
 
 const DEFAULT_ACCEPT_LANGUAGES = 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7';
-const GOOGLE_AUTH_USER_AGENT =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36';
 
 function sanitizeAppUserAgent(userAgent: string): string {
   return userAgent
@@ -22,17 +21,10 @@ function sanitizeAppUserAgent(userAgent: string): string {
     .replace(/Electron\/[0-9\.-]+ /, '');
 }
 
-function getPartition(app: Application): string {
-  if (app.authSessionGroup) {
-    return `persist:auth-${app.authSessionGroup}`;
-  }
-  return `persist:${app.id}`;
-}
-
 function getUserAgentProfile(app: Application): { userAgent: string | null; acceptLanguages: string } {
   if (app.authUserAgentProfile === 'google') {
     return {
-      userAgent: GOOGLE_AUTH_USER_AGENT,
+      userAgent: GOOGLE_WEBVIEW_USER_AGENT,
       acceptLanguages: DEFAULT_ACCEPT_LANGUAGES,
     };
   }
@@ -69,7 +61,7 @@ class ViewManager {
   /** 创建 WebContentsView 并加载 URL */
   create(instanceId: string, app: Application): WebContentsView {
     if (!this.mainWindow) throw new Error('MainWindow not set');
-    const partition = getPartition(app);
+    const partition = getAppPartition(app);
     const sessionRef = this.configureSession(app);
 
     const view = new WebContentsView({
@@ -190,7 +182,7 @@ class ViewManager {
 
   private openOAuthPopup(url: string, app: Application, policy: NavigationPolicy): void {
     if (!this.mainWindow) return;
-    const partition = getPartition(app);
+    const partition = getAppPartition(app);
     const sessionRef = this.configureSession(app);
 
     const popup = new BrowserWindow({
@@ -227,7 +219,7 @@ class ViewManager {
   }
 
   private configureSession(app: Application): Session {
-    const partition = getPartition(app);
+    const partition = getAppPartition(app);
     const sessionRef = session.fromPartition(partition);
     if (this.configuredPartitions.has(partition)) {
       return sessionRef;

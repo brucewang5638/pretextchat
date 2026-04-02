@@ -1,0 +1,109 @@
+[
+  {
+    "id": "chatgpt",
+    "name": "ChatGPT",
+    "icon": "chatgpt.svg",
+    "startUrl": "https://chatgpt.com",
+    "navigation": {
+      "allowedHosts": [
+        "chatgpt.com",
+        "*.chatgpt.com",
+        "auth0.openai.com",
+        "auth.openai.com",
+        "platform.openai.com",
+        "cdn.oaistatic.com"
+      ],
+      "allowedPopupHosts": [
+        "accounts.google.com",
+        "appleid.apple.com",
+        "login.microsoftonline.com",
+        "login.live.com"
+      ],
+      "externalHostnames": [
+        "help.openai.com"
+      ],
+      "externalUrlPrefixes": [
+        "https://openai.com/policies"
+      ]
+    }
+  },
+  {
+    "id": "claude",
+    "name": "Claude",
+    "icon": "claude.svg",
+    "startUrl": "https://claude.ai",
+    "navigation": {
+      "allowedHosts": [
+        "claude.ai",
+        "*.claude.ai",
+        "console.anthropic.com"
+      ],
+      "allowedPopupHosts": [
+        "accounts.google.com"
+      ],
+      "externalHostnames": [
+        "docs.anthropic.com",
+        "support.anthropic.com"
+      ],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "gemini",
+    "name": "Gemini",
+    "icon": "gemini.svg",
+    "startUrl": "https://gemini.google.com",
+    "navigation": {
+      "allowedHosts": [
+        "gemini.google.com",
+        "*.gemini.google.com",
+        "accounts.google.com",
+        "myaccount.google.com"
+      ],
+      "allowedPopupHosts": [
+        "accounts.google.com"
+      ],
+      "externalHostnames": [
+        "support.google.com"
+      ],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "perplexity",
+    "name": "Perplexity",
+    "icon": "perplexity.svg",
+    "startUrl": "https://www.perplexity.ai",
+    "navigation": {
+      "allowedHosts": [
+        "perplexity.ai",
+        "*.perplexity.ai",
+        "www.perplexity.ai"
+      ],
+      "allowedPopupHosts": [
+        "accounts.google.com",
+        "appleid.apple.com"
+      ],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "icon": "deepseek.svg",
+    "startUrl": "https://chat.deepseek.com",
+    "navigation": {
+      "allowedHosts": [
+        "chat.deepseek.com",
+        "*.deepseek.com",
+        "deepseek.com"
+      ],
+      "allowedPopupHosts": [
+        "accounts.google.com"
+      ],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  }
+]

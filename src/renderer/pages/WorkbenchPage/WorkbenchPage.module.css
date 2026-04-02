@@ -1,0 +1,12 @@
+.workbench {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.viewArea {
+  flex: 1;
+  /* WebContentsView 由 main 进程叠加在此区域上方。
+     此 div 只是占位，确保 TabBar 不被遮挡。*/
+  background: var(--color-bg-primary);
+}

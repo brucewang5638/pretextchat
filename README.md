@@ -163,6 +163,14 @@ The workflow file lives at [.github/workflows/release.yml](.github/workflows/rel
 
 Use [docs/release-checklist.md](docs/release-checklist.md) before every public release.
 
+Windows distribution now follows a traditional installer strategy:
+
+- primary installer: `NSIS`
+- optional advanced-user build: `portable`
+- installer and app icon: branded `icon.ico`
+
+This better matches normal Windows user expectations around guided installation and install-path selection.
+
 ## Documentation Map
 
 - [docs/prd.md](docs/prd.md): product requirements and scope

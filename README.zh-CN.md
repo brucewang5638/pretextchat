@@ -169,6 +169,14 @@ workflow 文件位于 [.github/workflows/release.yml](.github/workflows/release.
 
 每次对外发布前，请先过一遍 [docs/release-checklist.md](docs/release-checklist.md)。
 
+当前 Windows 分发采用传统安装向导路线：
+
+- 主安装包：`NSIS` 向导安装版
+- 补充安装包：`portable` 便携版
+- 安装器与应用图标使用品牌 `icon.ico`
+
+这样更符合普通 Windows 用户对“下一步安装、可选安装路径”的预期。
+
 ## 文档导航
 
 - [docs/prd.md](docs/prd.md)：产品需求与范围

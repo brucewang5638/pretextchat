@@ -19,18 +19,41 @@ jobs:
           - name: linux-x64
             runner: ubuntu-latest
             arch: x64
+            build_command: npm run make -- --arch x64
+            artifact_path: |
+              out/make/**/*.deb
+              out/make/**/*.rpm
+              out/make/**/*.zip
           - name: linux-arm64
             runner: ubuntu-24.04-arm
             arch: arm64
+            build_command: npm run make -- --arch arm64
+            artifact_path: |
+              out/make/**/*.deb
+              out/make/**/*.rpm
+              out/make/**/*.zip
           - name: macos-x64
             runner: macos-15-intel
             arch: x64
+            build_command: npm run make -- --arch x64
+            artifact_path: |
+              out/make/**/*.dmg
+              out/make/**/*.zip
           - name: macos-arm64
             runner: macos-latest
             arch: arm64
+            build_command: npm run make -- --arch arm64
+            artifact_path: |
+              out/make/**/*.dmg
+              out/make/**/*.zip
           - name: windows-x64
             runner: windows-latest
             arch: x64
+            build_command: npm run dist:win
+            artifact_path: |
+              dist/*.exe
+              dist/latest*.yml
+              dist/*.blockmap
 
     steps:
       - name: Checkout code
@@ -52,18 +75,13 @@ jobs:
           sudo apt-get install -y rpm fakeroot dpkg
 
       - name: Build distributables
-        run: npm run make -- --arch ${{ matrix.arch }}
+        run: ${{ matrix.build_command }}
 
       - name: Upload release artifacts
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.name }}
-          path: |
-            out/make/**/*.deb
-            out/make/**/*.rpm
-            out/make/**/*.exe
-            out/make/**/*.zip
-            out/make/**/*.dmg
+          path: ${{ matrix.artifact_path }}
           if-no-files-found: error
 
   publish:

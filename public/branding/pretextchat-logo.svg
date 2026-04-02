@@ -1,0 +1,38 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="28" y1="24" x2="220" y2="228" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#102033"/>
+      <stop offset="1" stop-color="#1F5F78"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="90" y1="86" x2="191" y2="179" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#D4E6F4"/>
+    </linearGradient>
+    <linearGradient id="line" x1="96" y1="71" x2="198" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6EE7D8"/>
+      <stop offset="1" stop-color="#A7F3D0"/>
+    </linearGradient>
+    <filter id="shadow" x="36" y="42" width="184" height="164" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="10"/>
+      <feGaussianBlur stdDeviation="12"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0313726 0 0 0 0 0.0941176 0 0 0 0 0.152941 0 0 0 0.22 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
+    </filter>
+  </defs>
+
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#bg)"/>
+  <rect x="142" y="54" width="54" height="40" rx="18" fill="#6EE7D8" fill-opacity="0.2"/>
+  <rect x="62" y="156" width="46" height="34" rx="16" fill="#0C1A2B" fill-opacity="0.28"/>
+
+  <g filter="url(#shadow)">
+    <rect x="56" y="62" width="144" height="124" rx="34" fill="url(#panel)"/>
+    <rect x="74" y="80" width="30" height="88" rx="15" fill="#102033"/>
+    <path d="M94 80H136C159.196 80 178 98.804 178 122C178 145.196 159.196 164 136 164H108V140H134C147.255 140 158 129.255 158 116C158 102.745 147.255 92 134 92H94V80Z" fill="#102033"/>
+    <rect x="124" y="102" width="52" height="10" rx="5" fill="url(#line)"/>
+    <rect x="124" y="122" width="40" height="10" rx="5" fill="#9FC0D6"/>
+    <rect x="124" y="142" width="30" height="10" rx="5" fill="#9FC0D6"/>
+  </g>
+</svg>

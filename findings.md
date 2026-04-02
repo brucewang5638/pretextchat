@@ -49,3 +49,10 @@
 - 从截图看，主进程窗口已经正常打开，但 renderer 内容区没有成功渲染，属于 renderer 初始化阶段异常，而不是窗口创建失败。
 - `src/renderer/pages/LaunchPage/LaunchPage.tsx` 原先在 `if (!snapshot) return ...` 之后才调用 `useMemo`，违反 React hooks 顺序规则，容易在生产包里表现为白屏。
 - 已将 `LaunchPage` 的 hooks 调整为始终按固定顺序调用，并新增 renderer 级 `AppErrorBoundary`，避免未来再出现纯白屏且无提示的情况。
+
+## Windows Distribution Findings
+
+- 现有 Electron Forge `maker-squirrel` 更偏一键安装，不符合“选择安装路径 + 下一步”式安装向导预期。
+- Cherry Studio 的 Windows 分发参考方案是 `electron-builder`，同时输出 `NSIS` 安装版和 `portable` 版。
+- 本项目已采用桥接路线：继续使用 Electron Forge 负责预打包 app，再由 `electron-builder` 基于 prepackaged 目录生成 Windows 安装器。
+- 这样可以保留现有本地开发和非 Windows 打包链路，同时把 Windows 分发升级为更符合大众预期的传统安装体验。

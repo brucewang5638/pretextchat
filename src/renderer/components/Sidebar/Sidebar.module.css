@@ -31,6 +31,12 @@
   border: none;
 }
 
+.homeLogo {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
 .homeAction:hover {
   background-color: var(--color-bg-elevated);
   color: var(--color-text-primary);

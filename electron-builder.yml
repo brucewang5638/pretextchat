@@ -1,0 +1,39 @@
+appId: com.pretextchat.app
+productName: PretextChat
+
+directories:
+  output: dist
+
+files:
+  - "!**/.git/**"
+  - "!**/node_modules/.cache/**"
+  - "!out/**"
+  - "!dist/**"
+
+asar: true
+
+win:
+  icon: public/branding/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  artifactName: "${productName}-${version}-${arch}-${target}.${ext}"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  allowElevation: true
+  perMachine: false
+  installerIcon: public/branding/icon.ico
+  uninstallerIcon: public/branding/icon.ico
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: PretextChat
+  deleteAppDataOnUninstall: false
+
+portable:
+  artifactName: "${productName}-${version}-${arch}-portable.${ext}"

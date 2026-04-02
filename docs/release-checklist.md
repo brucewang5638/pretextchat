@@ -60,6 +60,7 @@
 ## 7. Release Operations
 
 - [ ] 确认 GitHub Actions `release.yml` 可用
+- [ ] Windows 安装器已按预期生成 NSIS 向导安装版与 portable 版
 - [ ] 打 tag 前确认工作树干净
 - [ ] 创建并推送版本 tag
 - [ ] 等待 CI 构建完成

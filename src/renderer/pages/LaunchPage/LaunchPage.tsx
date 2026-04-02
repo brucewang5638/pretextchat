@@ -55,6 +55,23 @@ export function LaunchPage() {
   return (
     <div className={styles.layout}>
       <main className={styles.mainContent}>
+        <section className={styles.brandHero}>
+          <div className={styles.brandMarkWrap}>
+            <img
+              src="/branding/pretextchat-logo.svg"
+              alt="PretextChat"
+              className={styles.brandMark}
+            />
+          </div>
+          <div className={styles.brandCopy}>
+            <span className={styles.brandEyebrow}>AI-only multi-instance work client</span>
+            <h1 className={styles.brandTitle}>PretextChat</h1>
+            <p className={styles.brandDescription}>
+              把混乱的 AI 标签页变成可重开、可命名、可切换的任务工作位。
+            </p>
+          </div>
+        </section>
+
         {/* Top Search Bar */}
         <div className={styles.topBar}>
           <input

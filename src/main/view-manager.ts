@@ -3,22 +3,44 @@
 // ============================================================
 // 创建/显示/隐藏/销毁 WebContentsView。
 // 恢复策略：metadata 恢复 + lazy view recreate。
-// OAuth 弹窗：临时子 BrowserWindow + 共享 partition。
+// OAuth 弹窗：临时子 BrowserWindow + 可共享认证 partition。
 
-import { BrowserWindow, WebContentsView, shell } from 'electron';
+import { BrowserWindow, WebContentsView, session, shell } from 'electron';
+import type { Session, WebContents } from 'electron';
 import type { Rectangle, Application } from '../shared/types';
 import { NavigationPolicy } from './navigation-policy';
 import { instanceStore } from './instance-store';
 import { eventLogger } from './event-logger';
 
-/** Partition 派生规则：统一由 app.id 派生 */
-function getPartition(appId: string): string {
-  return `persist:${appId}`;
+const DEFAULT_ACCEPT_LANGUAGES = 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7';
+const GOOGLE_AUTH_USER_AGENT =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36';
+
+function getPartition(app: Application): string {
+  if (app.authSessionGroup) {
+    return `persist:auth-${app.authSessionGroup}`;
+  }
+  return `persist:${app.id}`;
+}
+
+function getUserAgentProfile(app: Application): { userAgent: string | null; acceptLanguages: string } {
+  if (app.authUserAgentProfile === 'google') {
+    return {
+      userAgent: GOOGLE_AUTH_USER_AGENT,
+      acceptLanguages: DEFAULT_ACCEPT_LANGUAGES,
+    };
+  }
+
+  return {
+    userAgent: null,
+    acceptLanguages: DEFAULT_ACCEPT_LANGUAGES,
+  };
 }
 
 class ViewManager {
   private views: Map<string, WebContentsView> = new Map();
   private mainWindow: BrowserWindow | null = null;
+  private configuredPartitions: Set<string> = new Set();
   /** 当前 WebContentsView 的可用布局区域 */
   private contentBounds: Rectangle = { x: 0, y: 0, width: 800, height: 600 };
 
@@ -41,20 +63,19 @@ class ViewManager {
   /** 创建 WebContentsView 并加载 URL */
   create(instanceId: string, app: Application): WebContentsView {
     if (!this.mainWindow) throw new Error('MainWindow not set');
+    const partition = getPartition(app);
+    const sessionRef = this.configureSession(app);
 
     const view = new WebContentsView({
       webPreferences: {
-        partition: getPartition(app.id),
+        partition,
+        session: sessionRef,
         contextIsolation: true,
         sandbox: true,
       },
     });
 
-    // 突破 Google 等严格的 OAuth 限制：伪装为纯净 Chrome
-    const defaultUA = view.webContents.userAgent;
-    view.webContents.userAgent = defaultUA
-      .replace(/PretextChat\/[0-9\.-]+ /, '')
-      .replace(/Electron\/[0-9\.-]+ /, '');
+    this.applyUserAgent(view.webContents, app);
 
     // 绑定导航策略
     const policy = new NavigationPolicy(app);
@@ -163,24 +184,26 @@ class ViewManager {
 
   private openOAuthPopup(url: string, app: Application, policy: NavigationPolicy): void {
     if (!this.mainWindow) return;
+    const partition = getPartition(app);
+    const sessionRef = this.configureSession(app);
 
     const popup = new BrowserWindow({
       width: 500,
       height: 700,
       parent: this.mainWindow,
-      modal: true,
+      modal: false,
+      autoHideMenuBar: true,
+      show: false,
       webPreferences: {
-        partition: getPartition(app.id), // 共享 session，OAuth 成功后 Cookie 自动生效
+        partition, // 共享 session，OAuth 成功后 Cookie 自动复用到同 auth group
+        session: sessionRef,
         contextIsolation: true,
         sandbox: true,
       },
     });
 
-    // 同样为弹窗伪装 UA
-    const defaultUA = popup.webContents.userAgent;
-    popup.webContents.userAgent = defaultUA
-      .replace(/PretextChat\/[0-9\.-]+ /, '')
-      .replace(/Electron\/[0-9\.-]+ /, '');
+    this.applyUserAgent(popup.webContents, app);
+    popup.once('ready-to-show', () => popup.show());
 
     popup.loadURL(url);
 
@@ -195,6 +218,51 @@ class ViewManager {
         // ignore invalid URLs
       }
     });
+  }
+
+  private configureSession(app: Application): Session {
+    const partition = getPartition(app);
+    const sessionRef = session.fromPartition(partition);
+    if (this.configuredPartitions.has(partition)) {
+      return sessionRef;
+    }
+
+    const profile = getUserAgentProfile(app);
+    sessionRef.setUserAgent(profile.userAgent ?? sessionRef.getUserAgent(), profile.acceptLanguages);
+
+    if (profile.userAgent) {
+      const userAgent = profile.userAgent;
+      const acceptLanguages = profile.acceptLanguages;
+      sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
+        callback({
+          requestHeaders: {
+            ...details.requestHeaders,
+            'User-Agent': userAgent,
+            'Accept-Language': acceptLanguages,
+          },
+        });
+      });
+    }
+
+    this.configuredPartitions.add(partition);
+    return sessionRef;
+  }
+
+  private applyUserAgent(
+    webContents: WebContents,
+    app: Application,
+  ): void {
+    const profile = getUserAgentProfile(app);
+
+    if (profile.userAgent) {
+      webContents.setUserAgent(profile.userAgent);
+      return;
+    }
+
+    const sanitizedUA = webContents.userAgent
+      .replace(/PretextChat\/[0-9\.-]+ /, '')
+      .replace(/Electron\/[0-9\.-]+ /, '');
+    webContents.setUserAgent(sanitizedUA);
   }
 }
 

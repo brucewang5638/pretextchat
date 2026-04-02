@@ -12,7 +12,8 @@ export function Sidebar() {
   // Filter apps to strictly those that have running instances
   const activeAppIds = new Set(snapshot?.workspace.instances.map(inst => inst.applicationId) || []);
   const pinnedAppIds = new Set(snapshot?.preferences.pinnedAppIds || []);
-  const displayAppIds = new Set([...activeAppIds, ...pinnedAppIds]);
+  // Google 登录容器始终给一个稳定入口，避免用户在第三方站点里找不到入口。
+  const displayAppIds = new Set([...activeAppIds, ...pinnedAppIds, 'google']);
   const apps = (snapshot?.apps || []).filter(app => displayAppIds.has(app.id));
   
   const handleGoHome = async () => {

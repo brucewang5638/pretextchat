@@ -34,8 +34,17 @@ export interface Application {
   category?: string;
   description?: string;
   navigation: NavigationConfig;
-  // partition 由 app.id 派生：`persist:${app.id}`
-  // 不在配置中额外存 partitionKey
+  /**
+   * 共享认证会话分组。
+   * 例如多个站点都依赖 Google OAuth 时，放进同一个 auth group，
+   * 这样它们会复用同一个持久化 session。
+   */
+  authSessionGroup?: string;
+  /**
+   * 认证链路的 UA 策略。
+   * Google 这类对嵌入式环境更敏感的服务，需要单独使用更接近系统浏览器的 UA。
+   */
+  authUserAgentProfile?: 'default' | 'google';
 }
 
 // ─── 持久化实例（落盘可恢复的字段子集）─────────────────────

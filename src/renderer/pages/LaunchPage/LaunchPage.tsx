@@ -20,12 +20,20 @@ export function LaunchPage() {
         app.name.toLowerCase().includes(lowerQuery) || 
         (app.description && app.description.toLowerCase().includes(lowerQuery)) ||
         (app.category && app.category.toLowerCase().includes(lowerQuery))
-    );
+      );
   }, [apps, searchQuery]);
+
+  const sortedApps = useMemo(() => {
+    return [...filteredApps].sort((a, b) => {
+      if (a.id === 'google') return -1;
+      if (b.id === 'google') return 1;
+      return a.name.localeCompare(b.name, 'zh-CN');
+    });
+  }, [filteredApps]);
 
   // Derive categories from filtered applications dynamically
   const groupsInfo = useMemo(() => {
-    return filteredApps.reduce(
+    return sortedApps.reduce(
       (acc, app) => {
         const cat = app.category || '未分类';
         if (!acc[cat]) acc[cat] = 0;
@@ -34,7 +42,7 @@ export function LaunchPage() {
       },
       {} as Record<string, number>,
     );
-  }, [filteredApps]);
+  }, [sortedApps]);
 
   if (!snapshot) {
     return <div className={styles.layout}>加载中...</div>;
@@ -70,6 +78,9 @@ export function LaunchPage() {
             <p className={styles.brandDescription}>
               把混乱的 AI 标签页变成可重开、可命名、可切换的任务工作位。
             </p>
+            <p className={styles.brandDescription}>
+              需要 Google 登录时，先打开下方的 Google 应用完成登录，再进入 ChatGPT、Claude、Gemini 等站点。
+            </p>
           </div>
         </section>
 
@@ -94,7 +105,7 @@ export function LaunchPage() {
             </div>
           ) : (
             Object.entries(groupsInfo).map(([category, count]) => {
-              const categoryApps = filteredApps.filter(a => (a.category || '未分类') === category);
+              const categoryApps = sortedApps.filter(a => (a.category || '未分类') === category);
               
               return (
                 <section key={category} className={styles.section} style={{ marginTop: '24px' }}>

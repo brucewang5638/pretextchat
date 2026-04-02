@@ -1,5 +1,32 @@
 [
   {
+    "id": "google",
+    "name": "Google",
+    "icon": "google.svg",
+    "image": "/images/google.svg",
+    "startUrl": "https://accounts.google.com/",
+    "category": "身份登录",
+    "description": "先在这里登录 Google，再打开支持 Google 登录的 AI 应用。",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
+    "navigation": {
+      "allowedHosts": [
+        "accounts.google.com",
+        "myaccount.google.com",
+        "www.google.com",
+        "policies.google.com",
+        "ogs.google.com"
+      ],
+      "allowedPopupHosts": [
+        "accounts.google.com"
+      ],
+      "externalHostnames": [
+        "support.google.com"
+      ],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
     "id": "chatgpt",
     "name": "ChatGPT",
     "icon": "chatgpt.svg",
@@ -7,6 +34,8 @@
     "startUrl": "https://chatgpt.com",
     "category": "AI 助手",
     "description": "OpenAI's flagship conversational model.",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "chatgpt.com",
@@ -38,6 +67,8 @@
     "startUrl": "https://claude.ai",
     "category": "AI 助手",
     "description": "Anthropic's advanced reasoning & coding assistant.",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "claude.ai",
@@ -62,6 +93,8 @@
     "startUrl": "https://gemini.google.com",
     "category": "AI 助手",
     "description": "Google's direct multimodal AI model.",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "gemini.google.com",
@@ -86,6 +119,8 @@
     "startUrl": "https://www.perplexity.ai",
     "category": "搜索引擎",
     "description": "AI-powered conversational search engine.",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "perplexity.ai",
@@ -108,6 +143,8 @@
     "startUrl": "https://chat.deepseek.com",
     "category": "AI 助手",
     "description": "Powerful AI and reasoning model.",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "chat.deepseek.com",

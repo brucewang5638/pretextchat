@@ -15,6 +15,7 @@ export const IPC = {
   GET_RECENT:      'recent:get',
   GET_INITIAL_STATE: 'state:initial',
   SET_STARTUP_MODE: 'preferences:setStartupMode',
+  TOGGLE_PIN_APP:  'preferences:togglePinApp',
 
   // Main → Renderer（send，推送式）
   STATE_SYNC:      'state:sync',

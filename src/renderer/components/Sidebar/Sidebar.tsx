@@ -10,7 +10,9 @@ export function Sidebar() {
 
   // Filter apps to strictly those that have running instances
   const activeAppIds = new Set(snapshot?.workspace.instances.map(inst => inst.applicationId) || []);
-  const apps = (snapshot?.apps || []).filter(app => activeAppIds.has(app.id));
+  const pinnedAppIds = new Set(snapshot?.preferences.pinnedAppIds || []);
+  const displayAppIds = new Set([...activeAppIds, ...pinnedAppIds]);
+  const apps = (snapshot?.apps || []).filter(app => displayAppIds.has(app.id));
   
   const handleGoHome = async () => {
     await window.api.switchInstance(null);

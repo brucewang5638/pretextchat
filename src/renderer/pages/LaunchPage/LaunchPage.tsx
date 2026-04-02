@@ -99,6 +99,8 @@ export function LaunchPage() {
                         image={app.image}
                         category={app.category}
                         description={app.description}
+                        isPinned={snapshot.preferences?.pinnedAppIds?.includes(app.id)}
+                        onTogglePin={(id) => window.api.togglePinApp(id)}
                       />
                     ))}
                   </div>

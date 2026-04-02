@@ -207,4 +207,12 @@ export function registerIpcHandlers(): void {
     localStore.setStartupMode(mode);
     syncState();
   });
+
+  ipcMain.handle(IPC.TOGGLE_PIN_APP, (_event, appId: unknown) => {
+    if (typeof appId !== 'string' || !appRegistry.has(appId)) {
+      throw new Error(`Invalid appId: ${String(appId)}`);
+    }
+    localStore.togglePinApp(appId);
+    syncState();
+  });
 }

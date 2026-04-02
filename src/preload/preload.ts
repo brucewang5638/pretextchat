@@ -45,6 +45,9 @@ const api = {
   setStartupMode: (mode: Preferences['startupMode']): Promise<void> =>
     ipcRenderer.invoke(IPC.SET_STARTUP_MODE, mode),
 
+  togglePinApp: (appId: string): Promise<void> =>
+    ipcRenderer.invoke(IPC.TOGGLE_PIN_APP, appId),
+
   // ─── Main → Renderer（subscribe）──────────────────────
 
   onStateSync: (callback: (snapshot: StateSnapshot) => void): (() => void) => {

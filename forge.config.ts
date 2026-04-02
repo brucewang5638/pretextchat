@@ -10,6 +10,7 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 const config: ForgeConfig = {
   packagerConfig: {
     name: 'PretextChat',
+    executableName: 'pretextchat',
     asar: true,
   },
   rebuildConfig: {},

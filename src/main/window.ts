@@ -14,6 +14,14 @@ declare const MAIN_WINDOW_VITE_NAME: string;
 const TAB_BAR_HEIGHT = 40; // 标签栏高度（像素）
 
 export function createMainWindow(): BrowserWindow {
+  const syncContentBounds = () => {
+    setImmediate(() => {
+      if (!mainWindow.isDestroyed()) {
+        updateContentBounds(mainWindow);
+      }
+    });
+  };
+
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -26,7 +34,10 @@ export function createMainWindow(): BrowserWindow {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
-      sandbox: true,
+      sandbox: false,
+      webSecurity: false,
+      allowRunningInsecureContent: true,
+      webviewTag: true,
     },
   });
 
@@ -41,7 +52,7 @@ export function createMainWindow(): BrowserWindow {
 
   // 设置 ViewManager 的主窗口引用和初始内容区域
   viewManager.setMainWindow(mainWindow);
-  updateContentBounds(mainWindow);
+  syncContentBounds();
 
   mainWindow.webContents.on(
     "console-message",
@@ -53,11 +64,14 @@ export function createMainWindow(): BrowserWindow {
   );
 
   // 响应窗口 resize，更新 WebContentsView 布局
-  mainWindow.on("resize", () => {
-    updateContentBounds(mainWindow);
-  });
+  mainWindow.on("resize", syncContentBounds);
+  mainWindow.on("maximize", syncContentBounds);
+  mainWindow.on("unmaximize", syncContentBounds);
+  mainWindow.on("enter-full-screen", syncContentBounds);
+  mainWindow.on("leave-full-screen", syncContentBounds);
 
   mainWindow.once("ready-to-show", () => {
+    syncContentBounds();
     mainWindow.center();
     mainWindow.show();
     mainWindow.focus();

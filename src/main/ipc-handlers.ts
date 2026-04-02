@@ -67,9 +67,14 @@ export function registerIpcHandlers(): void {
     const instance = instanceStore.createInstance(appId);
     const app = appRegistry.get(appId)!;
 
-    // 创建 WebContentsView（非懒创建，因为是用户主动操作）
-    viewManager.create(instance.id, app);
-    viewManager.show(instance.id);
+    if (app.renderMode === 'webview') {
+      viewManager.show(null);
+      instanceStore.updateRuntimeStatus(instance.id, 'ready');
+    } else {
+      // 创建 WebContentsView（非懒创建，因为是用户主动操作）
+      viewManager.create(instance.id, app);
+      viewManager.show(instance.id);
+    }
 
     eventLogger.log('instance_created', { appId, instanceId: instance.id });
     return instance;
@@ -88,9 +93,13 @@ export function registerIpcHandlers(): void {
     }
 
     if (!existing) {
-      viewManager.create(instance.id, app);
+      if (app.renderMode === 'webview') {
+        instanceStore.updateRuntimeStatus(instance.id, 'ready');
+      } else {
+        viewManager.create(instance.id, app);
+      }
     }
-    viewManager.show(instance.id);
+    viewManager.show(app.renderMode === 'webview' ? null : instance.id);
     syncState();
     return instance;
   });
@@ -100,7 +109,12 @@ export function registerIpcHandlers(): void {
       throw new Error(`Invalid instanceId: ${String(id)}`);
     }
 
-    viewManager.destroy(id);
+    const instance = instanceStore.getInstance(id);
+    const app = instance ? appRegistry.get(instance.applicationId) : undefined;
+
+    if (app?.renderMode !== 'webview') {
+      viewManager.destroy(id);
+    }
     instanceStore.closeInstance(id);
     eventLogger.log('instance_closed', { instanceId: id });
 
@@ -112,10 +126,12 @@ export function registerIpcHandlers(): void {
         const inst = instanceStore.getInstance(state.activeInstanceId);
         if (inst) {
           const app = appRegistry.get(inst.applicationId);
-          if (app) viewManager.create(inst.id, app);
+          if (app && app.renderMode !== 'webview') viewManager.create(inst.id, app);
         }
       }
-      viewManager.show(state.activeInstanceId);
+      const activeInstance = instanceStore.getInstance(state.activeInstanceId);
+      const activeApp = activeInstance ? appRegistry.get(activeInstance.applicationId) : undefined;
+      viewManager.show(activeApp?.renderMode === 'webview' ? null : state.activeInstanceId);
     }
   });
 
@@ -133,13 +149,18 @@ export function registerIpcHandlers(): void {
 
     instanceStore.switchTo(id);
 
+    const inst = instanceStore.getInstance(id);
+    const app = inst ? appRegistry.get(inst.applicationId) : undefined;
+    if (app?.renderMode === 'webview') {
+      instanceStore.updateRuntimeStatus(id, 'ready');
+      viewManager.show(null);
+      eventLogger.log('instance_switched', { instanceId: id });
+      return;
+    }
+
     // 懒创建：如果目标实例的 View 还不存在（恢复场景）
-    if (!viewManager.hasView(id)) {
-      const inst = instanceStore.getInstance(id);
-      if (inst) {
-        const app = appRegistry.get(inst.applicationId);
-        if (app) viewManager.create(inst.id, app);
-      }
+    if (!viewManager.hasView(id) && inst && app) {
+      viewManager.create(inst.id, app);
     }
 
     viewManager.show(id);
@@ -175,8 +196,13 @@ export function registerIpcHandlers(): void {
         if (inst) {
           const app = appRegistry.get(inst.applicationId);
           if (app) {
-            viewManager.create(inst.id, app);
-            viewManager.show(inst.id);
+            if (app.renderMode === 'webview') {
+              instanceStore.updateRuntimeStatus(inst.id, 'ready');
+              viewManager.show(null);
+            } else {
+              viewManager.create(inst.id, app);
+              viewManager.show(inst.id);
+            }
           }
         }
       }

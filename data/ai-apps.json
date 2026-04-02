@@ -9,6 +9,7 @@
     "description": "先在这里登录 Google，再打开支持 Google 登录的 AI 应用。",
     "authSessionGroup": "google",
     "authUserAgentProfile": "google",
+    "renderMode": "webview",
     "navigation": {
       "allowedHosts": [
         "accounts.google.com",

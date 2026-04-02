@@ -16,6 +16,12 @@ const DEFAULT_ACCEPT_LANGUAGES = 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7';
 const GOOGLE_AUTH_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36';
 
+function sanitizeAppUserAgent(userAgent: string): string {
+  return userAgent
+    .replace(/PretextChat\/[0-9\.-]+ /, '')
+    .replace(/Electron\/[0-9\.-]+ /, '');
+}
+
 function getPartition(app: Application): string {
   if (app.authSessionGroup) {
     return `persist:auth-${app.authSessionGroup}`;
@@ -227,22 +233,25 @@ class ViewManager {
       return sessionRef;
     }
 
+    const originalUserAgent = sessionRef.getUserAgent();
+    const sanitizedUserAgent = sanitizeAppUserAgent(originalUserAgent);
     const profile = getUserAgentProfile(app);
-    sessionRef.setUserAgent(profile.userAgent ?? sessionRef.getUserAgent(), profile.acceptLanguages);
+    sessionRef.setUserAgent(sanitizedUserAgent, profile.acceptLanguages);
 
-    if (profile.userAgent) {
-      const userAgent = profile.userAgent;
-      const acceptLanguages = profile.acceptLanguages;
-      sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
-        callback({
-          requestHeaders: {
-            ...details.requestHeaders,
-            'User-Agent': userAgent,
-            'Accept-Language': acceptLanguages,
-          },
-        });
+    sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
+      const isGoogleRequest = details.url.includes('google.com');
+      const userAgent = isGoogleRequest
+        ? originalUserAgent
+        : profile.userAgent ?? sanitizedUserAgent;
+
+      callback({
+        requestHeaders: {
+          ...details.requestHeaders,
+          'User-Agent': userAgent,
+          'Accept-Language': profile.acceptLanguages,
+        },
       });
-    }
+    });
 
     this.configuredPartitions.add(partition);
     return sessionRef;
@@ -259,9 +268,7 @@ class ViewManager {
       return;
     }
 
-    const sanitizedUA = webContents.userAgent
-      .replace(/PretextChat\/[0-9\.-]+ /, '')
-      .replace(/Electron\/[0-9\.-]+ /, '');
+    const sanitizedUA = sanitizeAppUserAgent(webContents.userAgent);
     webContents.setUserAgent(sanitizedUA);
   }
 }

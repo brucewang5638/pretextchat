@@ -45,6 +45,12 @@ export interface Application {
    * Google 这类对嵌入式环境更敏感的服务，需要单独使用更接近系统浏览器的 UA。
    */
   authUserAgentProfile?: 'default' | 'google';
+  /**
+   * 页面承载模式。
+   * nativeView 由 main 进程创建 WebContentsView；
+   * webview 由 renderer 内嵌 `<webview>` 承载，适合需要特殊登录行为的站点。
+   */
+  renderMode?: 'nativeView' | 'webview';
 }
 
 // ─── 持久化实例（落盘可恢复的字段子集）─────────────────────

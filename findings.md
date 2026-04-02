@@ -43,3 +43,9 @@
 - 这类产品的传播素材要优先展示真实工作流，而不是抽象功能点；最值得拍的是“同一任务在多个 AI 间并行”的 15-30 秒演示。
 - 仅有策略文档还不够，真正能提高执行效率的是 ready-to-post 文案模板，因此补一份 `docs/launch-copy.md` 很有必要。
 - 公开仓库首页不应只保留英文；对于 PretextChat 这类同时覆盖中文和全球 AI 产品的项目，采用 `README.md` + `README.zh-CN.md` 双入口更合理。
+
+## Windows White Screen Findings
+
+- 从截图看，主进程窗口已经正常打开，但 renderer 内容区没有成功渲染，属于 renderer 初始化阶段异常，而不是窗口创建失败。
+- `src/renderer/pages/LaunchPage/LaunchPage.tsx` 原先在 `if (!snapshot) return ...` 之后才调用 `useMemo`，违反 React hooks 顺序规则，容易在生产包里表现为白屏。
+- 已将 `LaunchPage` 的 hooks 调整为始终按固定顺序调用，并新增 renderer 级 `AppErrorBoundary`，避免未来再出现纯白屏且无提示的情况。

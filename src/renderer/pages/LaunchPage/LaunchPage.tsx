@@ -8,13 +8,7 @@ export function LaunchPage() {
   const setCurrentPage = useUIStore((s) => s.setCurrentPage);
   const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
   const [searchQuery, setSearchQuery] = useState('');
-
-  if (!snapshot) {
-    return <div className={styles.layout}>加载中...</div>;
-  }
-
-  const { apps, workspace } = snapshot;
-  const hasSnapshot = workspace?.instances?.length > 0;
+  const apps = snapshot?.apps ?? [];
 
   // Filter apps by search query
   const filteredApps = useMemo(() => {
@@ -40,6 +34,10 @@ export function LaunchPage() {
       {} as Record<string, number>,
     );
   }, [filteredApps]);
+
+  if (!snapshot) {
+    return <div className={styles.layout}>加载中...</div>;
+  }
 
   const handleRestore = async () => {
     const restored = await window.api.restoreSession();

@@ -17,3 +17,4 @@
 - Researched current GitHub README / Releases guidance and Product Hunt launch guidance to inform docs and launch planning.
 - Rewrote the root README and added positioning, GTM, release checklist, and launch-copy documents for public distribution readiness.
 - Added a Chinese README and linked it bidirectionally with the English README for bilingual public-facing docs.
+- Diagnosed a likely Windows packaged white-screen issue, fixed a hook-order bug in `LaunchPage`, and added a renderer error boundary to avoid blank failure states.

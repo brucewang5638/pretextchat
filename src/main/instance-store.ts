@@ -60,6 +60,8 @@ class InstanceStore {
     this.workspace.tabOrder.push(instance.id);
     this.workspace.activeInstanceId = instance.id;
 
+    // 这里只创建“运行态记录”，不直接创建真实网页视图。
+    // 真正的视图创建由 ipc-handlers -> view-manager 在需要显示时触发。
     this.runtimeStates.set(instance.id, {
       id: instance.id,
       status: 'loading',
@@ -99,7 +101,7 @@ class InstanceStore {
   switchTo(id: string | null): void {
     if (id !== null && !this.has(id)) throw new Error(`Instance not found: ${id}`);
 
-    // 隐藏当前实例
+    // 切换时先改主进程真相源，再由上层 view-manager 根据 activeInstanceId 调整真实视图。
     if (this.workspace.activeInstanceId) {
       const prev = this.runtimeStates.get(this.workspace.activeInstanceId);
       if (prev) prev.isVisible = false;
@@ -186,6 +188,8 @@ class InstanceStore {
   markReleased(id: string): void {
     const runtime = this.runtimeStates.get(id);
     if (!runtime) return;
+    // released 表示“实例 metadata 还在，但真实网页资源已经释放”，
+    // 后续再次切回时会按懒创建逻辑重建。
     runtime.hostingState = 'released';
     runtime.status = 'idle';
     runtime.webContentsId = null;

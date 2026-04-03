@@ -26,6 +26,8 @@ class EventLogger {
 
   /** 记录事件 */
   log(event: EventType, data?: Record<string, unknown>): void {
+    // JSON Lines 的好处是“单条追加、单条解析”都很简单，
+    // 非常适合这种轻量本地埋点，不需要维护完整 JSON 数组。
     const entry: LogEntry = {
       event,
       timestamp: Date.now(),

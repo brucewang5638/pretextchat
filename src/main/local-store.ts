@@ -43,6 +43,7 @@ class LocalStore {
   // ─── Workspace ──────────────────────────────────────────
 
   getWorkspaceState(): PersistedWorkspaceState {
+    // 持久化层只保存“可恢复的 metadata”，不直接保存真实网页运行时对象。
     return this.store.get("workspace");
   }
 
@@ -64,6 +65,8 @@ class LocalStore {
 
   updateRecentApps(appId: string): void {
     const prefs = this.getPreferences();
+    // 最近使用列表通过“头插 + 去重 + 截断”维护，
+    // 这样既稳定又便于 UI 直接显示。
     const recent = [
       appId,
       ...prefs.recentApps.filter((id) => id !== appId),

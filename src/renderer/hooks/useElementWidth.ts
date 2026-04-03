@@ -1,3 +1,8 @@
+// ============================================================
+// useElementWidth — 读取元素实时宽度
+// ============================================================
+// 主要服务于 PretextBlock 这类“宽度决定布局结果”的组件。
+
 import { useLayoutEffect, useRef, useState } from 'react';
 
 export function useElementWidth<T extends HTMLElement>() {

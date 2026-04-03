@@ -38,6 +38,8 @@ function buildStateSnapshot(): StateSnapshot {
 
 /** 推送状态到所有 renderer */
 function syncState(): void {
+  // 当前采用“全量快照推送”，而不是细粒度事件风暴。
+  // 原理：数据规模不大时，全量快照更容易保证 renderer 始终看到一致状态。
   const snapshot = buildStateSnapshot();
   BrowserWindow.getAllWindows().forEach((win) => {
     win.webContents.send(IPC.STATE_SYNC, snapshot);
@@ -88,6 +90,11 @@ function activateInstance(instanceId: string): void {
     throw new Error(`Unable to activate instance: ${instanceId}`);
   }
 
+  // 这就是当前主链路最重要的收敛点：
+  // “激活实例”统一等价于
+  // 1. rendererManaged 特例标记 ready
+  // 2. 常规实例按需创建 native view
+  // 3. 把正确的承载层显示出来
   markRendererManagedReady(instanceId, app);
   ensureNativeView(instance, app);
   showInstance(instanceId, app);
@@ -188,6 +195,8 @@ export function registerIpcHandlers(): void {
     }
 
     if (snapshot && snapshot.instances.length > 0) {
+      // 恢复策略只恢复 metadata，并只为“当前激活实例”按需创建真实视图，
+      // 这样启动时不会把所有历史实例的网页一次性全拉起来。
       showCurrentActiveInstance();
       eventLogger.log('restore_success', {
         instanceCount: snapshot.instances.length,

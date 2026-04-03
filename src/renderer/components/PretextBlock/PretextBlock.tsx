@@ -1,3 +1,9 @@
+// ============================================================
+// PretextBlock — 基于 Pretext 的多行文本块
+// ============================================================
+// 目标不是“把文本显示出来”这么简单，
+// 而是让卡片 / 标签等高频布局在不同宽度下仍然稳定可预测。
+
 import { useMemo } from 'react';
 import { buildCanvasFont, measurePretextLines } from '../../lib/pretext';
 import { useElementWidth } from '../../hooks/useElementWidth';
@@ -51,6 +57,8 @@ export function PretextBlock({
     [font, lineHeightPx, text, width],
   );
 
+  // Pretext 返回的是“按真实宽度算好的逐行结果”，
+  // 所以这里不再依赖 CSS line-clamp 这种只管裁切、不负责精确估高的方案。
   // 这里直接拿 Pretext 已经算好的逐行文本，组件层不再依赖 CSS line-clamp 猜测换行。
   const visibleLines = layoutResult
     ? layoutResult.lines.slice(0, maxLines).map((line) => line.text)

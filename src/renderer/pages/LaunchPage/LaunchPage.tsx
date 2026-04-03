@@ -1,3 +1,9 @@
+// ============================================================
+// LaunchPage — 应用启动页 / 应用目录页
+// ============================================================
+// 这里负责“选应用、搜应用、看应用分组”，
+// 不直接持有业务实例，只负责把用户导向实例创建动作。
+
 import { useState, useMemo } from 'react';
 import { useUIStore } from '../../store';
 import { AppCard } from '../../components/AppCard/AppCard';
@@ -8,7 +14,8 @@ export function LaunchPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const apps = snapshot?.apps ?? [];
 
-  // Filter apps by search query
+  // 搜索是纯前端派生态，不需要落主进程；
+  // 这样输入反馈会更直接，也不会污染业务真相源。
   const filteredApps = useMemo(() => {
     if (!searchQuery.trim()) return apps;
     const lowerQuery = searchQuery.toLowerCase();
@@ -28,7 +35,7 @@ export function LaunchPage() {
     });
   }, [filteredApps]);
 
-  // Derive categories from filtered applications dynamically
+  // 分组统计跟随过滤结果实时变化，让用户看到“当前筛选后还剩哪些类别”。
   const groupsInfo = useMemo(() => {
     return sortedApps.reduce(
       (acc, app) => {

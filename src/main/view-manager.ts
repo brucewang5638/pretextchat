@@ -50,7 +50,8 @@ class ViewManager {
 
   setContentBounds(bounds: Rectangle): void {
     this.contentBounds = bounds;
-    // 更新当前可见 View 的布局
+    // 主窗口尺寸变化时，只更新当前可见 view 的布局。
+    // 隐藏态 view 会被移出可视区域，不需要每次 resize 都一起重排。
     const activeId = instanceStore.getWorkspaceState().activeInstanceId;
     if (activeId) {
       const view = this.views.get(activeId);
@@ -109,6 +110,8 @@ class ViewManager {
     // 添加到窗口并加载
     this.mainWindow.contentView.addChildView(view);
     view.setBounds(this.contentBounds);
+    // 视图先挂进窗口，再 loadURL。
+    // 这样后续 did-start-loading / did-finish-load 生命周期与可见区域是一致的。
     this.applyViewActivity(instanceId, view, true);
     view.webContents.loadURL(app.startUrl);
 
@@ -161,6 +164,9 @@ class ViewManager {
     const view = this.views.get(instanceId);
     if (!view || !this.mainWindow) return;
 
+    // release 和 destroy 的区别：
+    // destroy 用于用户主动关闭实例；
+    // release 用于长时间未激活后的资源回收，实例 metadata 仍然保留。
     this.cancelRelease(instanceId);
     this.mainWindow.contentView.removeChildView(view);
     view.webContents.close();
@@ -249,6 +255,8 @@ class ViewManager {
     const originalUserAgent = sessionRef.getUserAgent();
     const sanitizedUserAgent = sanitizeAppUserAgent(originalUserAgent);
     const profile = getUserAgentProfile(app);
+    // Session 级别统一设置 UA / Accept-Language，
+    // 这样同一 partition 下的后续请求会保持一致身份特征。
     sessionRef.setUserAgent(sanitizedUserAgent, profile.acceptLanguages);
 
     sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
@@ -295,6 +303,8 @@ class ViewManager {
     }
     view.webContents.setAudioMuted(!isActive);
     view.webContents.setBackgroundThrottling(!isActive);
+    // hostingState 描述的是“资源占用状态”，不是业务成功失败状态。
+    // 因此它与 status(loading/ready/error) 分开维护。
     instanceStore.setHostingState(instanceId, isActive ? 'active' : 'throttled');
     instanceStore.setViewBounds(instanceId, isActive ? this.contentBounds : null);
     if (!isActive) {

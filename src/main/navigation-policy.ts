@@ -20,6 +20,8 @@ export class NavigationPolicy {
     const { webContents } = view;
 
     // 1. 页内导航拦截
+    // will-navigate 是“当前页面准备跳去别的地址”时的拦截点，
+    // 适合实现站内允许、站外外链、未知拦截的主策略。
     webContents.on('will-navigate', (event, url) => {
       const decision = evaluateNavigation(this.app, url);
       if (decision === 'allow') {

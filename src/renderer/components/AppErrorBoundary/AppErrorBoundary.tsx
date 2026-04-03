@@ -1,3 +1,9 @@
+// ============================================================
+// AppErrorBoundary — renderer 兜底错误边界
+// ============================================================
+// React ErrorBoundary 能兜住“渲染树内”的异常，
+// 这样 renderer 初始化失败时不会直接白屏无提示。
+
 import React from 'react';
 
 type AppErrorBoundaryProps = {
@@ -19,6 +25,7 @@ export class AppErrorBoundary extends React.Component<
   };
 
   static getDerivedStateFromError(error: Error): AppErrorBoundaryState {
+    // React 捕获到渲染异常后，会先调用这个静态方法更新兜底 UI。
     return {
       hasError: true,
       message: error.message,

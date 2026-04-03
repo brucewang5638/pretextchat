@@ -1,3 +1,10 @@
+// ============================================================
+// WorkbenchPage — 工作台页
+// ============================================================
+// 这里是页面承载分流点：
+// - 常规应用：main 进程 WebContentsView
+// - 少数特例：renderer <webview>
+
 import { useMemo } from 'react';
 import { useUIStore } from '../../store';
 import { TabBar } from '../../components/TabBar/TabBar';

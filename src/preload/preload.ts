@@ -1,6 +1,9 @@
 // ============================================================
 // Preload — contextBridge 安全桥接
 // ============================================================
+// 这里是 renderer 能力边界的“白名单层”。
+// renderer 不能直接拿到 Node / Electron 全量 API，
+// 而是只通过 preload 暴露过的 window.api 与 main 通信。
 
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC } from '../shared/constants';
@@ -14,6 +17,7 @@ import type {
 
 const api = {
   // ─── Renderer → Main（invoke）─────────────────────────
+  // 统一使用 invoke/handle 的请求-响应模型，避免 renderer 直接依赖主进程实现细节。
 
   getAppList: (): Promise<Application[]> =>
     ipcRenderer.invoke(IPC.GET_APP_LIST),
@@ -52,6 +56,8 @@ const api = {
     ipcRenderer.invoke(IPC.OPEN_EXTERNAL, url),
 
   // ─── Main → Renderer（subscribe）──────────────────────
+  // 状态同步采用“主进程推送完整快照”的方式。
+  // renderer 不维护业务真相源，只消费主进程发来的只读镜像。
 
   onStateSync: (callback: (snapshot: StateSnapshot) => void): (() => void) => {
     const handler = (_event: Electron.IpcRendererEvent, snapshot: StateSnapshot) => {

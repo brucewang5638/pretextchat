@@ -1,3 +1,9 @@
+// ============================================================
+// AppCard — 启动页上的应用入口卡片
+// ============================================================
+// 这张卡片的核心职责很简单：
+// 点击后直接创建实例，并把 UI 切到工作台。
+
 import { useUIStore } from '../../store';
 import { AppIcon } from '../AppIcon/AppIcon';
 import { PretextBlock } from '../PretextBlock/PretextBlock';
@@ -19,6 +25,8 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
   const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
   
   const handleClick = async () => {
+    // 创建实例是“进入工作台”的真正业务动作；
+    // LaunchPage 本身不保存实例，只负责发起这个动作。
     await window.api.createInstance(id);
     setActiveAppFilter(id);
     setCurrentPage('workbench');
@@ -46,6 +54,7 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
         onClick={handlePinClick}
         title={isPinned ? "取消固定" : "固定到侧边栏"}
       >
+        {/* 固定按钮通过 stopPropagation 阻止触发整卡打开逻辑。 */}
         <svg
           width="16"
           height="16"

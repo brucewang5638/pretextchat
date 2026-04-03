@@ -15,6 +15,8 @@ const TAB_BAR_HEIGHT = 40; // 标签栏高度（像素）
 
 export function createMainWindow(): BrowserWindow {
   const syncContentBounds = () => {
+    // 用 setImmediate 把布局更新放到当前事件循环尾部，
+    // 避免窗口刚 resize 时同步读取尺寸导致抖动。
     setImmediate(() => {
       if (!mainWindow.isDestroyed()) {
         updateContentBounds(mainWindow);
@@ -89,6 +91,8 @@ export function createMainWindow(): BrowserWindow {
 function updateContentBounds(window: BrowserWindow): void {
   const [width, height] = window.getContentSize();
   const SIDEBAR_WIDTH = 68; // 窄侧边栏宽度
+  // renderer 自己负责画 Sidebar / TabBar；
+  // main 进程的 WebContentsView 只占“真正网页内容区”。
   viewManager.setContentBounds({
     x: SIDEBAR_WIDTH,
     y: TAB_BAR_HEIGHT,

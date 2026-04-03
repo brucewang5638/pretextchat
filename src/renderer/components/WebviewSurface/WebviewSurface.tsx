@@ -1,3 +1,9 @@
+// ============================================================
+// WebviewSurface — renderer 侧的特例承载层
+// ============================================================
+// 只有极少数兼容性站点才走这里。
+// 常规站点仍然优先由 main 进程的 WebContentsView 承载。
+
 import { useEffect, useRef, useState } from 'react';
 
 import { getRendererGuestPreferences } from '../../../shared/app-runtime';
@@ -20,6 +26,8 @@ export function WebviewSurface({ app, src, partition, userAgent, title }: Webvie
     const webview = webviewRef.current;
     if (!webview) return;
 
+    // 虽然这里是 renderer <webview>，但导航判定仍然复用 shared/navigation-rules，
+    // 目的是让两种承载方式尽量遵循同一套“允许 / 外链 / 拦截”规则。
     const handleStart = () => setIsLoading(true);
     const handleFinish = () => setIsLoading(false);
     const handleFail = () => setIsLoading(false);
@@ -32,6 +40,7 @@ export function WebviewSurface({ app, src, partition, userAgent, title }: Webvie
 
       event.preventDefault();
       if (decision === 'external') {
+        // renderer 不直接碰 shell，而是通过 preload 白名单能力转给主进程执行。
         void window.api.openExternal(nextUrl);
       }
     };
@@ -83,6 +92,8 @@ export function WebviewSurface({ app, src, partition, userAgent, title }: Webvie
         partition={partition}
         allowpopups
         useragent={userAgent}
+        // guest 进程的隔离偏好由 shared/app-runtime 统一给出，
+        // 避免每个 <webview> 自己拼字符串，导致安全参数分叉。
         webpreferences={getRendererGuestPreferences()}
       />
     </div>

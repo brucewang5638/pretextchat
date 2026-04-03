@@ -1,3 +1,8 @@
+// ============================================================
+// AppIcon — 应用占位图标
+// ============================================================
+// 当应用没有可直接展示的图片资源时，用首字母 + 渐变色生成稳定占位图标。
+
 interface AppIconProps {
   name: string;
   icon: string;
@@ -9,6 +14,8 @@ function getIconLabel(name: string): string {
 }
 
 function getVariant(icon: string): string {
+  // 按 icon 文件名映射视觉变体，
+  // 让同一个应用在不同组件里保持一致的颜色印象。
   const key = icon.replace(/\.svg$/i, '');
 
   const variants: Record<string, string> = {

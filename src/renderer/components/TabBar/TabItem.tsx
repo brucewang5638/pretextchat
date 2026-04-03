@@ -1,3 +1,11 @@
+// ============================================================
+// TabItem — 单个实例标签项
+// ============================================================
+// 支持三件高频操作：
+// 1. 切换实例
+// 2. 双击重命名
+// 3. 悬停关闭
+
 import { AppIcon } from '../AppIcon/AppIcon';
 import { useUIStore } from '../../store';
 
@@ -38,6 +46,8 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
   };
 
   const handleRenameSubmit = () => {
+    // 真正的标题更新由主进程完成；
+    // renderer 只负责在用户确认后发起请求。
     if (renameDraft.trim()) {
       window.api.renameInstance(id, renameDraft.trim());
     }

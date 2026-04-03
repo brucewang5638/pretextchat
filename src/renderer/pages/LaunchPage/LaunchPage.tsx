@@ -4,14 +4,14 @@
 // 这里负责“选应用、搜应用、看应用分组”，
 // 不直接持有业务实例，只负责把用户导向实例创建动作。
 
-import { useState, useMemo } from 'react';
-import { useUIStore } from '../../store';
-import { AppCard } from '../../components/AppCard/AppCard';
-import { resolveAssetPath } from '../../lib/assets';
+import { useState, useMemo } from "react";
+import { useUIStore } from "../../store";
+import { AppCard } from "../../components/AppCard/AppCard";
+import { resolveAssetPath } from "../../lib/assets";
 
 export function LaunchPage() {
   const snapshot = useUIStore((s) => s.snapshot);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const apps = snapshot?.apps ?? [];
 
   // 搜索是纯前端派生态，不需要落主进程；
@@ -20,18 +20,19 @@ export function LaunchPage() {
     if (!searchQuery.trim()) return apps;
     const lowerQuery = searchQuery.toLowerCase();
     return apps.filter(
-      (app) => 
-        app.name.toLowerCase().includes(lowerQuery) || 
-        (app.description && app.description.toLowerCase().includes(lowerQuery)) ||
-        (app.category && app.category.toLowerCase().includes(lowerQuery))
-      );
+      (app) =>
+        app.name.toLowerCase().includes(lowerQuery) ||
+        (app.description &&
+          app.description.toLowerCase().includes(lowerQuery)) ||
+        (app.category && app.category.toLowerCase().includes(lowerQuery)),
+    );
   }, [apps, searchQuery]);
 
   const sortedApps = useMemo(() => {
     return [...filteredApps].sort((a, b) => {
-      if (a.id === 'google') return -1;
-      if (b.id === 'google') return 1;
-      return a.name.localeCompare(b.name, 'zh-CN');
+      if (a.id === "google") return -1;
+      if (b.id === "google") return 1;
+      return a.name.localeCompare(b.name, "zh-CN");
     });
   }, [filteredApps]);
 
@@ -39,7 +40,7 @@ export function LaunchPage() {
   const groupsInfo = useMemo(() => {
     return sortedApps.reduce(
       (acc, app) => {
-        const cat = app.category || '未分类';
+        const cat = app.category || "未分类";
         if (!acc[cat]) acc[cat] = 0;
         acc[cat]++;
         return acc;
@@ -49,7 +50,11 @@ export function LaunchPage() {
   }, [sortedApps]);
 
   if (!snapshot) {
-    return <div className="flex h-full w-full bg-[var(--color-bg-primary)]">加载中...</div>;
+    return (
+      <div className="flex h-full w-full bg-[var(--color-bg-primary)]">
+        加载中...
+      </div>
+    );
   }
 
   return (
@@ -58,14 +63,14 @@ export function LaunchPage() {
         <section className="grid items-center gap-[18px] rounded-3xl border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-6 py-[22px] shadow-[0_18px_38px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr]">
           <div className="h-[76px] w-[76px] rounded-3xl bg-white/10 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] max-md:h-16 max-md:w-16">
             <img
-              src={resolveAssetPath('/branding/pretextchat-logo.svg')}
+              src={resolveAssetPath("/branding/pretextchat-logo.svg")}
               alt="PretextChat"
               className="block h-full w-full"
             />
           </div>
           <div className="flex min-w-0 flex-col gap-1.5">
             <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[rgba(167,243,208,0.86)]">
-              AI-only multi-instance work client
+              仅 AI 的多实例工作客户端
             </span>
             <h1 className="text-[30px] font-bold leading-none tracking-[-0.04em] text-slate-50 max-md:text-[26px]">
               PretextChat
@@ -73,9 +78,10 @@ export function LaunchPage() {
             <p className="max-w-[720px] text-sm leading-6 text-[rgba(226,232,240,0.84)]">
               把混乱的 AI 标签页变成可重开、可命名、可切换的任务工作位。
             </p>
-            <p className="max-w-[720px] text-sm leading-6 text-[rgba(226,232,240,0.84)]">
-              需要 Google 登录时，先打开下方的 Google 应用完成登录，再进入 ChatGPT、Claude、Gemini 等站点。
-            </p>
+            {/* <p className="max-w-[720px] text-sm leading-6 text-[rgba(226,232,240,0.84)]">
+              需要 Google 登录时，先打开下方的 Google 应用完成登录，再进入
+              ChatGPT、Claude、Gemini 等站点。
+            </p> */}
           </div>
         </section>
 
@@ -98,17 +104,21 @@ export function LaunchPage() {
             </div>
           ) : (
             Object.entries(groupsInfo).map(([category, count]) => {
-              const categoryApps = sortedApps.filter(a => (a.category || '未分类') === category);
-              
+              const categoryApps = sortedApps.filter(
+                (a) => (a.category || "未分类") === category,
+              );
+
               return (
                 <section key={category} className="mt-6 flex flex-col gap-3">
                   <div className="mb-4 flex items-center gap-2">
-                    <h2 className="text-[15px] font-bold text-[var(--color-text-primary)]">{category}</h2>
+                    <h2 className="text-[15px] font-bold text-[var(--color-text-primary)]">
+                      {category}
+                    </h2>
                     <span className="text-[13px] text-[var(--color-text-muted)]">
                       {count} 个应用
                     </span>
                   </div>
-                  
+
                   <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
                     {categoryApps.map((app) => (
                       <AppCard
@@ -119,7 +129,9 @@ export function LaunchPage() {
                         image={app.image}
                         category={app.category}
                         description={app.description}
-                        isPinned={snapshot.preferences?.pinnedAppIds?.includes(app.id)}
+                        isPinned={snapshot.preferences?.pinnedAppIds?.includes(
+                          app.id,
+                        )}
                         onTogglePin={(id) => window.api.togglePinApp(id)}
                       />
                     ))}

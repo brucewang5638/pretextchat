@@ -112,11 +112,10 @@ export function registerIpcHandlers(): void {
 
   // ─── [app] 应用目录 ──────────────────────────────────
 
-  ipcMain.handle(IPC.GET_APP_LIST, () => {
-    return appRegistry.getAll();
-  });
-
   ipcMain.handle(IPC.GET_INITIAL_STATE, () => {
+    // 实现方式：
+    // 直接构建一份完整快照返回给 renderer。
+    // 这里不做增量拼装，目的是让首屏拿到的数据结构与后续 STATE_SYNC 完全一致。
     return buildStateSnapshot();
   });
 
@@ -125,6 +124,10 @@ export function registerIpcHandlers(): void {
   ipcMain.handle(IPC.CREATE_INSTANCE, (_event, appId: unknown) => {
     const validAppId = requireAppId(appId);
     const instance = instanceStore.createInstance(validAppId);
+
+    // 实现方式：
+    // 1. InstanceStore 先写入 workspace metadata
+    // 2. activateInstance 再统一处理“rendererManaged ready / native view 懒创建 / 显示”
     activateInstance(instance.id);
 
     eventLogger.log('instance_created', { appId: validAppId, instanceId: instance.id });
@@ -136,6 +139,9 @@ export function registerIpcHandlers(): void {
       throw new Error(`Invalid recent instance id: ${String(recentId)}`);
     }
 
+    // 实现方式：
+    // recentId 如果仍对应当前已打开实例，则只做切换；
+    // 如果实例已经不存在，则根据最近记录重新 create 一个实例。
     const existing = instanceStore.getInstance(recentId);
     const instance = instanceStore.reopenRecentInstance(recentId);
     if (!existing) {
@@ -151,6 +157,9 @@ export function registerIpcHandlers(): void {
     const instanceId = requireInstanceId(id);
     const app = getAppForInstance(instanceId);
 
+    // 实现方式：
+    // 常规站点先销毁真实承载视图，再从 workspace 移除 metadata；
+    // 如果关闭的是当前激活实例，则自动显示新的 activeInstance。
     if (!isRendererManagedApp(app)) {
       viewManager.destroy(instanceId);
     }
@@ -162,6 +171,7 @@ export function registerIpcHandlers(): void {
 
   ipcMain.handle(IPC.SWITCH_INSTANCE, (_event, id: unknown) => {
     if (id === null) {
+      // 传 null 的语义不是“关闭实例”，而是“取消当前内容区展示”。
       instanceStore.switchTo(null);
       viewManager.show(null);
       eventLogger.log('instance_switched', { instanceId: null });
@@ -169,6 +179,10 @@ export function registerIpcHandlers(): void {
     }
 
     const instanceId = requireInstanceId(id);
+
+    // 实现方式：
+    // 先切换主进程真相源 activeInstanceId，
+    // 再通过 activateInstance 把对应承载层切到前台。
     instanceStore.switchTo(instanceId);
     activateInstance(instanceId);
     eventLogger.log('instance_switched', { instanceId });
@@ -180,6 +194,8 @@ export function registerIpcHandlers(): void {
       throw new Error('Invalid title: must be 1-100 characters');
     }
 
+    // 实现方式：
+    // 标题只改主进程真相源，后续由统一快照同步回 renderer。
     instanceStore.rename(instanceId, title);
     eventLogger.log('instance_renamed', { instanceId, title });
   });
@@ -197,6 +213,9 @@ export function registerIpcHandlers(): void {
     if (snapshot && snapshot.instances.length > 0) {
       // 恢复策略只恢复 metadata，并只为“当前激活实例”按需创建真实视图，
       // 这样启动时不会把所有历史实例的网页一次性全拉起来。
+      // 实现方式：
+      // 1. 从持久化层取回 workspace snapshot
+      // 2. 不批量创建 view，只对 activeInstance 走 activate 流程
       showCurrentActiveInstance();
       eventLogger.log('restore_success', {
         instanceCount: snapshot.instances.length,
@@ -207,27 +226,23 @@ export function registerIpcHandlers(): void {
     syncState();
     return snapshot;
   });
-
-  // ─── [recent] 最近使用 ─────────────────────────────────
-
-  ipcMain.handle(IPC.GET_RECENT, () => {
-    const prefs = localStore.getPreferences();
-    return {
-      recentApps: prefs.recentApps,
-      recentInstances: prefs.recentInstances,
-    };
-  });
-
   ipcMain.handle(IPC.SET_STARTUP_MODE, (_event, mode: unknown) => {
     if (mode !== 'home' && mode !== 'restoreLastSession') {
       throw new Error(`Invalid startup mode: ${String(mode)}`);
     }
+
+    // 实现方式：
+    // 只改 LocalStore 中的 preferences.startupMode，
+    // 然后通过 syncState 让 renderer 重新看到新偏好。
     localStore.setStartupMode(mode);
     syncState();
   });
 
   ipcMain.handle(IPC.TOGGLE_PIN_APP, (_event, appId: unknown) => {
     const validAppId = requireAppId(appId);
+
+    // 实现方式：
+    // 固定状态是纯偏好数据，不影响实例链路，只影响侧边栏入口展示。
     localStore.togglePinApp(validAppId);
     syncState();
   });
@@ -236,6 +251,10 @@ export function registerIpcHandlers(): void {
     if (typeof url !== 'string') {
       throw new Error(`Invalid url: ${String(url)}`);
     }
+
+    // 实现方式：
+    // renderer 通过 preload 请求主进程，由主进程代为调用 shell.openExternal。
+    // 这样 shell 能力不会直接暴露到 renderer。
     return shell.openExternal(url);
   });
 }

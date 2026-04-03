@@ -8,10 +8,8 @@
 
 import type { Application } from './types';
 
-export const GOOGLE_AUTH_SESSION_GROUP = 'google';
 export const GOOGLE_WEBVIEW_USER_AGENT =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36';
-export const DEFAULT_WEBVIEW_PREFERENCES = 'contextIsolation=yes,sandbox=yes';
 
 export function getAppPartition(app: Application): string {
   // 有共享认证需求的站点共用同一个 persist partition，
@@ -23,16 +21,12 @@ export function getAppPartition(app: Application): string {
   return `persist:${app.id}`;
 }
 
-export function getAppRenderMode(app: Application | null | undefined): 'webContentsView' | 'webview' {
-  return app?.renderMode ?? 'webContentsView';
-}
-
 export function isRendererManagedApp(app: Application | null | undefined): boolean {
-  return getAppRenderMode(app) === 'webview';
+  return (app?.renderMode ?? 'webContentsView') === 'webview';
 }
 
 export function getRendererGuestPreferences(): string {
   // 这里返回的是 <webview> guest 进程的运行偏好字符串，
   // 目的不是“开放能力”，而是显式打开隔离与 sandbox。
-  return DEFAULT_WEBVIEW_PREFERENCES;
+  return 'contextIsolation=yes,sandbox=yes';
 }

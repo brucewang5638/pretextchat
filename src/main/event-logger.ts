@@ -5,7 +5,7 @@
 // Phase 2+ 可接入远程上报。
 
 import { app } from 'electron';
-import { writeFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import type { EventType } from '../shared/constants';
 
@@ -41,27 +41,6 @@ class EventLogger {
       appendFileSync(this.logFile, JSON.stringify(entry) + '\n', 'utf-8');
     } catch (err) {
       console.error('[EventLogger] Failed to write log:', err);
-    }
-  }
-
-  /** 获取日志文件路径 */
-  getLogPath(): string {
-    return this.logFile;
-  }
-
-  /** 导出所有日志 */
-  exportLogs(): LogEntry[] {
-    try {
-      if (!existsSync(this.logFile)) return [];
-      const { readFileSync } = require('node:fs');
-      const content = readFileSync(this.logFile, 'utf-8');
-      return content
-        .split('\n')
-        .filter(Boolean)
-        .map((line: string) => JSON.parse(line) as LogEntry);
-    } catch (err) {
-      console.error('[EventLogger] Failed to export logs:', err);
-      return [];
     }
   }
 }

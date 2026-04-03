@@ -7,10 +7,10 @@
 
 import type { Application } from './types';
 
-export type NavigationDecision = 'allow' | 'external' | 'deny';
-export type WindowOpenDecision = 'allow' | 'popup' | 'external' | 'deny';
+type NavigationDecision = 'allow' | 'external' | 'deny';
+type WindowOpenDecision = 'allow' | 'popup' | 'external' | 'deny';
 
-export function normalizeForMatch(rawUrl: string): { hostname: string; normalized: string } | null {
+function normalizeForMatch(rawUrl: string): { hostname: string; normalized: string } | null {
   try {
     const url = new URL(rawUrl);
     return {
@@ -22,7 +22,7 @@ export function normalizeForMatch(rawUrl: string): { hostname: string; normalize
   }
 }
 
-export function matchesHost(hostname: string, pattern: string): boolean {
+function matchesHost(hostname: string, pattern: string): boolean {
   const p = pattern.toLowerCase();
   if (p.startsWith('*.')) {
     const suffix = p.slice(1);

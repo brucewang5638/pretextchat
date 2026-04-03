@@ -6,14 +6,12 @@
 /** IPC 通道定义，main 和 renderer 共用 */
 export const IPC = {
   // Renderer → Main（invoke，请求式）
-  GET_APP_LIST:    'app:list',
   CREATE_INSTANCE: 'instance:create',
   CLOSE_INSTANCE:  'instance:close',
   SWITCH_INSTANCE: 'instance:switch',
   RENAME_INSTANCE: 'instance:rename',
   REOPEN_RECENT_INSTANCE: 'instance:reopenRecent',
   RESTORE_SESSION: 'session:restore',
-  GET_RECENT:      'recent:get',
   GET_INITIAL_STATE: 'state:initial',
   SET_STARTUP_MODE: 'preferences:setStartupMode',
   TOGGLE_PIN_APP:  'preferences:togglePinApp',

@@ -5,6 +5,24 @@ import type {
 import { CUSTOM_APP_LAUNCHER_ID } from "./launch.constants";
 import type { LaunchAppGroup } from "./launch.types";
 
+const CATEGORY_PRIORITY: string[] = [
+  "身份登录",
+  "自定义应用",
+  "AI 助手",
+  "搜索引擎",
+  "知识助手",
+  "智能体平台",
+  "开发工具",
+  "模型平台",
+  "自动化",
+  "未分类",
+];
+
+function getCategoryRank(category: string): number {
+  const index = CATEGORY_PRIORITY.indexOf(category);
+  return index === -1 ? CATEGORY_PRIORITY.length : index;
+}
+
 export function buildLaunchAppGroups(
   apps: Application[],
   searchQuery: string,
@@ -40,7 +58,11 @@ export function buildLaunchAppGroups(
     category,
     apps: groupApps,
     count: groupApps.length,
-  }));
+  })).sort((a, b) => {
+    const rankDiff = getCategoryRank(a.category) - getCategoryRank(b.category);
+    if (rankDiff !== 0) return rankDiff;
+    return a.category.localeCompare(b.category, "zh-CN");
+  });
 }
 
 export function getUpdateStatusTone(status: UpdateCheckResult["status"]) {

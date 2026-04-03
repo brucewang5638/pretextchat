@@ -17,12 +17,8 @@
         "policies.google.com",
         "ogs.google.com"
       ],
-      "allowedPopupHosts": [
-        "accounts.google.com"
-      ],
-      "externalHostnames": [
-        "support.google.com"
-      ],
+      "allowedPopupHosts": ["accounts.google.com"],
+      "externalHostnames": ["support.google.com"],
       "externalUrlPrefixes": []
     }
   },
@@ -51,12 +47,8 @@
         "login.microsoftonline.com",
         "login.live.com"
       ],
-      "externalHostnames": [
-        "help.openai.com"
-      ],
-      "externalUrlPrefixes": [
-        "https://openai.com/policies"
-      ]
+      "externalHostnames": ["help.openai.com"],
+      "externalUrlPrefixes": ["https://openai.com/policies"]
     }
   },
   {
@@ -70,18 +62,9 @@
     "authSessionGroup": "google",
     "authUserAgentProfile": "google",
     "navigation": {
-      "allowedHosts": [
-        "claude.ai",
-        "*.claude.ai",
-        "console.anthropic.com"
-      ],
-      "allowedPopupHosts": [
-        "accounts.google.com"
-      ],
-      "externalHostnames": [
-        "docs.anthropic.com",
-        "support.anthropic.com"
-      ],
+      "allowedHosts": ["claude.ai", "*.claude.ai", "console.anthropic.com"],
+      "allowedPopupHosts": ["accounts.google.com"],
+      "externalHostnames": ["docs.anthropic.com", "support.anthropic.com"],
       "externalUrlPrefixes": []
     }
   },
@@ -102,12 +85,8 @@
         "accounts.google.com",
         "myaccount.google.com"
       ],
-      "allowedPopupHosts": [
-        "accounts.google.com"
-      ],
-      "externalHostnames": [
-        "support.google.com"
-      ],
+      "allowedPopupHosts": ["accounts.google.com"],
+      "externalHostnames": ["support.google.com"],
       "externalUrlPrefixes": []
     }
   },
@@ -122,15 +101,8 @@
     "authSessionGroup": "google",
     "authUserAgentProfile": "google",
     "navigation": {
-      "allowedHosts": [
-        "perplexity.ai",
-        "*.perplexity.ai",
-        "www.perplexity.ai"
-      ],
-      "allowedPopupHosts": [
-        "accounts.google.com",
-        "appleid.apple.com"
-      ],
+      "allowedHosts": ["perplexity.ai", "*.perplexity.ai", "www.perplexity.ai"],
+      "allowedPopupHosts": ["accounts.google.com", "appleid.apple.com"],
       "externalHostnames": [],
       "externalUrlPrefixes": []
     }
@@ -146,14 +118,8 @@
     "authSessionGroup": "google",
     "authUserAgentProfile": "google",
     "navigation": {
-      "allowedHosts": [
-        "chat.deepseek.com",
-        "*.deepseek.com",
-        "deepseek.com"
-      ],
-      "allowedPopupHosts": [
-        "accounts.google.com"
-      ],
+      "allowedHosts": ["chat.deepseek.com", "*.deepseek.com", "deepseek.com"],
+      "allowedPopupHosts": ["accounts.google.com"],
       "externalHostnames": [],
       "externalUrlPrefixes": []
     }
@@ -190,15 +156,30 @@
   },
   {
     "id": "qwen",
-    "name": "通义千问",
+    "name": "通义千问（国内版）",
     "icon": "qwenlm.webp",
     "image": "/images/apps/qwenlm.webp",
     "startUrl": "https://tongyi.aliyun.com/qianwen/",
     "category": "AI 助手",
-    "description": "阿里云通义千问",
+    "description": "阿里云通义千问国内版",
     "navigation": {
       "allowedHosts": ["tongyi.aliyun.com", "*.aliyun.com"],
       "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "qwen-global",
+    "name": "Qwen（国际版）",
+    "icon": "qwenlm.webp",
+    "image": "/images/apps/qwenlm.webp",
+    "startUrl": "https://chat.qwen.ai/",
+    "category": "AI 助手",
+    "description": "Qwen 国际版聊天入口",
+    "navigation": {
+      "allowedHosts": ["chat.qwen.ai", "*.qwen.ai"],
+      "allowedPopupHosts": ["accounts.google.com", "*.google.com"],
       "externalHostnames": [],
       "externalUrlPrefixes": []
     }

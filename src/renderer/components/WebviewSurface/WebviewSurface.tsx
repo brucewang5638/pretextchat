@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { getRendererGuestPreferences } from '../../../shared/app-runtime';
+
 interface WebviewSurfaceProps {
   src: string;
   partition: string;
@@ -50,6 +52,7 @@ export function WebviewSurface({ src, partition, userAgent, title }: WebviewSurf
         partition={partition}
         allowpopups
         useragent={userAgent}
+        webpreferences={getRendererGuestPreferences()}
       />
     </div>
   );

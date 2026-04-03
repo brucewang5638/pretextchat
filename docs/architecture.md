@@ -28,6 +28,8 @@ The rule is:
 - all normal AI websites should use `WebContentsView`
 - `<webview>` is allowed only when a site has proven login or compatibility issues
 - every `<webview>` exception should document why it exists in app config
+- the main renderer window should keep standard `webSecurity` enabled
+- renderer `<webview>` guests should opt into explicit isolation preferences
 
 Current known exception:
 

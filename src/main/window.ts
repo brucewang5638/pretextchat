@@ -87,6 +87,7 @@ export function createMainWindow(): BrowserWindow {
 
   // 关闭前保存会话快照
   mainWindow.on("close", () => {
+    viewManager.syncAllCurrentUrls();
     instanceStore.saveSnapshot();
   });
 

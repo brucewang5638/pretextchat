@@ -7,7 +7,7 @@
 
 import { BrowserWindow, WebContentsView, session, shell } from 'electron';
 import type { Session, WebContents } from 'electron';
-import type { Rectangle, Application } from '../shared/types';
+import type { Rectangle, Application, PersistedInstance } from '../shared/types';
 import { getAppPartition, GOOGLE_WEBVIEW_USER_AGENT } from '../shared/app-runtime';
 import { NavigationPolicy } from './navigation-policy';
 import { instanceStore } from './instance-store';
@@ -63,8 +63,9 @@ class ViewManager {
   }
 
   /** 创建 WebContentsView 并加载 URL */
-  create(instanceId: string, app: Application): WebContentsView {
+  create(instance: PersistedInstance, app: Application): WebContentsView {
     if (!this.mainWindow) throw new Error('MainWindow not set');
+    const instanceId = instance.id;
     this.cancelRelease(instanceId);
     const partition = getAppPartition(app);
     const sessionRef = this.configureSession(app);
@@ -91,6 +92,12 @@ class ViewManager {
     view.webContents.on('page-title-updated', (_event, title) => {
       instanceStore.onPageTitleUpdated(instanceId, title);
     });
+    view.webContents.on('did-navigate', (_event, url) => {
+      instanceStore.onPageUrlUpdated(instanceId, url);
+    });
+    view.webContents.on('did-navigate-in-page', (_event, url) => {
+      instanceStore.onPageUrlUpdated(instanceId, url);
+    });
 
     // 监听加载状态
     view.webContents.on('did-start-loading', () => {
@@ -113,7 +120,7 @@ class ViewManager {
     // 视图先挂进窗口，再 loadURL。
     // 这样后续 did-start-loading / did-finish-load 生命周期与可见区域是一致的。
     this.applyViewActivity(instanceId, view, true);
-    view.webContents.loadURL(app.startUrl);
+    view.webContents.loadURL(instance.lastUrl || app.startUrl);
 
     this.views.set(instanceId, view);
     return view;
@@ -141,6 +148,7 @@ class ViewManager {
     if (!view || !this.mainWindow) return;
 
     this.cancelRelease(instanceId);
+    this.syncCurrentUrl(instanceId, view);
     this.mainWindow.contentView.removeChildView(view);
     instanceStore.setViewBounds(instanceId, null);
     instanceStore.setWebContentsId(instanceId, null);
@@ -160,6 +168,12 @@ class ViewManager {
     }
   }
 
+  syncAllCurrentUrls(): void {
+    for (const [instanceId, view] of this.views) {
+      this.syncCurrentUrl(instanceId, view);
+    }
+  }
+
   release(instanceId: string): void {
     const view = this.views.get(instanceId);
     if (!view || !this.mainWindow) return;
@@ -168,6 +182,7 @@ class ViewManager {
     // destroy 用于用户主动关闭实例；
     // release 用于长时间未激活后的资源回收，实例 metadata 仍然保留。
     this.cancelRelease(instanceId);
+    this.syncCurrentUrl(instanceId, view);
     this.mainWindow.contentView.removeChildView(view);
     view.webContents.close();
     this.views.delete(instanceId);
@@ -327,6 +342,12 @@ class ViewManager {
     if (!timer) return;
     clearTimeout(timer);
     this.releaseTimers.delete(instanceId);
+  }
+
+  private syncCurrentUrl(instanceId: string, view: WebContentsView): void {
+    const currentUrl = view.webContents.getURL();
+    if (!currentUrl || currentUrl.startsWith('about:blank')) return;
+    instanceStore.onPageUrlUpdated(instanceId, currentUrl);
   }
 }
 

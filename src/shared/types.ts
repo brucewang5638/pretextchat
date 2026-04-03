@@ -55,6 +55,7 @@ export interface PersistedInstance {
   applicationId: string;
   title: string;
   titleSource: 'user' | 'page';
+  lastUrl?: string;
   createdAt: number;
   lastOpenedAt: number;
 }

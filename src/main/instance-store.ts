@@ -52,6 +52,7 @@ class InstanceStore {
       applicationId: appId,
       title,
       titleSource,
+      lastUrl: app.startUrl,
       createdAt: Date.now(),
       lastOpenedAt: Date.now(),
     };
@@ -154,6 +155,14 @@ class InstanceStore {
       this.touchRecentInstance(inst);
       this.notifyChange();
     }
+  }
+
+  onPageUrlUpdated(id: string, url: string): void {
+    const inst = this.workspace.instances.find((i) => i.id === id);
+    if (!inst || inst.lastUrl === url) return;
+
+    inst.lastUrl = url;
+    this.persist();
   }
 
   // ─── 运行时状态更新 ────────────────────────────────────

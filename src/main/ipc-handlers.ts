@@ -48,7 +48,7 @@ function syncState(): void {
 
 function ensureNativeView(instance: PersistedInstance, app: Application): void {
   if (!viewManager.hasView(instance.id)) {
-    viewManager.create(instance.id, app);
+    viewManager.create(instance, app);
   }
 }
 

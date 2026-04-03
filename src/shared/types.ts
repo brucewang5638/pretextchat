@@ -76,6 +76,7 @@ export interface Preferences {
   startupMode: 'home' | 'restoreLastSession';
   pinnedAppIds: string[];
   customSidebarOrder?: string[];
+  viewReleasePolicy?: 'memorySaver' | 'balanced' | 'performance';
 }
 
 export interface UpdateCheckResult {

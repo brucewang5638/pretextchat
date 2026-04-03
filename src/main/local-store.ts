@@ -27,6 +27,7 @@ const defaults: StoreSchema = {
     recentInstances: [],
     startupMode: "home",
     pinnedAppIds: [],
+    viewReleasePolicy: "balanced",
   },
 };
 
@@ -61,6 +62,7 @@ class LocalStore {
       startupMode: prefs.startupMode || 'home',
       pinnedAppIds: prefs.pinnedAppIds || [],
       customSidebarOrder: prefs.customSidebarOrder || [],
+      viewReleasePolicy: prefs.viewReleasePolicy || 'balanced',
     };
   }
 
@@ -100,6 +102,10 @@ class LocalStore {
 
   setStartupMode(value: Preferences["startupMode"]): void {
     this.store.set("preferences.startupMode", value);
+  }
+
+  setViewReleasePolicy(value: NonNullable<Preferences["viewReleasePolicy"]>): void {
+    this.store.set("preferences.viewReleasePolicy", value);
   }
 
   togglePinApp(appId: string): void {

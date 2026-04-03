@@ -5,11 +5,21 @@
 // 不直接持有业务实例，只负责把用户导向实例创建动作。
 
 import { useState, useMemo } from "react";
+import type { ChangeEvent } from "react";
 import { useUIStore } from "../../store";
 import { AppCard } from "../../components/AppCard/AppCard";
 import { resolveAssetPath } from "../../lib/assets";
 import { BRAND_LOGO_ASSET_PATH } from "../../../shared/branding";
-import type { UpdateCheckResult } from "../../../shared/types";
+import type { UpdateCheckResult, Preferences } from "../../../shared/types";
+
+const VIEW_RELEASE_POLICY_OPTIONS: Array<{
+  value: NonNullable<Preferences["viewReleasePolicy"]>;
+  label: string;
+}> = [
+  { value: "balanced", label: "平衡" },
+  { value: "memorySaver", label: "节省内存" },
+  { value: "performance", label: "性能优先" },
+];
 
 export function LaunchPage() {
   const snapshot = useUIStore((s) => s.snapshot);
@@ -17,6 +27,7 @@ export function LaunchPage() {
   const [updateState, setUpdateState] = useState<UpdateCheckResult | null>(null);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const apps = snapshot?.apps ?? [];
+  const viewReleasePolicy = snapshot?.preferences.viewReleasePolicy ?? "balanced";
 
   // 搜索是纯前端派生态，不需要落主进程；
   // 这样输入反馈会更直接，也不会污染业务真相源。
@@ -81,6 +92,14 @@ export function LaunchPage() {
     }
   };
 
+  const handleViewReleasePolicyChange = async (
+    event: ChangeEvent<HTMLSelectElement>,
+  ) => {
+    await window.api.setViewReleasePolicy(
+      event.target.value as NonNullable<Preferences["viewReleasePolicy"]>,
+    );
+  };
+
   return (
     <div className="flex h-full w-full overflow-hidden bg-[var(--color-bg-primary)]">
       <main
@@ -113,6 +132,25 @@ export function LaunchPage() {
             </div>
 
             <div className="mt-2 flex flex-col items-start gap-3 md:mt-0 md:items-end md:pl-4">
+              <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-md">
+                <span className="whitespace-nowrap text-white/75">标签内存</span>
+                <select
+                  value={viewReleasePolicy}
+                  onChange={handleViewReleasePolicyChange}
+                  className="cursor-pointer appearance-none bg-transparent pr-4 text-[12.5px] font-semibold text-white outline-none"
+                >
+                  {VIEW_RELEASE_POLICY_OPTIONS.map((option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                      className="bg-slate-900 text-white"
+                    >
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
               <button
                 type="button"
                 onClick={handleCheckForUpdates}

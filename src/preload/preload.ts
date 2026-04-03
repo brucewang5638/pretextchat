@@ -59,6 +59,12 @@ const api = {
   setStartupMode: (mode: Preferences['startupMode']): Promise<void> =>
     ipcRenderer.invoke(IPC.SET_STARTUP_MODE, mode),
 
+  // 修改隐藏标签页的内存策略。
+  // 能力含义：决定隐藏实例多久后释放 WebContentsView。
+  setViewReleasePolicy: (
+    policy: NonNullable<Preferences['viewReleasePolicy']>,
+  ): Promise<void> => ipcRenderer.invoke(IPC.SET_VIEW_RELEASE_POLICY, policy),
+
   // 固定/取消固定某个应用。
   // 能力含义：影响侧边栏入口展示，不直接创建实例。
   togglePinApp: (appId: string): Promise<void> =>

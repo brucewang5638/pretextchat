@@ -226,6 +226,20 @@ export function registerIpcHandlers(): void {
     syncState();
   });
 
+  ipcMain.handle(IPC.SET_VIEW_RELEASE_POLICY, (_event, policy: unknown) => {
+    if (
+      policy !== 'memorySaver' &&
+      policy !== 'balanced' &&
+      policy !== 'performance'
+    ) {
+      throw new Error(`Invalid view release policy: ${String(policy)}`);
+    }
+
+    localStore.setViewReleasePolicy(policy);
+    viewManager.refreshReleasePolicy();
+    syncState();
+  });
+
   ipcMain.handle(IPC.TOGGLE_PIN_APP, (_event, appId: unknown) => {
     const validAppId = requireAppId(appId);
 

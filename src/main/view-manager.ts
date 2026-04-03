@@ -9,11 +9,34 @@ import { BrowserWindow, WebContentsView, session, shell } from 'electron';
 import type { Session, WebContents } from 'electron';
 import type { Rectangle, Application, PersistedInstance } from '../shared/types';
 import { getAppPartition, GOOGLE_WEBVIEW_USER_AGENT } from '../shared/app-runtime';
+import { localStore } from './local-store';
 import { NavigationPolicy } from './navigation-policy';
 import { instanceStore } from './instance-store';
 import { eventLogger } from './event-logger';
 
 const DEFAULT_ACCEPT_LANGUAGES = 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7';
+
+type ViewReleasePolicy = 'memorySaver' | 'balanced' | 'performance';
+
+interface ReleasePolicyConfig {
+  releaseAfterHiddenMs: number | null;
+  keepAliveRecentCount: number;
+}
+
+const VIEW_RELEASE_POLICIES: Record<ViewReleasePolicy, ReleasePolicyConfig> = {
+  memorySaver: {
+    releaseAfterHiddenMs: 5 * 60 * 1000,
+    keepAliveRecentCount: 1,
+  },
+  balanced: {
+    releaseAfterHiddenMs: 20 * 60 * 1000,
+    keepAliveRecentCount: 3,
+  },
+  performance: {
+    releaseAfterHiddenMs: null,
+    keepAliveRecentCount: Number.MAX_SAFE_INTEGER,
+  },
+};
 
 function sanitizeAppUserAgent(userAgent: string): string {
   return userAgent
@@ -36,7 +59,6 @@ function getUserAgentProfile(app: Application): { userAgent: string | null; acce
 }
 
 class ViewManager {
-  private static readonly RELEASE_AFTER_HIDDEN_MS = 3 * 60 * 1000;
   private views: Map<string, WebContentsView> = new Map();
   private releaseTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
   private mainWindow: BrowserWindow | null = null;
@@ -171,6 +193,17 @@ class ViewManager {
   syncAllCurrentUrls(): void {
     for (const [instanceId, view] of this.views) {
       this.syncCurrentUrl(instanceId, view);
+    }
+  }
+
+  refreshReleasePolicy(): void {
+    const activeId = instanceStore.getWorkspaceState().activeInstanceId;
+    for (const [instanceId] of this.views) {
+      if (instanceId === activeId) {
+        this.cancelRelease(instanceId);
+        continue;
+      }
+      this.scheduleRelease(instanceId);
     }
   }
 
@@ -329,11 +362,19 @@ class ViewManager {
 
   private scheduleRelease(instanceId: string): void {
     this.cancelRelease(instanceId);
+    const policy = this.getReleasePolicy();
+    if (
+      policy.releaseAfterHiddenMs === null ||
+      this.shouldKeepAlive(instanceId, policy.keepAliveRecentCount)
+    ) {
+      return;
+    }
+
     const timer = setTimeout(() => {
       const activeId = instanceStore.getWorkspaceState().activeInstanceId;
       if (activeId === instanceId) return;
       this.release(instanceId);
-    }, ViewManager.RELEASE_AFTER_HIDDEN_MS);
+    }, policy.releaseAfterHiddenMs);
     this.releaseTimers.set(instanceId, timer);
   }
 
@@ -348,6 +389,27 @@ class ViewManager {
     const currentUrl = view.webContents.getURL();
     if (!currentUrl || currentUrl.startsWith('about:blank')) return;
     instanceStore.onPageUrlUpdated(instanceId, currentUrl);
+  }
+
+  private getReleasePolicy(): ReleasePolicyConfig {
+    const preference = localStore.getPreferences().viewReleasePolicy ?? 'balanced';
+    return VIEW_RELEASE_POLICIES[preference];
+  }
+
+  private shouldKeepAlive(instanceId: string, keepAliveRecentCount: number): boolean {
+    if (keepAliveRecentCount <= 0) return false;
+
+    const activeId = instanceStore.getWorkspaceState().activeInstanceId;
+    if (activeId === instanceId) return true;
+
+    const instances = instanceStore
+      .getWorkspaceState()
+      .instances.slice()
+      .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt);
+
+    return instances
+      .slice(0, keepAliveRecentCount)
+      .some((instance) => instance.id === instanceId);
   }
 }
 

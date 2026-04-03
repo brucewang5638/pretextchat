@@ -7,11 +7,23 @@
 import { Application } from '../shared/types';
 import aiAppsData from '../../data/ai-apps.json';
 
+function validateApp(app: Application): Application {
+  if (app.renderMode === 'webview' && !app.renderModeReason) {
+    throw new Error(`App "${app.id}" uses webview without renderModeReason`);
+  }
+
+  if (app.renderMode !== 'webview' && app.renderModeReason) {
+    throw new Error(`App "${app.id}" has renderModeReason without webview renderMode`);
+  }
+
+  return app;
+}
+
 class AppRegistry {
   private apps: Map<string, Application>;
 
   constructor() {
-    const apps = aiAppsData as Application[];
+    const apps = (aiAppsData as Application[]).map(validateApp);
     this.apps = new Map(apps.map((app) => [app.id, app]));
   }
 

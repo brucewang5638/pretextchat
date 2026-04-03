@@ -27,6 +27,7 @@ export function WorkbenchPage() {
         {activeApp && isRendererWebview ? (
           // webview 是少数兼容性特例；常规站点优先走 main 进程统一托管的 WebContentsView。
           <WebviewSurface
+            app={activeApp}
             src={activeApp.startUrl}
             partition={getAppPartition(activeApp)}
             userAgent={GOOGLE_WEBVIEW_USER_AGENT}

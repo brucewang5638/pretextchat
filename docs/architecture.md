@@ -30,6 +30,7 @@ The rule is:
 - every `<webview>` exception should document why it exists in app config
 - the main renderer window should keep standard `webSecurity` enabled
 - renderer `<webview>` guests should opt into explicit isolation preferences
+- native views and renderer `<webview>` guests should share the same navigation allowlist rules as much as possible
 
 Current known exception:
 

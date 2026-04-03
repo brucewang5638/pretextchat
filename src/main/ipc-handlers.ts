@@ -5,6 +5,7 @@
 // 每个入口必须做运行时校验。
 
 import { ipcMain, BrowserWindow } from 'electron';
+import { shell } from 'electron';
 import { IPC } from '../shared/constants';
 import type { Application, PersistedWorkspaceState, PersistedInstance, StateSnapshot } from '../shared/types';
 import { isRendererManagedApp } from '../shared/app-runtime';
@@ -244,5 +245,12 @@ export function registerIpcHandlers(): void {
     }
     localStore.togglePinApp(appId);
     syncState();
+  });
+
+  ipcMain.handle(IPC.OPEN_EXTERNAL, (_event, url: unknown) => {
+    if (typeof url !== 'string') {
+      throw new Error(`Invalid url: ${String(url)}`);
+    }
+    return shell.openExternal(url);
   });
 }

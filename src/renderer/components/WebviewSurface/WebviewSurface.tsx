@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { getRendererGuestPreferences } from '../../../shared/app-runtime';
+import { evaluateNavigation, evaluateWindowOpen } from '../../../shared/navigation-rules';
+import type { Application } from '../../../shared/types';
 
 interface WebviewSurfaceProps {
+  app: Application;
   src: string;
   partition: string;
   userAgent?: string;
   title: string;
 }
 
-export function WebviewSurface({ src, partition, userAgent, title }: WebviewSurfaceProps) {
+export function WebviewSurface({ app, src, partition, userAgent, title }: WebviewSurfaceProps) {
   const webviewRef = useRef<HTMLWebViewElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,17 +23,45 @@ export function WebviewSurface({ src, partition, userAgent, title }: WebviewSurf
     const handleStart = () => setIsLoading(true);
     const handleFinish = () => setIsLoading(false);
     const handleFail = () => setIsLoading(false);
+    const handleWillNavigate = (event: Event) => {
+      const nextUrl = (event as Event & { url?: string }).url;
+      if (!nextUrl) return;
+
+      const decision = evaluateNavigation(app, nextUrl);
+      if (decision === 'allow') return;
+
+      event.preventDefault();
+      if (decision === 'external') {
+        void window.api.openExternal(nextUrl);
+      }
+    };
+    const handleNewWindow = (event: Event) => {
+      const nextUrl = (event as Event & { url?: string }).url;
+      if (!nextUrl) return;
+
+      const decision = evaluateWindowOpen(app, nextUrl);
+      if (decision === 'allow' || decision === 'popup') return;
+
+      event.preventDefault();
+      if (decision === 'external') {
+        void window.api.openExternal(nextUrl);
+      }
+    };
 
     webview.addEventListener('did-start-loading', handleStart);
     webview.addEventListener('did-stop-loading', handleFinish);
     webview.addEventListener('did-fail-load', handleFail);
+    webview.addEventListener('will-navigate', handleWillNavigate);
+    webview.addEventListener('new-window', handleNewWindow);
 
     return () => {
       webview.removeEventListener('did-start-loading', handleStart);
       webview.removeEventListener('did-stop-loading', handleFinish);
       webview.removeEventListener('did-fail-load', handleFail);
+      webview.removeEventListener('will-navigate', handleWillNavigate);
+      webview.removeEventListener('new-window', handleNewWindow);
     };
-  }, []);
+  }, [app]);
 
   return (
     <div className="relative flex h-full w-full flex-1 min-h-0 bg-[radial-gradient(circle_at_top,rgba(115,138,255,0.08),transparent_32%),var(--color-bg-primary)]">

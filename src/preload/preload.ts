@@ -48,6 +48,9 @@ const api = {
   togglePinApp: (appId: string): Promise<void> =>
     ipcRenderer.invoke(IPC.TOGGLE_PIN_APP, appId),
 
+  openExternal: (url: string): Promise<void> =>
+    ipcRenderer.invoke(IPC.OPEN_EXTERNAL, url),
+
   // ─── Main → Renderer（subscribe）──────────────────────
 
   onStateSync: (callback: (snapshot: StateSnapshot) => void): (() => void) => {

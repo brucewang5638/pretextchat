@@ -20,7 +20,6 @@ export const IPC = {
 
   // Main → Renderer（send，推送式）
   STATE_SYNC:      'state:sync',
-  INSTANCE_STATUS: 'instance:status',
 } as const;
 
 /** 用户行为事件类型（EventLogger 使用） */

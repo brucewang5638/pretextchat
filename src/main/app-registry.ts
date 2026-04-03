@@ -2,7 +2,6 @@
 // AppRegistry — 预置 AI 应用目录
 // ============================================================
 // 读取 data/ai-apps.json，提供应用列表查询。
-// Phase 1：只读，不支持用户修改。
 
 import { Application } from '../shared/types';
 import aiAppsData from '../../data/ai-apps.json';

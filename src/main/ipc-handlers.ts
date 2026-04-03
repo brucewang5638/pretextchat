@@ -1,7 +1,7 @@
 // ============================================================
 // IPC Handlers — 统一注册
 // ============================================================
-// Phase 1 单文件。拆分阈值：>8 handler 或 >3 职责域时拆为 ipc/ 目录。
+// 当前集中管理主进程 IPC 入口。
 // 每个入口必须做运行时校验。
 
 import { ipcMain, BrowserWindow } from 'electron';
@@ -61,6 +61,44 @@ function markRendererManagedReady(instanceId: string, app?: Application): void {
   }
 }
 
+function requireAppId(value: unknown): string {
+  if (typeof value !== 'string' || !appRegistry.has(value)) {
+    throw new Error(`Invalid appId: ${String(value)}`);
+  }
+  return value;
+}
+
+function requireInstanceId(value: unknown): string {
+  if (typeof value !== 'string' || !instanceStore.has(value)) {
+    throw new Error(`Invalid instanceId: ${String(value)}`);
+  }
+  return value;
+}
+
+function getAppForInstance(instanceId: string): Application | undefined {
+  const instance = instanceStore.getInstance(instanceId);
+  return instance ? appRegistry.get(instance.applicationId) : undefined;
+}
+
+function activateInstance(instanceId: string): void {
+  const instance = instanceStore.getInstance(instanceId);
+  const app = instance ? appRegistry.get(instance.applicationId) : undefined;
+
+  if (!instance || !app) {
+    throw new Error(`Unable to activate instance: ${instanceId}`);
+  }
+
+  markRendererManagedReady(instanceId, app);
+  ensureNativeView(instance, app);
+  showInstance(instanceId, app);
+}
+
+function showCurrentActiveInstance(): void {
+  const activeInstanceId = instanceStore.getWorkspaceState().activeInstanceId;
+  if (!activeInstanceId) return;
+  activateInstance(activeInstanceId);
+}
+
 export function registerIpcHandlers(): void {
   // 注册状态变更回调
   instanceStore.onChange(() => syncState());
@@ -78,19 +116,11 @@ export function registerIpcHandlers(): void {
   // ─── [instance] 实例生命周期 ──────────────────────────
 
   ipcMain.handle(IPC.CREATE_INSTANCE, (_event, appId: unknown) => {
-    // 校验
-    if (typeof appId !== 'string' || !appRegistry.has(appId)) {
-      throw new Error(`Invalid appId: ${String(appId)}`);
-    }
+    const validAppId = requireAppId(appId);
+    const instance = instanceStore.createInstance(validAppId);
+    activateInstance(instance.id);
 
-    const instance = instanceStore.createInstance(appId);
-    const app = appRegistry.get(appId)!;
-
-    markRendererManagedReady(instance.id, app);
-    ensureNativeView(instance, app);
-    showInstance(instance.id, app);
-
-    eventLogger.log('instance_created', { appId, instanceId: instance.id });
+    eventLogger.log('instance_created', { appId: validAppId, instanceId: instance.id });
     return instance;
   });
 
@@ -101,49 +131,26 @@ export function registerIpcHandlers(): void {
 
     const existing = instanceStore.getInstance(recentId);
     const instance = instanceStore.reopenRecentInstance(recentId);
-    const app = appRegistry.get(instance.applicationId);
-    if (!app) {
-      throw new Error(`Unknown appId: ${instance.applicationId}`);
-    }
-
     if (!existing) {
-      markRendererManagedReady(instance.id, app);
-      ensureNativeView(instance, app);
+      activateInstance(instance.id);
+    } else {
+      showCurrentActiveInstance();
     }
-    showInstance(instance.id, app);
     syncState();
     return instance;
   });
 
   ipcMain.handle(IPC.CLOSE_INSTANCE, (_event, id: unknown) => {
-    if (typeof id !== 'string' || !instanceStore.has(id)) {
-      throw new Error(`Invalid instanceId: ${String(id)}`);
-    }
-
-    const instance = instanceStore.getInstance(id);
-    const app = instance ? appRegistry.get(instance.applicationId) : undefined;
+    const instanceId = requireInstanceId(id);
+    const app = getAppForInstance(instanceId);
 
     if (!isRendererManagedApp(app)) {
-      viewManager.destroy(id);
+      viewManager.destroy(instanceId);
     }
-    instanceStore.closeInstance(id);
-    eventLogger.log('instance_closed', { instanceId: id });
+    instanceStore.closeInstance(instanceId);
+    eventLogger.log('instance_closed', { instanceId });
 
-    // 如果还有实例，切换并显示
-    const state = instanceStore.getWorkspaceState();
-    if (state.activeInstanceId) {
-      // 懒创建：如果 View 不存在则创建
-      if (!viewManager.hasView(state.activeInstanceId)) {
-        const inst = instanceStore.getInstance(state.activeInstanceId);
-        if (inst) {
-          const app = appRegistry.get(inst.applicationId);
-          if (app) ensureNativeView(inst, app);
-        }
-      }
-      const activeInstance = instanceStore.getInstance(state.activeInstanceId);
-      const activeApp = activeInstance ? appRegistry.get(activeInstance.applicationId) : undefined;
-      showInstance(state.activeInstanceId, activeApp);
-    }
+    showCurrentActiveInstance();
   });
 
   ipcMain.handle(IPC.SWITCH_INSTANCE, (_event, id: unknown) => {
@@ -154,39 +161,20 @@ export function registerIpcHandlers(): void {
       return;
     }
 
-    if (typeof id !== 'string' || !instanceStore.has(id)) {
-      throw new Error(`Invalid instanceId: ${String(id)}`);
-    }
-
-    instanceStore.switchTo(id);
-
-    const inst = instanceStore.getInstance(id);
-    const app = inst ? appRegistry.get(inst.applicationId) : undefined;
-    if (isRendererManagedApp(app)) {
-      markRendererManagedReady(id, app);
-      showInstance(id, app);
-      eventLogger.log('instance_switched', { instanceId: id });
-      return;
-    }
-
-    if (inst && app) {
-      ensureNativeView(inst, app);
-    }
-
-    showInstance(id, app);
-    eventLogger.log('instance_switched', { instanceId: id });
+    const instanceId = requireInstanceId(id);
+    instanceStore.switchTo(instanceId);
+    activateInstance(instanceId);
+    eventLogger.log('instance_switched', { instanceId });
   });
 
   ipcMain.handle(IPC.RENAME_INSTANCE, (_event, id: unknown, title: unknown) => {
-    if (typeof id !== 'string' || !instanceStore.has(id)) {
-      throw new Error(`Invalid instanceId: ${String(id)}`);
-    }
+    const instanceId = requireInstanceId(id);
     if (typeof title !== 'string' || title.length === 0 || title.length > 100) {
       throw new Error('Invalid title: must be 1-100 characters');
     }
 
-    instanceStore.rename(id, title);
-    eventLogger.log('instance_renamed', { instanceId: id, title });
+    instanceStore.rename(instanceId, title);
+    eventLogger.log('instance_renamed', { instanceId, title });
   });
 
   // ─── [session] 会话恢复 ────────────────────────────────
@@ -200,18 +188,7 @@ export function registerIpcHandlers(): void {
     }
 
     if (snapshot && snapshot.instances.length > 0) {
-      // 懒恢复：只为激活实例创建 View
-      if (snapshot.activeInstanceId) {
-        const inst = snapshot.instances.find((i) => i.id === snapshot.activeInstanceId);
-        if (inst) {
-          const app = appRegistry.get(inst.applicationId);
-          if (app) {
-            markRendererManagedReady(inst.id, app);
-            ensureNativeView(inst, app);
-            showInstance(inst.id, app);
-          }
-        }
-      }
+      showCurrentActiveInstance();
       eventLogger.log('restore_success', {
         instanceCount: snapshot.instances.length,
         activeId: snapshot.activeInstanceId,
@@ -241,10 +218,8 @@ export function registerIpcHandlers(): void {
   });
 
   ipcMain.handle(IPC.TOGGLE_PIN_APP, (_event, appId: unknown) => {
-    if (typeof appId !== 'string' || !appRegistry.has(appId)) {
-      throw new Error(`Invalid appId: ${String(appId)}`);
-    }
-    localStore.togglePinApp(appId);
+    const validAppId = requireAppId(appId);
+    localStore.togglePinApp(validAppId);
     syncState();
   });
 

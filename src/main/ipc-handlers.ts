@@ -234,6 +234,14 @@ export function registerIpcHandlers(): void {
     syncState();
   });
 
+  ipcMain.handle(IPC.UPDATE_SIDEBAR_ORDER, (_event, appIds: unknown) => {
+    if (!Array.isArray(appIds)) {
+      throw new Error(`Invalid appIds`);
+    }
+    localStore.updateSidebarOrder(appIds as string[]);
+    syncState();
+  });
+
   ipcMain.handle(IPC.OPEN_EXTERNAL, (_event, url: unknown) => {
     if (typeof url !== 'string') {
       throw new Error(`Invalid url: ${String(url)}`);

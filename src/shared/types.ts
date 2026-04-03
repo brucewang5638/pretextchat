@@ -74,6 +74,7 @@ export interface Preferences {
   recentInstances: RecentInstanceEntry[];
   startupMode: 'home' | 'restoreLastSession';
   pinnedAppIds: string[];
+  customSidebarOrder?: string[];
 }
 
 export interface RecentInstanceEntry {

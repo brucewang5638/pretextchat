@@ -63,6 +63,10 @@ const api = {
   togglePinApp: (appId: string): Promise<void> =>
     ipcRenderer.invoke(IPC.TOGGLE_PIN_APP, appId),
 
+  // 更新侧边栏应用排序。
+  updateSidebarOrder: (appIds: string[]): Promise<void> =>
+    ipcRenderer.invoke(IPC.UPDATE_SIDEBAR_ORDER, appIds),
+
   // 用系统默认浏览器打开 URL。
   // 能力含义：renderer 不直接接触 shell，由主进程代为执行。
   openExternal: (url: string): Promise<void> =>

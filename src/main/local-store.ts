@@ -60,6 +60,7 @@ class LocalStore {
       recentInstances: prefs.recentInstances || [],
       startupMode: prefs.startupMode || 'home',
       pinnedAppIds: prefs.pinnedAppIds || [],
+      customSidebarOrder: prefs.customSidebarOrder || [],
     };
   }
 
@@ -109,6 +110,10 @@ class LocalStore {
     } else {
       this.store.set("preferences.pinnedAppIds", [...pinned, appId]);
     }
+  }
+
+  updateSidebarOrder(appIds: string[]): void {
+    this.store.set("preferences.customSidebarOrder", appIds);
   }
 }
 

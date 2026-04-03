@@ -8,6 +8,7 @@
 import { useUIStore } from "../../store";
 import { resolveAssetPath } from "../../lib/assets";
 import { BRAND_LOGO_ASSET_PATH } from "../../../shared/branding";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 
 export function Sidebar() {
   const snapshot = useUIStore((s) => s.snapshot);
@@ -16,16 +17,41 @@ export function Sidebar() {
   const activeAppFilter = useUIStore((s) => s.activeAppFilter);
   const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
 
-  // 侧边栏不是“展示全部应用目录”，而是只展示当前工作流真正相关的入口。
+  // 侧边栏展示当前工作流真正相关的入口：活动会话 + 固定会话 + Google 登录
   const activeAppIds = new Set(
     snapshot?.workspace.instances.map((inst) => inst.applicationId) || [],
   );
   const pinnedAppIds = new Set(snapshot?.preferences.pinnedAppIds || []);
-  // Google 登录容器始终给一个稳定入口，避免用户在第三方站点里找不到入口。
   const displayAppIds = new Set([...activeAppIds, ...pinnedAppIds, "google"]);
-  const apps = (snapshot?.apps || []).filter((app) =>
+  
+  const unsortedApps = (snapshot?.apps || []).filter((app) =>
     displayAppIds.has(app.id),
   );
+
+  const customOrder = snapshot?.preferences.customSidebarOrder || [];
+  const apps = [...unsortedApps].sort((a, b) => {
+    const aIndex = customOrder.indexOf(a.id);
+    const bIndex = customOrder.indexOf(b.id);
+    if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+    if (aIndex !== -1) return -1;
+    if (bIndex !== -1) return 1;
+    return 0; // retain original relative order for unsorted items
+  });
+
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
+
+    if (sourceIndex === destinationIndex) return;
+
+    const newApps = Array.from(apps);
+    const [removed] = newApps.splice(sourceIndex, 1);
+    newApps.splice(destinationIndex, 0, removed);
+
+    const orderedIds = newApps.map(a => a.id);
+    window.api.updateSidebarOrder(orderedIds);
+  };
 
   const handleGoHome = async () => {
     await window.api.switchInstance(null);
@@ -74,43 +100,68 @@ export function Sidebar() {
         className="mb-5 mt-2 w-11 shrink-0 border-b border-[rgba(148,163,184,0.5)] pb-2"
       />
 
-      {apps.map((app) => {
-        const isActive =
-          currentPage === "workbench" && activeAppFilter === app.id;
-        return (
-          <div
-            key={app.id}
-            className="group relative mb-3 flex h-12 w-12 cursor-pointer items-center justify-center"
-            onClick={() => handleSelectApp(app.id)}
-            title={app.name}
-          >
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="sidebar-apps">
+          {(provided) => (
             <div
-              className={[
-                "absolute -left-[14px] top-1/2 w-1.5 -translate-y-1/2 rounded-r bg-[var(--color-accent)] transition-all duration-200",
-                isActive ? "h-9" : "h-0 group-hover:h-6",
-              ].join(" ")}
-            />
-            <div
-              className={[
-                "flex h-10 w-10 items-center justify-center overflow-hidden rounded-[12px] border-2 border-transparent bg-[var(--color-bg-elevated)] text-sm font-bold text-[var(--color-text-secondary)] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:rounded-[16px] group-hover:shadow-[0_10px_24px_rgba(15,23,42,0.12)]",
-                isActive
-                  ? "rounded-[16px] border-[var(--color-accent)] shadow-[0_12px_28px_rgba(59,130,246,0.16)]"
-                  : "",
-              ].join(" ")}
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="flex w-full flex-col items-center"
             >
-              {app.image ? (
-                <img
-                  src={resolveAssetPath(app.image)}
-                  alt={app.name}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                app.name.charAt(0)
-              )}
+              {apps.map((app, index) => {
+                const isActive =
+                  currentPage === "workbench" && activeAppFilter === app.id;
+                return (
+                  <Draggable key={app.id} draggableId={app.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={[
+                          "group relative mb-3 flex h-12 w-12 cursor-pointer items-center justify-center select-none",
+                          snapshot.isDragging ? "z-50" : "",
+                        ].join(" ")}
+                        onClick={() => handleSelectApp(app.id)}
+                        title={app.name}
+                      >
+                        <div
+                          className={[
+                            "absolute -left-[14px] top-1/2 w-1.5 -translate-y-1/2 rounded-r bg-[var(--color-accent)] transition-all duration-200",
+                            isActive ? "h-9" : "h-0 group-hover:h-6",
+                          ].join(" ")}
+                        />
+                        <div
+                          className={[
+                            "flex h-10 w-10 items-center justify-center overflow-hidden rounded-[12px] border-2 border-transparent bg-[var(--color-bg-elevated)] text-sm font-bold text-[var(--color-text-secondary)] transition-all duration-200",
+                            snapshot.isDragging
+                              ? "rounded-[16px] scale-110 shadow-[0_20px_40px_rgba(15,23,42,0.2)] bg-white border-[rgba(148,163,184,0.4)]"
+                              : "group-hover:-translate-y-0.5 group-hover:rounded-[16px] group-hover:shadow-[0_10px_24px_rgba(15,23,42,0.12)]",
+                            isActive && !snapshot.isDragging
+                              ? "rounded-[16px] border-[var(--color-accent)] shadow-[0_12px_28px_rgba(59,130,246,0.16)] text-[var(--color-accent)] bg-white"
+                              : "",
+                          ].join(" ")}
+                        >
+                          {app.image ? (
+                            <img
+                              src={resolveAssetPath(app.image)}
+                              alt={app.name}
+                              className="h-full w-full object-contain pointer-events-none"
+                            />
+                          ) : (
+                            app.name.charAt(0)
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
             </div>
-          </div>
-        );
-      })}
+          )}
+        </Droppable>
+      </DragDropContext>
     </aside>
   );
 }

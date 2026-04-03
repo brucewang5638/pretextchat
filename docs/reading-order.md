@@ -127,9 +127,8 @@
 2. [src/renderer/components/TabBar/TabBar.tsx](../src/renderer/components/TabBar/TabBar.tsx)
 3. [src/renderer/components/TabBar/TabItem.tsx](../src/renderer/components/TabBar/TabItem.tsx)
 4. [src/renderer/components/AppCard/AppCard.tsx](../src/renderer/components/AppCard/AppCard.tsx)
-5. [src/renderer/components/PretextBlock/PretextBlock.tsx](../src/renderer/components/PretextBlock/PretextBlock.tsx)
-6. [src/renderer/components/AppIcon/AppIcon.tsx](../src/renderer/components/AppIcon/AppIcon.tsx)
-7. [src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx](../src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx)
+5. [src/renderer/components/AppIcon/AppIcon.tsx](../src/renderer/components/AppIcon/AppIcon.tsx)
+6. [src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx](../src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx)
 
 这层主要回答：
 
@@ -141,8 +140,6 @@
 这些文件最后看即可：
 
 1. [src/renderer/lib/assets.ts](../src/renderer/lib/assets.ts)
-2. [src/renderer/lib/pretext.ts](../src/renderer/lib/pretext.ts)
-3. [src/renderer/hooks/useElementWidth.ts](../src/renderer/hooks/useElementWidth.ts)
 
 这些文件属于“工具层 / 类型补充”，不是理解主业务链路的第一优先级。
 

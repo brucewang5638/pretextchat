@@ -6,7 +6,6 @@
 
 import { useUIStore } from '../../store';
 import { AppIcon } from '../AppIcon/AppIcon';
-import { PretextBlock } from '../PretextBlock/PretextBlock';
 import { resolveAssetPath } from '../../lib/assets';
 
 interface AppCardProps {
@@ -82,15 +81,18 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
         <span className="truncate text-[15px] font-bold leading-[1.2] text-[var(--color-text-primary)]">
           {name}
         </span>
-        <PretextBlock
-          text={description || '强大的 AI 助手'}
-          className="text-[var(--color-text-muted)]"
-          maxLines={2}
-          reserveLines={2}
-          fontSizePx={12}
-          lineHeightPx={17}
-          backgroundColor="var(--color-bg-card)"
-        />
+        <p
+          className="overflow-hidden text-[12px] leading-[17px] text-[var(--color-text-muted)]"
+          style={{
+            minHeight: '34px',
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
+          }}
+          title={description || '强大的 AI 助手'}
+        >
+          {description || '强大的 AI 助手'}
+        </p>
       </div>
     </button>
   );

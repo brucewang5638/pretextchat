@@ -17,12 +17,11 @@ export function Sidebar() {
   const activeAppFilter = useUIStore((s) => s.activeAppFilter);
   const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
 
-  // 侧边栏展示当前工作流真正相关的入口：活动会话 + 固定会话 + Google 登录
   const activeAppIds = new Set(
     snapshot?.workspace.instances.map((inst) => inst.applicationId) || [],
   );
   const pinnedAppIds = new Set(snapshot?.preferences.pinnedAppIds || []);
-  const displayAppIds = new Set([...activeAppIds, ...pinnedAppIds, "google"]);
+  const displayAppIds = new Set([...activeAppIds, ...pinnedAppIds]);
   
   const unsortedApps = (snapshot?.apps || []).filter((app) =>
     displayAppIds.has(app.id),
@@ -51,6 +50,28 @@ export function Sidebar() {
 
     const orderedIds = newApps.map(a => a.id);
     window.api.updateSidebarOrder(orderedIds);
+  };
+
+  const handleCloseAppIcon = async (e: React.MouseEvent, appId: string) => {
+    e.stopPropagation();
+
+    // 找到并关闭此应用的所有实例
+    const instances = snapshot?.workspace.instances.filter(i => i.applicationId === appId) || [];
+    for (const inst of instances) {
+      await window.api.closeInstance(inst.id);
+    }
+
+    // 如果应用被固定了，同时也取消固定
+    const isPinned = snapshot?.preferences.pinnedAppIds.includes(appId);
+    if (isPinned) {
+      await window.api.togglePinApp(appId);
+    }
+
+    // 如果正在工作台中且正好显示的是这个应用，则跳回主页
+    if (currentPage === 'workbench' && activeAppFilter === appId) {
+      setActiveAppFilter(null);
+      setCurrentPage('launch');
+    }
   };
 
   const handleGoHome = async () => {
@@ -133,7 +154,7 @@ export function Sidebar() {
                         />
                         <div
                           className={[
-                            "flex h-10 w-10 items-center justify-center overflow-hidden rounded-[12px] border-2 border-transparent bg-[var(--color-bg-elevated)] text-sm font-bold text-[var(--color-text-secondary)] transition-all duration-200",
+                            "flex h-10 w-10 relative items-center justify-center overflow-hidden rounded-[12px] border-2 border-transparent bg-[var(--color-bg-elevated)] text-sm font-bold text-[var(--color-text-secondary)] transition-all duration-200",
                             snapshot.isDragging
                               ? "rounded-[16px] scale-110 shadow-[0_20px_40px_rgba(15,23,42,0.2)] bg-white border-[rgba(148,163,184,0.4)]"
                               : "group-hover:-translate-y-0.5 group-hover:rounded-[16px] group-hover:shadow-[0_10px_24px_rgba(15,23,42,0.12)]",
@@ -152,6 +173,17 @@ export function Sidebar() {
                             app.name.charAt(0)
                           )}
                         </div>
+
+                        {/* 一键关闭按钮 */}
+                        <button
+                          className="absolute -right-2 -top-2 z-10 hidden h-5 w-5 items-center justify-center rounded-full bg-[var(--color-danger)] text-white shadow-md transition-all hover:scale-110 group-hover:flex"
+                          onClick={(e) => handleCloseAppIcon(e, app.id)}
+                          title={`关闭并移除 ${app.name}`}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                          </svg>
+                        </button>
                       </div>
                     )}
                   </Draggable>

@@ -191,6 +191,7 @@ workflow 文件位于 [.github/workflows/release.yml](.github/workflows/release.
 
 - [docs/prd.md](docs/prd.md)：产品需求与范围
 - [docs/roadmap.md](docs/roadmap.md)：分阶段路线图
+- [docs/architecture.md](docs/architecture.md)：构建与运行时架构约定
 - [docs/positioning.md](docs/positioning.md)：对外定位与叙事
 - [docs/go-to-market.md](docs/go-to-market.md)：发布与增长策略
 - [docs/release-checklist.md](docs/release-checklist.md)：发布检查清单

@@ -247,5 +247,669 @@
       "externalHostnames": [],
       "externalUrlPrefixes": []
     }
+  },
+  {
+    "id": "3mintop",
+    "name": "3MinTop",
+    "icon": "3mintop.png",
+    "image": "/images/3mintop.png",
+    "startUrl": "https://3min.top/",
+    "category": "搜索引擎",
+    "description": "3MinTop AI 搜索入口。",
+    "navigation": {
+      "allowedHosts": ["3min.top", "*.3min.top"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "abacus",
+    "name": "Abacus.AI",
+    "icon": "abacus.webp",
+    "image": "/images/abacus.webp",
+    "startUrl": "https://abacus.ai/",
+    "category": "AI 助手",
+    "description": "Abacus.AI 官方入口。",
+    "navigation": {
+      "allowedHosts": ["abacus.ai", "*.abacus.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "aistudio",
+    "name": "AI Studio",
+    "icon": "aistudio.png",
+    "image": "/images/aistudio.png",
+    "startUrl": "https://aistudio.google.com/",
+    "category": "模型平台",
+    "description": "Google AI Studio 官方入口。",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
+    "navigation": {
+      "allowedHosts": ["aistudio.google.com", "*.google.com"],
+      "allowedPopupHosts": ["accounts.google.com"],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "baidu-ai-search",
+    "name": "百度 AI 搜索",
+    "icon": "baidu-ai-search.webp",
+    "image": "/images/baidu-ai-search.webp",
+    "startUrl": "https://chat.baidu.com/search",
+    "category": "搜索引擎",
+    "description": "百度 AI 搜索入口。",
+    "navigation": {
+      "allowedHosts": ["chat.baidu.com", "*.baidu.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "baidu-ai",
+    "name": "百度 AI",
+    "icon": "baidu-ai.png",
+    "image": "/images/baidu-ai.png",
+    "startUrl": "https://chat.baidu.com/",
+    "category": "AI 助手",
+    "description": "百度 AI 助手入口。",
+    "navigation": {
+      "allowedHosts": ["chat.baidu.com", "*.baidu.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "baixiaoying",
+    "name": "百小应",
+    "icon": "baixiaoying.webp",
+    "image": "/images/baixiaoying.webp",
+    "startUrl": "https://baixiaoying.com/",
+    "category": "AI 助手",
+    "description": "百小应官方入口。",
+    "navigation": {
+      "allowedHosts": ["baixiaoying.com", "*.baixiaoying.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "bolt",
+    "name": "Bolt",
+    "icon": "bolt.svg",
+    "image": "/images/bolt.svg",
+    "startUrl": "https://bolt.new/",
+    "category": "开发工具",
+    "description": "Bolt 官方入口。",
+    "navigation": {
+      "allowedHosts": ["bolt.new", "*.bolt.new"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "cici",
+    "name": "Cici",
+    "icon": "cici.webp",
+    "image": "/images/cici.webp",
+    "startUrl": "https://www.ciciai.com/",
+    "category": "AI 助手",
+    "description": "Cici 官方入口。",
+    "navigation": {
+      "allowedHosts": ["www.ciciai.com", "*.ciciai.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "coze",
+    "name": "Coze",
+    "icon": "coze.webp",
+    "image": "/images/coze.webp",
+    "startUrl": "https://www.coze.com/",
+    "category": "智能体平台",
+    "description": "Coze 智能体平台入口。",
+    "navigation": {
+      "allowedHosts": ["www.coze.com", "*.coze.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "dangbei",
+    "name": "当贝 AI",
+    "icon": "dangbei.jpg",
+    "image": "/images/dangbei.jpg",
+    "startUrl": "https://ai.dangbei.com/",
+    "category": "AI 助手",
+    "description": "当贝 AI 官方入口。",
+    "navigation": {
+      "allowedHosts": ["ai.dangbei.com", "*.dangbei.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "devv",
+    "name": "Devv",
+    "icon": "devv.png",
+    "image": "/images/devv.png",
+    "startUrl": "https://devv.ai/",
+    "category": "开发工具",
+    "description": "面向开发者的 AI 搜索与问答入口。",
+    "navigation": {
+      "allowedHosts": ["devv.ai", "*.devv.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "dify",
+    "name": "Dify",
+    "icon": "dify.svg",
+    "image": "/images/dify.svg",
+    "startUrl": "https://cloud.dify.ai/",
+    "category": "智能体平台",
+    "description": "Dify 应用与工作流平台。",
+    "navigation": {
+      "allowedHosts": ["cloud.dify.ai", "*.dify.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "duckduckgo",
+    "name": "DuckDuckGo AI Chat",
+    "icon": "duckduckgo.webp",
+    "image": "/images/duckduckgo.webp",
+    "startUrl": "https://duckduckgo.com/?ia=chat",
+    "category": "搜索引擎",
+    "description": "DuckDuckGo AI Chat 入口。",
+    "navigation": {
+      "allowedHosts": ["duckduckgo.com", "*.duckduckgo.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "felo",
+    "name": "Felo",
+    "icon": "felo.png",
+    "image": "/images/felo.png",
+    "startUrl": "https://felo.ai/search",
+    "category": "搜索引擎",
+    "description": "Felo AI 搜索入口。",
+    "navigation": {
+      "allowedHosts": ["felo.ai", "*.felo.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "flowith",
+    "name": "Flowith",
+    "icon": "flowith.svg",
+    "image": "/images/flowith.svg",
+    "startUrl": "https://flowith.io/",
+    "category": "智能体平台",
+    "description": "Flowith 智能工作流入口。",
+    "navigation": {
+      "allowedHosts": ["flowith.io", "*.flowith.io"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "genspark",
+    "name": "Genspark",
+    "icon": "genspark.jpg",
+    "image": "/images/genspark.jpg",
+    "startUrl": "https://www.genspark.ai/",
+    "category": "搜索引擎",
+    "description": "Genspark 搜索与研究入口。",
+    "navigation": {
+      "allowedHosts": ["www.genspark.ai", "*.genspark.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "github-copilot",
+    "name": "GitHub Copilot",
+    "icon": "github-copilot.webp",
+    "image": "/images/github-copilot.webp",
+    "startUrl": "https://github.com/copilot",
+    "category": "开发工具",
+    "description": "GitHub Copilot 官方入口。",
+    "navigation": {
+      "allowedHosts": ["github.com", "*.github.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "grok",
+    "name": "Grok",
+    "icon": "grok.png",
+    "image": "/images/grok.png",
+    "startUrl": "https://grok.com/",
+    "category": "AI 助手",
+    "description": "Grok 官方入口。",
+    "navigation": {
+      "allowedHosts": ["grok.com", "*.grok.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "grok-x",
+    "name": "Grok on X",
+    "icon": "grok-x.png",
+    "image": "/images/grok-x.png",
+    "startUrl": "https://x.com/i/grok",
+    "category": "AI 助手",
+    "description": "X 内的 Grok 入口。",
+    "navigation": {
+      "allowedHosts": ["x.com", "*.x.com", "grok.com", "*.grok.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "hika",
+    "name": "Hika",
+    "icon": "hika.webp",
+    "image": "/images/hika.webp",
+    "startUrl": "https://hika.ai/",
+    "category": "AI 助手",
+    "description": "Hika 官方入口。",
+    "navigation": {
+      "allowedHosts": ["hika.ai", "*.hika.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "huggingchat",
+    "name": "HuggingChat",
+    "icon": "huggingchat.svg",
+    "image": "/images/huggingchat.svg",
+    "startUrl": "https://huggingface.co/chat/",
+    "category": "AI 助手",
+    "description": "Hugging Face Chat 入口。",
+    "navigation": {
+      "allowedHosts": ["huggingface.co", "*.huggingface.co"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "ima",
+    "name": "ima",
+    "icon": "ima.svg",
+    "image": "/images/ima.svg",
+    "startUrl": "https://ima.qq.com/",
+    "category": "知识助手",
+    "description": "ima 知识工作台入口。",
+    "navigation": {
+      "allowedHosts": ["ima.qq.com", "*.qq.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "lambdachat",
+    "name": "Lambda Chat",
+    "icon": "lambdachat.webp",
+    "image": "/images/lambdachat.webp",
+    "startUrl": "https://lambda.chat/",
+    "category": "AI 助手",
+    "description": "Lambda Chat 官方入口。",
+    "navigation": {
+      "allowedHosts": ["lambda.chat", "*.lambda.chat"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "lechat",
+    "name": "Le Chat",
+    "icon": "lechat.png",
+    "image": "/images/lechat.png",
+    "startUrl": "https://chat.mistral.ai/chat",
+    "category": "AI 助手",
+    "description": "Mistral Le Chat 官方入口。",
+    "navigation": {
+      "allowedHosts": ["chat.mistral.ai", "*.mistral.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "ling",
+    "name": "Ling",
+    "icon": "ling.png",
+    "image": "/images/ling.png",
+    "startUrl": "https://ling.cn/",
+    "category": "AI 助手",
+    "description": "Ling 官方入口。",
+    "navigation": {
+      "allowedHosts": ["ling.cn", "*.ling.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "longcat",
+    "name": "LongCat",
+    "icon": "longcat.svg",
+    "image": "/images/longcat.svg",
+    "startUrl": "https://longcat.chat/",
+    "category": "AI 助手",
+    "description": "LongCat 官方入口。",
+    "navigation": {
+      "allowedHosts": ["longcat.chat", "*.longcat.chat"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "minimax-agent",
+    "name": "MiniMax Agent",
+    "icon": "minimax-agent.svg",
+    "image": "/images/minimax-agent.svg",
+    "startUrl": "https://agent.minimax.io/",
+    "category": "智能体平台",
+    "description": "MiniMax Agent 入口。",
+    "navigation": {
+      "allowedHosts": ["agent.minimax.io", "*.minimax.io"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "monica",
+    "name": "Monica",
+    "icon": "monica.webp",
+    "image": "/images/monica.webp",
+    "startUrl": "https://monica.im/",
+    "category": "AI 助手",
+    "description": "Monica 官方入口。",
+    "navigation": {
+      "allowedHosts": ["monica.im", "*.monica.im"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "n8n",
+    "name": "n8n",
+    "icon": "n8n.svg",
+    "image": "/images/n8n.svg",
+    "startUrl": "https://app.n8n.cloud/",
+    "category": "自动化",
+    "description": "n8n 自动化平台入口。",
+    "navigation": {
+      "allowedHosts": ["app.n8n.cloud", "*.n8n.cloud"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "nm-search",
+    "name": "纳米搜索",
+    "icon": "nm-search.webp",
+    "image": "/images/nm-search.webp",
+    "startUrl": "https://www.n.cn/",
+    "category": "搜索引擎",
+    "description": "纳米搜索入口。",
+    "navigation": {
+      "allowedHosts": ["www.n.cn", "*.n.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "nm",
+    "name": "纳米 AI",
+    "icon": "nm.png",
+    "image": "/images/nm.png",
+    "startUrl": "https://www.n.cn/",
+    "category": "AI 助手",
+    "description": "纳米 AI 助手入口。",
+    "navigation": {
+      "allowedHosts": ["www.n.cn", "*.n.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "notebooklm",
+    "name": "NotebookLM",
+    "icon": "notebooklm.svg",
+    "image": "/images/notebooklm.svg",
+    "startUrl": "https://notebooklm.google.com/",
+    "category": "知识助手",
+    "description": "Google NotebookLM 入口。",
+    "authSessionGroup": "google",
+    "authUserAgentProfile": "google",
+    "navigation": {
+      "allowedHosts": ["notebooklm.google.com", "*.google.com"],
+      "allowedPopupHosts": ["accounts.google.com"],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "poe",
+    "name": "Poe",
+    "icon": "poe.webp",
+    "image": "/images/poe.webp",
+    "startUrl": "https://poe.com/",
+    "category": "AI 助手",
+    "description": "Poe 官方入口。",
+    "navigation": {
+      "allowedHosts": ["poe.com", "*.poe.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "sensetime",
+    "name": "商量 SenseChat",
+    "icon": "sensetime.png",
+    "image": "/images/sensetime.png",
+    "startUrl": "https://chat.sensetime.com.cn/",
+    "category": "AI 助手",
+    "description": "商量 SenseChat 官方入口。",
+    "navigation": {
+      "allowedHosts": ["chat.sensetime.com.cn", "*.sensetime.com.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "sparkdesk",
+    "name": "讯飞星火",
+    "icon": "sparkdesk.webp",
+    "image": "/images/sparkdesk.webp",
+    "startUrl": "https://xinghuo.xfyun.cn/",
+    "category": "AI 助手",
+    "description": "讯飞星火官方入口。",
+    "navigation": {
+      "allowedHosts": ["xinghuo.xfyun.cn", "*.xfyun.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "stepfun",
+    "name": "阶跃 AI",
+    "icon": "stepfun.png",
+    "image": "/images/stepfun.png",
+    "startUrl": "https://yuewen.cn/",
+    "category": "AI 助手",
+    "description": "阶跃 AI 官方入口。",
+    "navigation": {
+      "allowedHosts": ["yuewen.cn", "*.yuewen.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "thinkany",
+    "name": "ThinkAny",
+    "icon": "thinkany.webp",
+    "image": "/images/thinkany.webp",
+    "startUrl": "https://thinkany.ai/",
+    "category": "搜索引擎",
+    "description": "ThinkAny AI 搜索入口。",
+    "navigation": {
+      "allowedHosts": ["thinkany.ai", "*.thinkany.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "tiangong",
+    "name": "天工 AI",
+    "icon": "tiangong.png",
+    "image": "/images/tiangong.png",
+    "startUrl": "https://www.tiangong.cn/",
+    "category": "AI 助手",
+    "description": "天工 AI 官方入口。",
+    "navigation": {
+      "allowedHosts": ["www.tiangong.cn", "*.tiangong.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "wanzhi",
+    "name": "万知",
+    "icon": "wanzhi.jpg",
+    "image": "/images/wanzhi.jpg",
+    "startUrl": "https://www.wanzhi.com/",
+    "category": "知识助手",
+    "description": "万知知识工作台入口。",
+    "navigation": {
+      "allowedHosts": ["www.wanzhi.com", "*.wanzhi.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "wpslingxi",
+    "name": "WPS 灵犀",
+    "icon": "wpslingxi.webp",
+    "image": "/images/wpslingxi.webp",
+    "startUrl": "https://lingxi.wps.cn/",
+    "category": "知识助手",
+    "description": "WPS 灵犀入口。",
+    "navigation": {
+      "allowedHosts": ["lingxi.wps.cn", "*.wps.cn"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "xiaoyi",
+    "name": "小艺",
+    "icon": "xiaoyi.webp",
+    "image": "/images/xiaoyi.webp",
+    "startUrl": "https://xiaoyi.huawei.com/chat/",
+    "category": "AI 助手",
+    "description": "华为小艺入口。",
+    "navigation": {
+      "allowedHosts": ["xiaoyi.huawei.com", "*.huawei.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "you",
+    "name": "You.com",
+    "icon": "you.jpg",
+    "image": "/images/you.jpg",
+    "startUrl": "https://you.com/",
+    "category": "搜索引擎",
+    "description": "You.com AI 搜索入口。",
+    "navigation": {
+      "allowedHosts": ["you.com", "*.you.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "zai",
+    "name": "Z.ai",
+    "icon": "zai.svg",
+    "image": "/images/zai.svg",
+    "startUrl": "https://chat.z.ai/",
+    "category": "AI 助手",
+    "description": "Z.ai 对话入口。",
+    "navigation": {
+      "allowedHosts": ["chat.z.ai", "*.z.ai"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
+    "id": "zhihu",
+    "name": "知乎直答",
+    "icon": "zhihu.png",
+    "image": "/images/zhihu.png",
+    "startUrl": "https://zhida.zhihu.com/",
+    "category": "搜索引擎",
+    "description": "知乎直答入口。",
+    "navigation": {
+      "allowedHosts": ["zhida.zhihu.com", "*.zhihu.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
   }
 ]

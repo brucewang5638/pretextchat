@@ -34,14 +34,14 @@ export function TabBar() {
   });
 
   return (
-    <div className="flex h-10 items-center gap-0.5 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-2 [-webkit-app-region:drag]">
-      <div className="flex flex-1 items-center gap-0.5 overflow-x-auto [-webkit-app-region:no-drag] [&::-webkit-scrollbar]:hidden">
+    <div className="flex h-14 items-center border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,250,252,0.98))] px-3 shadow-[inset_0_-1px_0_rgba(148,163,184,0.14)] [-webkit-app-region:drag]">
+      <div className="flex flex-1 items-center gap-2 overflow-x-auto py-2 [-webkit-app-region:no-drag] [&::-webkit-scrollbar]:hidden">
         {tabs.map((tab) => (
           <TabItem key={tab.id} {...tab} />
         ))}
-        
+
         <button
-          className="ml-2 flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-dashed border-[var(--color-border)] bg-transparent px-2.5 py-1 text-xs font-medium text-[var(--color-text-secondary)] transition-all duration-150 hover:border-[var(--color-text-primary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)] [-webkit-app-region:no-drag]"
+          className="ml-1 inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-[color:rgba(148,163,184,0.28)] bg-white/92 px-4 text-sm font-semibold text-[var(--color-text-secondary)] shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-all duration-200 hover:-translate-y-px hover:border-[color:rgba(59,130,246,0.3)] hover:bg-white hover:text-[var(--color-text-primary)] hover:shadow-[0_12px_30px_rgba(59,130,246,0.12)] [-webkit-app-region:no-drag]"
           onClick={() => window.api.createInstance(activeAppFilter)}
           title={`新建 ${activeApp?.name} 实例`}
         >

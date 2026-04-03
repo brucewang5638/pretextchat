@@ -38,7 +38,6 @@ export function WorkbenchPage() {
             src={activeApp.startUrl}
             partition={getAppPartition(activeApp)}
             userAgent={GOOGLE_WEBVIEW_USER_AGENT}
-            title={activeApp.name}
           />
         ) : (
           <div className="h-full w-full min-h-0 flex-1">

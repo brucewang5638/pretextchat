@@ -5,12 +5,16 @@ import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import { BRAND_WINDOWS_ICON_BASENAME } from './src/shared/branding';
 
 const config: ForgeConfig = {
   packagerConfig: {
     name: 'PretextChat',
     executableName: 'pretextchat',
     asar: true,
+    // Windows 的可执行文件图标也要在打包阶段写进去，
+    // 否则 builder 即便有安装器图标，安装后的 app 仍可能退回默认 Electron 图标。
+    icon: BRAND_WINDOWS_ICON_BASENAME,
   },
   rebuildConfig: {},
   makers: [

@@ -4,7 +4,7 @@
 // 只有极少数兼容性站点才走这里。
 // 常规站点仍然优先由 main 进程的 WebContentsView 承载。
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { getRendererGuestPreferences } from '../../../shared/app-runtime';
 import { evaluateNavigation, evaluateWindowOpen } from '../../../shared/navigation-rules';
@@ -15,12 +15,10 @@ interface WebviewSurfaceProps {
   src: string;
   partition: string;
   userAgent?: string;
-  title: string;
 }
 
-export function WebviewSurface({ app, src, partition, userAgent, title }: WebviewSurfaceProps) {
+export function WebviewSurface({ app, src, partition, userAgent }: WebviewSurfaceProps) {
   const webviewRef = useRef<HTMLWebViewElement | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const webview = webviewRef.current;
@@ -28,9 +26,6 @@ export function WebviewSurface({ app, src, partition, userAgent, title }: Webvie
 
     // 虽然这里是 renderer <webview>，但导航判定仍然复用 shared/navigation-rules，
     // 目的是让两种承载方式尽量遵循同一套“允许 / 外链 / 拦截”规则。
-    const handleStart = () => setIsLoading(true);
-    const handleFinish = () => setIsLoading(false);
-    const handleFail = () => setIsLoading(false);
     const handleWillNavigate = (event: Event) => {
       const nextUrl = (event as Event & { url?: string }).url;
       if (!nextUrl) return;
@@ -57,16 +52,10 @@ export function WebviewSurface({ app, src, partition, userAgent, title }: Webvie
       }
     };
 
-    webview.addEventListener('did-start-loading', handleStart);
-    webview.addEventListener('did-stop-loading', handleFinish);
-    webview.addEventListener('did-fail-load', handleFail);
     webview.addEventListener('will-navigate', handleWillNavigate);
     webview.addEventListener('new-window', handleNewWindow);
 
     return () => {
-      webview.removeEventListener('did-start-loading', handleStart);
-      webview.removeEventListener('did-stop-loading', handleFinish);
-      webview.removeEventListener('did-fail-load', handleFail);
       webview.removeEventListener('will-navigate', handleWillNavigate);
       webview.removeEventListener('new-window', handleNewWindow);
     };
@@ -74,15 +63,6 @@ export function WebviewSurface({ app, src, partition, userAgent, title }: Webvie
 
   return (
     <div className="relative flex h-full w-full flex-1 min-h-0 bg-[radial-gradient(circle_at_top,rgba(115,138,255,0.08),transparent_32%),var(--color-bg-primary)]">
-      {isLoading ? (
-        <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center bg-[rgba(15,15,18,0.22)] [backdrop-filter:blur(8px)]">
-          <div className="min-w-[280px] rounded-[18px] border border-white/10 bg-[rgba(20,22,28,0.88)] px-5 py-[18px] shadow-[0_22px_60px_rgba(0,0,0,0.28)]">
-            <div className="text-sm font-bold text-[var(--color-text-primary)]">{title}</div>
-            <div className="mt-2 text-[13px] leading-5 text-[var(--color-text-muted)]">正在准备安全登录环境...</div>
-          </div>
-        </div>
-      ) : null}
-
       <webview
         ref={(node) => {
           webviewRef.current = node as HTMLWebViewElement | null;

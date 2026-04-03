@@ -62,8 +62,10 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
   return (
     <div
       className={[
-        'relative flex min-w-0 max-w-[180px] cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)] transition-colors duration-150 [-webkit-app-region:no-drag]',
-        isActive ? 'bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]' : 'hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)]',
+        'group relative flex h-10 min-w-0 max-w-[220px] cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border px-3.5 text-sm text-[var(--color-text-secondary)] shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-all duration-200 [-webkit-app-region:no-drag]',
+        isActive
+          ? 'border-[color:rgba(59,130,246,0.22)] bg-white text-[var(--color-text-primary)] shadow-[0_14px_34px_rgba(59,130,246,0.14)]'
+          : 'border-transparent bg-[rgba(255,255,255,0.68)] hover:-translate-y-px hover:border-[color:rgba(148,163,184,0.24)] hover:bg-white hover:text-[var(--color-text-primary)] hover:shadow-[0_10px_28px_rgba(15,23,42,0.08)]',
       ].join(' ')}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
@@ -74,7 +76,7 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
 
       {isRenaming ? (
         <input
-          className="w-[100px] rounded-[3px] border border-[var(--color-accent)] bg-transparent px-1 py-px text-xs text-[var(--color-text-primary)] outline-none"
+          className="w-[120px] rounded-full border border-[var(--color-accent)] bg-[rgba(255,255,255,0.9)] px-2.5 py-1 text-sm text-[var(--color-text-primary)] outline-none"
           value={renameDraft}
           onChange={(e) => updateRenameDraft(e.target.value)}
           onBlur={handleRenameSubmit}
@@ -82,14 +84,14 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
           autoFocus
         />
       ) : (
-        <span className="min-w-0 flex-1 truncate">{label}</span>
+        <span className="min-w-0 flex-1 truncate font-medium">{label}</span>
       )}
 
-      {isLoading && <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[var(--color-accent)]" />}
+      {isLoading && <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--color-accent)] shadow-[0_0_0_4px_rgba(59,130,246,0.12)]" />}
 
       {(isHovered || isActive) && (
         <button
-          className="shrink-0 rounded-[3px] px-0.5 text-sm leading-none text-[var(--color-text-secondary)] hover:bg-[var(--color-danger)] hover:text-white"
+          className="shrink-0 rounded-full px-2 py-1 text-sm leading-none text-[var(--color-text-secondary)] transition-colors duration-150 hover:bg-[var(--color-danger)] hover:text-white"
           onClick={handleClose}
           title="关闭"
         >

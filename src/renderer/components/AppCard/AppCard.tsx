@@ -39,7 +39,8 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
 
   return (
     <button
-      className="group relative flex w-full items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4 text-left shadow-[var(--shadow-sm)] transition duration-150 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lg)] active:translate-y-0 active:shadow-[var(--shadow-md)]"
+      className="group relative flex w-full min-h-[96px] items-center gap-[20px] rounded-[24px] border border-[rgba(148,163,184,0.22)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.96))] text-left shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-[rgba(59,130,246,0.18)] hover:shadow-[0_12px_28px_rgba(59,130,246,0.1)] active:translate-y-0 active:shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+      style={{ paddingLeft: '20px', paddingRight: '20px', paddingTop: '18px', paddingBottom: '18px' }}
       onClick={handleClick}
       title={`打开 ${name}`}
       aria-label={`新建 ${name} 实例`}
@@ -47,7 +48,7 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
     >
       <div
         className={[
-          'absolute right-3 top-3 z-10 flex items-center justify-center rounded-md p-1 text-[var(--color-text-tertiary)] transition-all duration-200',
+          'absolute right-4 top-4 z-10 flex items-center justify-center rounded-md p-1.5 text-[var(--color-text-tertiary)] transition-all duration-200',
           isPinned ? 'opacity-100 text-[var(--color-accent)]' : 'opacity-0 group-hover:opacity-100',
           'hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]',
         ].join(' ')}
@@ -56,8 +57,8 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
       >
         {/* 固定按钮通过 stopPropagation 阻止触发整卡打开逻辑。 */}
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill={isPinned ? "currentColor" : "none"}
           stroke="currentColor"
@@ -65,24 +66,20 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 1 0 2.828 2.828l13.348-13.348Z"/>
-          <path d="m3.9 3.9 9.9 9.9"/>
-          <path d="m15 5 4 4"/>
-          <path d="m10.5 9.5-6.5 2"/>
-          <path d="m14.5 13.5 2-6.5"/>
-          <path d="m2 22 5-5"/>
+          <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+          <path d="M12 17v5" />
         </svg>
       </div>
       
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-bg-primary)]">
+      <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[16px] bg-[#f8fafc] p-[8px] shadow-[0_2px_8px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] border border-[rgba(148,163,184,0.1)]">
         {image ? (
-          <img src={resolveAssetPath(image)} alt={name} className="h-full w-full rounded-[var(--radius-sm)] object-contain" />
+          <img src={resolveAssetPath(image)} alt={name} className="h-full w-full object-contain drop-shadow-sm rounded-[6px]" />
         ) : (
-          <AppIcon name={name} icon={icon} size="lg" />
+          <AppIcon name={name} icon={icon} size="md" />
         )}
       </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-        <span className="truncate text-sm font-semibold text-[var(--color-text-primary)]">{name}</span>
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 pr-6">
+        <span className="truncate text-[15px] font-bold text-[var(--color-text-primary)] leading-none">{name}</span>
         <PretextBlock
           text={description || '强大的 AI 助手'}
           className="mt-0.5 text-[var(--color-text-muted)]"

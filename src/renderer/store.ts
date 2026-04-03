@@ -3,6 +3,7 @@
 // ============================================================
 // 不做持久化，不做业务真相。
 // 业务状态从 main 通过 IPC STATE_SYNC 推送过来。
+// 可以把它理解成“renderer 本地交互态仓库”，而不是领域模型仓库。
 
 import { create } from 'zustand';
 import type { StateSnapshot } from '../shared/types';

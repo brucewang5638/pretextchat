@@ -1,3 +1,9 @@
+// ============================================================
+// pretext.ts — Pretext 文本测量封装
+// ============================================================
+// 这层负责把第三方 Pretext API 转成项目可直接复用的工具函数，
+// 避免组件层反复关心 prepare / layout / cache 这些底层细节。
+
 import {
   layoutWithLines,
   prepareWithSegments,
@@ -34,6 +40,7 @@ export function getPreparedText(
   text: string,
   font: string,
 ): PreparedTextWithSegments {
+  // prepare 是 Pretext 较重的一步，所以这里做进程内缓存。
   // 文本内容和字体任一变化，都会影响分词与测量结果，所以都要进入 key。
   const cacheKey = `${font}\n${text}`;
   const cached = preparedTextCache.get(cacheKey);

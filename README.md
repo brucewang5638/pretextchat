@@ -186,6 +186,7 @@ This better matches normal Windows user expectations around guided installation 
 - [docs/prd.md](docs/prd.md): product requirements and scope
 - [docs/roadmap.md](docs/roadmap.md): phased product plan
 - [docs/architecture.md](docs/architecture.md): build and runtime architecture decisions
+- [docs/reading-order.md](docs/reading-order.md): recommended code reading path for developers
 - [docs/positioning.md](docs/positioning.md): external messaging and narrative
 - [docs/go-to-market.md](docs/go-to-market.md): launch and growth strategy
 - [docs/release-checklist.md](docs/release-checklist.md): operational release checklist

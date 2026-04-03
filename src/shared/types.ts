@@ -3,6 +3,7 @@
 // ============================================================
 // 只放 main 和 renderer 之间真正需要共享的类型。
 // 不放：组件 Props、Zustand store 类型、main 私有实现类型。
+// 读这份文件时，可以把它理解成“主进程真相源暴露给 renderer 的数据边界”。
 
 /** Electron 的 Rectangle 类型简化 */
 export interface Rectangle {

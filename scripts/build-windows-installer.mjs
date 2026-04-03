@@ -7,7 +7,7 @@ const arch = process.argv[2] ?? 'x64';
 const rootDir = process.cwd();
 const outDir = path.join(rootDir, 'out');
 const packageJsonUrl = pathToFileURL(path.join(rootDir, 'package.json')).href;
-const packageJson = JSON.parse(await import(packageJsonUrl, { with: { type: 'json' } }).then((mod) => mod.default));
+const packageJson = await import(packageJsonUrl, { with: { type: 'json' } }).then((mod) => mod.default);
 
 function run(command, args) {
   const result = spawnSync(command, args, {

@@ -12,6 +12,7 @@ import type {
   PersistedInstance,
   PersistedWorkspaceState,
   Preferences,
+  UpdateCheckResult,
 } from '../shared/types';
 
 const api = {
@@ -66,6 +67,11 @@ const api = {
   // 更新侧边栏应用排序。
   updateSidebarOrder: (appIds: string[]): Promise<void> =>
     ipcRenderer.invoke(IPC.UPDATE_SIDEBAR_ORDER, appIds),
+
+  // 手动检查更新。
+  // 能力含义：已安装的 Windows 版本会真正访问更新源，其他环境返回说明文本。
+  checkForUpdates: (): Promise<UpdateCheckResult> =>
+    ipcRenderer.invoke(IPC.CHECK_FOR_UPDATES),
 
   // 用系统默认浏览器打开 URL。
   // 能力含义：renderer 不直接接触 shell，由主进程代为执行。

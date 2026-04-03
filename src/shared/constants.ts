@@ -16,6 +16,7 @@ export const IPC = {
   SET_STARTUP_MODE: 'preferences:setStartupMode',
   TOGGLE_PIN_APP:  'preferences:togglePinApp',
   UPDATE_SIDEBAR_ORDER: 'preferences:updateSidebarOrder',
+  CHECK_FOR_UPDATES: 'app:checkForUpdates',
   OPEN_EXTERNAL:   'system:openExternal',
 
   // Main → Renderer（send，推送式）

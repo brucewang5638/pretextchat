@@ -12,6 +12,11 @@ files:
 
 asar: true
 
+publish:
+  provider: github
+  owner: brucewang5638
+  repo: pretextchat
+
 win:
   icon: public/branding/icon.ico
   target:

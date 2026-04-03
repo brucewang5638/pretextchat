@@ -77,6 +77,12 @@ export interface Preferences {
   customSidebarOrder?: string[];
 }
 
+export interface UpdateCheckResult {
+  status: 'unsupported' | 'checking' | 'available' | 'not-available' | 'downloaded' | 'error';
+  version?: string;
+  message: string;
+}
+
 export interface RecentInstanceEntry {
   instanceId: string;
   applicationId: string;

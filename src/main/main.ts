@@ -10,6 +10,7 @@ import { app, BrowserWindow } from 'electron';
 import { createMainWindow } from './window';
 import { registerIpcHandlers } from './ipc-handlers';
 import { eventLogger } from './event-logger';
+import { updateManager } from './update-manager';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -18,6 +19,7 @@ app.on('ready', () => {
   // 这样 renderer 初次启动时，window.api 调用不会撞到“还没注册 handler”的空窗期。
   registerIpcHandlers();
   mainWindow = createMainWindow();
+  updateManager.init(mainWindow);
   eventLogger.log('app_launched');
 });
 

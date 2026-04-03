@@ -9,10 +9,13 @@ import { useUIStore } from "../../store";
 import { AppCard } from "../../components/AppCard/AppCard";
 import { resolveAssetPath } from "../../lib/assets";
 import { BRAND_LOGO_ASSET_PATH } from "../../../shared/branding";
+import type { UpdateCheckResult } from "../../../shared/types";
 
 export function LaunchPage() {
   const snapshot = useUIStore((s) => s.snapshot);
   const [searchQuery, setSearchQuery] = useState("");
+  const [updateState, setUpdateState] = useState<UpdateCheckResult | null>(null);
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const apps = snapshot?.apps ?? [];
 
   // 搜索是纯前端派生态，不需要落主进程；
@@ -58,6 +61,26 @@ export function LaunchPage() {
     );
   }
 
+  const handleCheckForUpdates = async () => {
+    setIsCheckingUpdate(true);
+    setUpdateState({
+      status: "checking",
+      message: "正在检查更新...",
+    });
+
+    try {
+      const result = await window.api.checkForUpdates();
+      setUpdateState(result);
+    } catch (error) {
+      setUpdateState({
+        status: "error",
+        message: error instanceof Error ? error.message : "检查更新失败。",
+      });
+    } finally {
+      setIsCheckingUpdate(false);
+    }
+  };
+
   return (
     <div className="flex h-full w-full overflow-hidden bg-[var(--color-bg-primary)]">
       <main
@@ -88,6 +111,21 @@ export function LaunchPage() {
                 <span className="mx-2 opacity-50">|</span> All AI Chats in One
                 App
               </p>
+              <div className="mt-1 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleCheckForUpdates}
+                  disabled={isCheckingUpdate}
+                  className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-white/16 disabled:cursor-wait disabled:opacity-70"
+                >
+                  {isCheckingUpdate ? "检查中..." : "检查更新"}
+                </button>
+                {updateState ? (
+                  <span className="text-[13px] text-[rgba(226,232,240,0.82)]">
+                    {updateState.message}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </section>
 

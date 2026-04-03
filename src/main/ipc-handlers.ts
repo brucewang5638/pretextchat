@@ -13,6 +13,7 @@ import { instanceStore } from './instance-store';
 import { viewManager } from './view-manager';
 import { localStore } from './local-store';
 import { eventLogger } from './event-logger';
+import { updateManager } from './update-manager';
 
 /** 校验 PersistedWorkspaceState 结构完整性 */
 function isValidWorkspaceState(state: unknown): state is PersistedWorkspaceState {
@@ -240,6 +241,10 @@ export function registerIpcHandlers(): void {
     }
     localStore.updateSidebarOrder(appIds as string[]);
     syncState();
+  });
+
+  ipcMain.handle(IPC.CHECK_FOR_UPDATES, async () => {
+    return updateManager.checkForUpdatesManually();
   });
 
   ipcMain.handle(IPC.OPEN_EXTERNAL, (_event, url: unknown) => {

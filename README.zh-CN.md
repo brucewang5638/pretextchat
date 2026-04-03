@@ -178,6 +178,8 @@ workflow 文件位于 [.github/workflows/release.yml](.github/workflows/release.
 - 主安装包：`NSIS` 向导安装版
 - 补充安装包：`portable` 便携版
 - 安装器与应用图标使用品牌 `icon.ico`
+- 已安装的 Windows 应用：通过 GitHub Releases 后台检查更新
+- portable 便携版：不提供客户端内自动更新
 
 当前打包职责拆分为：
 

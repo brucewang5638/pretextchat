@@ -172,6 +172,8 @@ Windows distribution now follows a traditional installer strategy:
 - primary installer: `NSIS`
 - optional advanced-user build: `portable`
 - installer and app icon: branded `icon.ico`
+- installed Windows app: background update checks via GitHub Releases
+- portable build: no in-app auto-update flow
 
 Current packaging split:
 

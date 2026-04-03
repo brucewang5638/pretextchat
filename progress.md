@@ -19,3 +19,7 @@
 - Added a Chinese README and linked it bidirectionally with the English README for bilingual public-facing docs.
 - Diagnosed a likely Windows packaged white-screen issue, fixed a hook-order bug in `LaunchPage`, and added a renderer error boundary to avoid blank failure states.
 - Added `electron-builder`-based Windows distribution with an NSIS installer + portable build, while keeping Forge for prepackaging and non-Windows release flows.
+- Audited `README.md`, `docs/`, and `public/images/product/` to prepare a Chinese-first documentation cleanup.
+- Confirmed the current public docs contain substantial overlap across positioning, GTM, launch copy, and roadmap materials.
+- Rewrote `README.md` into a Chinese-first product entry and inserted the product screenshots from `public/images/product/`.
+- Merged positioning, GTM, and launch copy into `docs/launch-plan.md`, translated the retained docs to Chinese, and trimmed the docs directory down to a clearer long-term structure.

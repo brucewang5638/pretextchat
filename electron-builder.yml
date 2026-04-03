@@ -18,7 +18,7 @@ publish:
   repo: pretextchat
 
 win:
-  icon: public/branding/icon.ico
+  icon: public/images/branding/icon.ico
   target:
     - target: nsis
       arch:
@@ -34,8 +34,8 @@ nsis:
   allowElevation: true
   perMachine: false
   include: scripts/nsis/installer.nsh
-  installerIcon: public/branding/icon.ico
-  uninstallerIcon: public/branding/icon.ico
+  installerIcon: public/images/branding/icon.ico
+  uninstallerIcon: public/images/branding/icon.ico
   createDesktopShortcut: always
   createStartMenuShortcut: true
   shortcutName: PretextChat

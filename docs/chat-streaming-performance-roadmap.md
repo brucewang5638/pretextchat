@@ -1,93 +1,95 @@
-# Chat Streaming Performance Roadmap
+# 聊天流式渲染性能路线图
 
-## Context
+## 背景
 
-Pretext has been removed from the launch-page app cards.
-That screen has a limited number of items, so text precompilation there is not a meaningful performance win.
-The real hot path is future chat streaming and long conversation rendering.
+Pretext 已从启动页应用卡片中移除。那个场景项目数量有限，文本预编译并不是高价值收益点。
 
-This project currently hosts ChatGPT, Claude, and other apps inside Electron `WebContentsView`.
-That means the current renderer tree does not own the chat message DOM.
-So the roadmap below is ordered for the day we build or intercept a self-owned chat message layer.
+真正的热路径会出现在未来我们自有的聊天渲染层中，尤其是：
 
-## Order
+- 流式输出
+- 长会话列表
+- 长文本重排
+- 自动滚动与滚动锚点保持
 
-### 1. Reduce streaming commit frequency first
+当前项目把 ChatGPT、Claude 等站点托管在 Electron `WebContentsView` 中，所以 renderer 还不直接拥有聊天 DOM。下面这份路线图主要服务于未来真正接管消息渲染之后的专项优化。
 
-Do not push every token straight into React state.
-Accumulate tokens in memory and flush on a frame or small time slice such as 16ms to 33ms.
+## 优先顺序
 
-Target outcome:
-- far fewer renders during streaming
-- smoother typing effect
-- less main-thread churn than token-by-token updates
+### 1. 先降低流式提交频率
 
-### 2. Isolate the active streaming message
+不要把每个 token 都直接推入 React state。
 
-Keep completed messages frozen.
-Only the in-flight assistant message should update during streaming.
-Avoid parent-level state shapes that force the whole conversation list to rerender.
+更合理的做法是：
 
-Target outcome:
-- one hot component instead of a hot entire tree
-- lower reconciliation cost
-- easier memoization boundaries
+- 在内存中先累积 token
+- 按帧或短时间片批量 flush，例如 16ms 到 33ms
 
-### 3. Add conversation virtualization
+目标：
 
-Once conversations grow large, only render the visible window plus a small overscan.
-This should be introduced before fine-grained text layout work, because list size is usually the dominant cost.
+- 减少渲染次数
+- 降低主线程抖动
+- 让流式输出更平滑
 
-Target outcome:
-- bounded DOM size
-- predictable scroll performance on long chats
-- lower memory pressure
+### 2. 隔离正在流式更新的消息
 
-### 4. Stabilize scroll anchoring
+已完成消息应尽量冻结，只有当前流式中的那条 assistant 消息保持热更新。
 
-Auto-follow only when the user is already near the bottom.
-When the user scrolls away, suspend follow mode.
-When streaming changes height, preserve the anchor instead of forcing a full scroll jump.
+目标：
 
-Target outcome:
-- less scroll jitter
-- fewer forced sync layout reads
-- better reading experience during streaming
+- 避免整个消息列表频繁重渲染
+- 降低 reconciliation 成本
+- 为后续优化建立清晰边界
 
-### 5. Introduce text layout precomputation where it actually matters
+### 3. 引入长列表虚拟化
 
-If we own the message renderer, use text precomputation for:
-- message height prediction
-- virtualization estimates
-- scroll-anchor correction during streaming
-- multiline truncation in side panels or compact transcript views
+当对话长度足够大时，只渲染可视窗口与少量 overscan。
 
-Do not use this as a substitute for render throttling.
-Text precomputation reduces layout-measurement pressure; it does not remove DOM writes caused by streaming content updates.
+目标：
 
-### 6. Split data flow between accumulation and presentation
+- 控制 DOM 规模
+- 保持长会话滚动性能
+- 降低内存压力
 
-Maintain an append-only stream buffer separate from the visible committed text.
-The renderer should subscribe to the committed view, not the raw token firehose.
+### 4. 稳定滚动锚点
 
-Target outcome:
-- simpler backpressure control
-- easier batching
-- cleaner ownership between transport and UI
+只有当用户仍靠近底部时，才自动追随最新消息。
 
-### 7. Revisit Electron container strategy
+如果用户已经向上滚动，应暂停自动追随，并在流式高度变化时维持当前阅读锚点。
 
-As long as third-party chat pages are hosted in `WebContentsView`, most streaming DOM costs stay inside those remote apps.
-In that mode, performance work should focus on:
-- limiting concurrently active views
-- releasing hidden views aggressively
-- avoiding unnecessary background activity
-- reducing expensive resize/show/hide churn
+目标：
 
-Only after we own the chat rendering surface does a Pretext-like layer become central.
+- 减少滚动跳动
+- 避免强制同步布局读取
+- 改善阅读体验
 
-## Definition Of Done For Phase 1
+### 5. 在真正需要的场景引入文本预计算
 
-- launch-page cards use lightweight CSS truncation only
-- renderer no longer depends on `@chenglou/pretext`
-- chat streaming optimization work starts from render frequency and view ownership, not decorative text measurement
+如果未来接管消息渲染层，Pretext 更适合用于：
+
+- 消息高度预测
+- 虚拟化估高
+- 流式更新时的滚动锚点修正
+- 紧凑视图中的多行文本截断
+
+它不能替代 render throttling，只是减少热路径上的布局测量成本。
+
+### 6. 区分流式累积与展示数据
+
+建议把“原始 token 流”和“可见 committed 文本”拆成两层。
+
+目标：
+
+- 更容易做批量更新
+- 更容易处理背压
+- 更容易隔离 transport 与 UI 展示责任
+
+### 7. 重新评估 Electron 容器策略
+
+在第三方聊天页面仍由 `WebContentsView` 承载时，性能优化重点应放在：
+
+- 限制同时活跃的 view 数量
+- 更积极地释放隐藏 view
+- 减少后台活动
+- 避免高成本的 resize/show/hide 抖动
+
+只有当我们真正拥有聊天渲染表面后，Pretext 样式的文本布局层才会变成主角。

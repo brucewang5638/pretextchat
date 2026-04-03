@@ -41,8 +41,8 @@
 - Product Hunt 官方 Launch Guide 当前仍强调：自己发布即可、不需要 hunter、不能直接索要 upvote、`12:01 am PT` 是适合充分准备团队的常见起点。
 - 对 PretextChat 这种桌面 AI 工具，最有效的冷启动叙事不是“又一个 AI 聚合器”，而是“AI-only multi-instance work client”。
 - 这类产品的传播素材要优先展示真实工作流，而不是抽象功能点；最值得拍的是“同一任务在多个 AI 间并行”的 15-30 秒演示。
-- 仅有策略文档还不够，真正能提高执行效率的是 ready-to-post 文案模板，因此补一份 `docs/launch-copy.md` 很有必要。
-- 公开仓库首页不应只保留英文；对于 PretextChat 这类同时覆盖中文和全球 AI 产品的项目，采用 `README.md` + `README.zh-CN.md` 双入口更合理。
+- 仅有策略文档还不够，真正能提高执行效率的是 ready-to-post 文案模板；更合适的落点是把它并入统一的 `docs/launch-plan.md`。
+- 当前仓库更适合采用中文主 README，避免把有限维护精力分散到多份公开入口。
 
 ## Windows White Screen Findings
 
@@ -56,3 +56,14 @@
 - Cherry Studio 的 Windows 分发参考方案是 `electron-builder`，同时输出 `NSIS` 安装版和 `portable` 版。
 - 本项目已采用桥接路线：继续使用 Electron Forge 负责预打包 app，再由 `electron-builder` 基于 prepackaged 目录生成 Windows 安装器。
 - 这样可以保留现有本地开发和非 Windows 打包链路，同时把 Windows 分发升级为更符合大众预期的传统安装体验。
+
+## Documentation Restructure Findings
+
+- 当前 `README.md` 已经是中文主文档，但仍保留了不少“面向公开发布准备阶段”的冗余段落，信息密度偏高，缺少截图展示。
+- `docs/positioning.md`、`docs/go-to-market.md`、`docs/launch-copy.md` 三份文档有明显内容重叠：定位、首发叙事、渠道文案互相重复。
+- 已将上述三份文档合并为 `docs/launch-plan.md`，作为统一的对外定位与发布文档。
+- `docs/roadmap.md` 仍然带有明显讨论稿口吻，不适合继续作为正式文档保留原样。
+- `docs/chat-streaming-performance-roadmap.md` 更像专项技术备忘录，适合保留，但不应在 README 顶层导航中与产品文档并列强调。
+- `docs/reading-order.md` 与 `docs/architecture.md` 的边界比较清晰，适合保留为开发者文档。
+- `public/images/product/1.png` 与 `public/images/product/2.png` 适合作为 README 的首屏产品示例图，优先承担“让陌生人快速看懂产品界面”的职责。
+- 这轮更稳的文档结构应收敛为：`README.md`、`docs/prd.md`、`docs/roadmap.md`、`docs/architecture.md`、`docs/reading-order.md`、`docs/release-checklist.md`，其余内容并入这几份主文档。

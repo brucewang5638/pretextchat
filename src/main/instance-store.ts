@@ -163,9 +163,16 @@ class InstanceStore {
     this.notifyChange();
   }
 
-  setWebContentsId(id: string, webContentsId: number): void {
+  setWebContentsId(id: string, webContentsId: number | null): void {
     const runtime = this.runtimeStates.get(id);
     if (runtime) runtime.webContentsId = webContentsId;
+  }
+
+  setViewBounds(id: string, bounds: RuntimeInstanceState['viewBounds']): void {
+    const runtime = this.runtimeStates.get(id);
+    if (!runtime) return;
+    runtime.viewBounds = bounds;
+    this.notifyChange();
   }
 
   // ─── 查询 ──────────────────────────────────────────────

@@ -54,6 +54,7 @@ class ViewManager {
       const view = this.views.get(activeId);
       if (view) {
         view.setBounds(this.contentBounds);
+        instanceStore.setViewBounds(activeId, this.contentBounds);
       }
     }
   }
@@ -105,6 +106,7 @@ class ViewManager {
     // 添加到窗口并加载
     this.mainWindow.contentView.addChildView(view);
     view.setBounds(this.contentBounds);
+    this.applyViewActivity(instanceId, view, true);
     view.webContents.loadURL(app.startUrl);
 
     this.views.set(instanceId, view);
@@ -119,8 +121,10 @@ class ViewManager {
     for (const [id, view] of this.views) {
       if (instanceId !== null && id === instanceId) {
         view.setBounds(this.contentBounds);
+        this.applyViewActivity(id, view, true);
       } else {
         view.setBounds({ x: -10000, y: -10000, width: 0, height: 0 });
+        this.applyViewActivity(id, view, false);
       }
     }
   }
@@ -131,6 +135,8 @@ class ViewManager {
     if (!view || !this.mainWindow) return;
 
     this.mainWindow.contentView.removeChildView(view);
+    instanceStore.setViewBounds(instanceId, null);
+    instanceStore.setWebContentsId(instanceId, null);
     view.webContents.close();
     this.views.delete(instanceId);
   }
@@ -262,6 +268,16 @@ class ViewManager {
 
     const sanitizedUA = sanitizeAppUserAgent(webContents.userAgent);
     webContents.setUserAgent(sanitizedUA);
+  }
+
+  private applyViewActivity(
+    instanceId: string,
+    view: WebContentsView,
+    isActive: boolean,
+  ): void {
+    view.webContents.setAudioMuted(!isActive);
+    view.webContents.setBackgroundThrottling(!isActive);
+    instanceStore.setViewBounds(instanceId, isActive ? this.contentBounds : null);
   }
 }
 

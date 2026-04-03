@@ -35,6 +35,13 @@ Current known exception:
 
 - Google login flow
 
+Native `WebContentsView` instances follow a simple runtime policy:
+
+- the active instance keeps normal rendering priority
+- hidden instances are moved off-screen
+- hidden instances are background-throttled and audio-muted
+- hidden instances still keep page state unless explicitly destroyed
+
 ## 3. Preference Model
 
 Startup preference uses a single source of truth:

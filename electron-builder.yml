@@ -33,6 +33,7 @@ nsis:
   allowToChangeInstallationDirectory: true
   allowElevation: true
   perMachine: false
+  include: scripts/nsis/installer.nsh
   installerIcon: public/branding/icon.ico
   uninstallerIcon: public/branding/icon.ico
   createDesktopShortcut: always

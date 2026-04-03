@@ -25,6 +25,7 @@ export function WorkbenchPage() {
       <TabBar />
       <div className="flex flex-1 min-h-0 bg-[var(--color-bg-primary)]">
         {activeApp && isRendererWebview ? (
+          // webview 是少数兼容性特例；常规站点优先走 main 进程统一托管的 WebContentsView。
           <WebviewSurface
             src={activeApp.startUrl}
             partition={getAppPartition(activeApp)}

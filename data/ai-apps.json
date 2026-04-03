@@ -10,6 +10,7 @@
     "authSessionGroup": "google",
     "authUserAgentProfile": "google",
     "renderMode": "webview",
+    "renderModeReason": "Google 登录链路对嵌入式环境更敏感，当前阶段保留 renderer <webview> 作为兼容特例。",
     "navigation": {
       "allowedHosts": [
         "accounts.google.com",

@@ -12,6 +12,10 @@ export function getAppPartition(app: Application): string {
   return `persist:${app.id}`;
 }
 
+export function getAppRenderMode(app: Application | null | undefined): 'nativeView' | 'webview' {
+  return app?.renderMode ?? 'nativeView';
+}
+
 export function isRendererManagedApp(app: Application | null | undefined): boolean {
-  return app?.renderMode === 'webview';
+  return getAppRenderMode(app) === 'webview';
 }

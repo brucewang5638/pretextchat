@@ -47,10 +47,12 @@ export interface Application {
   authUserAgentProfile?: 'default' | 'google';
   /**
    * 页面承载模式。
-   * nativeView 由 main 进程创建 WebContentsView；
-   * webview 由 renderer 内嵌 `<webview>` 承载，适合需要特殊登录行为的站点。
+   * 默认不写时走 nativeView，由 main 进程统一创建 WebContentsView。
+   * 只有确实存在登录或兼容性特例时，才显式标记为 webview。
    */
   renderMode?: 'nativeView' | 'webview';
+  /** 当 renderMode === 'webview' 时，说明保留该特例的原因。 */
+  renderModeReason?: string;
 }
 
 // ─── 持久化实例（落盘可恢复的字段子集）─────────────────────

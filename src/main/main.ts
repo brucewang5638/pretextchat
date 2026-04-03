@@ -3,15 +3,9 @@
 // ============================================================
 
 import { app, BrowserWindow } from 'electron';
-import started from 'electron-squirrel-startup';
 import { createMainWindow } from './window';
 import { registerIpcHandlers } from './ipc-handlers';
 import { eventLogger } from './event-logger';
-
-// Windows installer shortcuts
-if (started) {
-  app.quit();
-}
 
 let mainWindow: BrowserWindow | null = null;
 

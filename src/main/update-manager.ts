@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { app, BrowserWindow, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import type { UpdateCheckResult } from '../shared/types';
@@ -10,9 +12,18 @@ class UpdateManager {
   private manualCheckInFlight: Promise<UpdateCheckResult> | null = null;
   private mainWindow: BrowserWindow | null = null;
 
+  private canUseAutoUpdater(): boolean {
+    if (!app.isPackaged || process.platform !== 'win32') {
+      return false;
+    }
+
+    const updateConfigPath = path.join(process.resourcesPath, 'app-update.yml');
+    return fs.existsSync(updateConfigPath);
+  }
+
   init(mainWindow: BrowserWindow): void {
     // 当前自动更新只接入 Windows 的 electron-builder 分发链路。
-    if (this.initialized || !app.isPackaged || process.platform !== 'win32') {
+    if (this.initialized || !this.canUseAutoUpdater()) {
       return;
     }
 
@@ -68,6 +79,13 @@ class UpdateManager {
       return {
         status: 'unsupported',
         message: '仅已安装的 Windows 版本支持客户端内检查更新。',
+      };
+    }
+
+    if (!this.canUseAutoUpdater()) {
+      return {
+        status: 'unsupported',
+        message: '当前版本未包含自动更新配置，请使用安装版客户端检查更新。',
       };
     }
 

@@ -46,14 +46,6 @@ export interface Application {
    * Google 这类对嵌入式环境更敏感的服务，需要单独使用更接近系统浏览器的 UA。
    */
   authUserAgentProfile?: 'default' | 'google';
-  /**
-   * 页面承载模式。
-   * 默认不写时走 webContentsView，由 main 进程统一创建 WebContentsView。
-   * 只有确实存在登录或兼容性特例时，才显式标记为 webview。
-   */
-  renderMode?: 'webContentsView' | 'webview';
-  /** 当 renderMode === 'webview' 时，说明保留该特例的原因。 */
-  renderModeReason?: string;
 }
 
 // ─── 持久化实例（落盘可恢复的字段子集）─────────────────────
@@ -96,7 +88,7 @@ export interface RecentInstanceEntry {
 export interface RuntimeInstanceState {
   id: string;
   status: 'idle' | 'loading' | 'ready' | 'error';
-  hostingState: 'rendererManaged' | 'active' | 'throttled' | 'released';
+  hostingState: 'active' | 'throttled' | 'released';
   webContentsId: number | null;
   isVisible: boolean;
   lastLoadError: string | null;

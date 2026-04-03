@@ -8,7 +8,6 @@ import { ipcMain, BrowserWindow } from 'electron';
 import { shell } from 'electron';
 import { IPC } from '../shared/constants';
 import type { Application, PersistedWorkspaceState, PersistedInstance, StateSnapshot } from '../shared/types';
-import { isRendererManagedApp } from '../shared/app-runtime';
 import { appRegistry } from './app-registry';
 import { instanceStore } from './instance-store';
 import { viewManager } from './view-manager';
@@ -47,20 +46,13 @@ function syncState(): void {
 }
 
 function ensureNativeView(instance: PersistedInstance, app: Application): void {
-  if (!isRendererManagedApp(app) && !viewManager.hasView(instance.id)) {
+  if (!viewManager.hasView(instance.id)) {
     viewManager.create(instance.id, app);
   }
 }
 
-function showInstance(instanceId: string | null, app?: Application): void {
-  viewManager.show(isRendererManagedApp(app) ? null : instanceId);
-}
-
-function markRendererManagedReady(instanceId: string, app?: Application): void {
-  if (isRendererManagedApp(app)) {
-    instanceStore.setHostingState(instanceId, 'rendererManaged');
-    instanceStore.updateRuntimeStatus(instanceId, 'ready');
-  }
+function showInstance(instanceId: string | null): void {
+  viewManager.show(instanceId);
 }
 
 function requireAppId(value: unknown): string {
@@ -90,14 +82,11 @@ function activateInstance(instanceId: string): void {
     throw new Error(`Unable to activate instance: ${instanceId}`);
   }
 
-  // 这就是当前主链路最重要的收敛点：
-  // “激活实例”统一等价于
-  // 1. rendererManaged 特例标记 ready
-  // 2. 常规实例按需创建 native view
-  // 3. 把正确的承载层显示出来
-  markRendererManagedReady(instanceId, app);
+  // “激活实例”统一等价于：
+  // 1. 按需创建 native view
+  // 2. 把正确的实例切到前台
   ensureNativeView(instance, app);
-  showInstance(instanceId, app);
+  showInstance(instanceId);
 }
 
 function showCurrentActiveInstance(): void {
@@ -127,7 +116,7 @@ export function registerIpcHandlers(): void {
 
     // 实现方式：
     // 1. InstanceStore 先写入 workspace metadata
-    // 2. activateInstance 再统一处理“rendererManaged ready / native view 懒创建 / 显示”
+    // 2. activateInstance 再统一处理“native view 懒创建 / 显示”
     activateInstance(instance.id);
 
     eventLogger.log('instance_created', { appId: validAppId, instanceId: instance.id });
@@ -160,9 +149,7 @@ export function registerIpcHandlers(): void {
     // 实现方式：
     // 常规站点先销毁真实承载视图，再从 workspace 移除 metadata；
     // 如果关闭的是当前激活实例，则自动显示新的 activeInstance。
-    if (!isRendererManagedApp(app)) {
-      viewManager.destroy(instanceId);
-    }
+    if (app) viewManager.destroy(instanceId);
     instanceStore.closeInstance(instanceId);
     eventLogger.log('instance_closed', { instanceId });
 

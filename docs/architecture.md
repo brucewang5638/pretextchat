@@ -18,23 +18,15 @@ Windows packaging should not reintroduce Forge-specific installer makers.
 
 ## 2. Web Content Hosting
 
-PretextChat supports two ways to host AI websites:
+PretextChat hosts AI websites through a single path:
 
-- default: `WebContentsView`
-- exception-only: renderer `<webview>`
+- default and only path: `WebContentsView`
 
 The rule is:
 
-- all normal AI websites should use `WebContentsView`
-- `<webview>` is allowed only when a site has proven login or compatibility issues
-- every `<webview>` exception should document why it exists in app config
+- all AI websites should use `WebContentsView`
 - the main renderer window should keep standard `webSecurity` enabled
-- renderer `<webview>` guests should opt into explicit isolation preferences
-- native views and renderer `<webview>` guests should share the same navigation allowlist rules as much as possible
-
-Current known exception:
-
-- Google login flow
+- navigation policy should stay centralized in shared rules and main-process enforcement
 
 Native `WebContentsView` instances follow a simple runtime policy:
 
@@ -42,7 +34,7 @@ Native `WebContentsView` instances follow a simple runtime policy:
 - hidden instances are moved off-screen
 - hidden instances are background-throttled and audio-muted
 - hidden instances are released after a longer inactive period and recreated lazily on demand
-- runtime state distinguishes `active`, `throttled`, `released`, and `rendererManaged`
+- runtime state distinguishes `active`, `throttled`, and `released`
 
 ## 3. Preference Model
 

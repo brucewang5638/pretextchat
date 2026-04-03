@@ -1,9 +1,8 @@
 // ============================================================
 // navigation-rules.ts — 共享导航判定规则
 // ============================================================
-// 这份文件的价值在于“把规则从承载实现里抽离出来”。
-// 不管当前页面是 WebContentsView 还是 renderer <webview>，
-// 都尽量复用同一套 allow / external / deny / popup 判定。
+// 这份文件的价值在于“把规则从承载实现里抽离出来”，
+// 让所有 WebContentsView 都遵循同一套 allow / external / deny / popup 判定。
 
 import type { Application } from './types';
 

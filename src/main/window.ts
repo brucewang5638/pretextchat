@@ -41,10 +41,7 @@ export function createMainWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       sandbox: false,
-      // 当前仍需兼容少量 renderer <webview> 特例，因此保留 webviewTag。
-      // 但主窗口本身继续使用标准同源与安全内容策略。
       webSecurity: true,
-      webviewTag: true,
     },
   });
 

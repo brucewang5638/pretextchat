@@ -100,9 +100,8 @@
 
 重点理解：
 
-- 常规 AI 网站为什么走 `WebContentsView`
-- 为什么 Google 是 `<webview>` 特例
-- `allow / external / deny / popup` 这套导航判定怎么同时服务两种承载方式
+- 所有 AI 网站为什么统一走 `WebContentsView`
+- `allow / external / deny / popup` 这套导航判定如何服务统一承载链路
 - 隐藏实例为什么会先节流、再释放
 
 ## 6. 第六层：回到 renderer，看它如何消费状态
@@ -128,10 +127,9 @@
 2. [src/renderer/components/TabBar/TabBar.tsx](../src/renderer/components/TabBar/TabBar.tsx)
 3. [src/renderer/components/TabBar/TabItem.tsx](../src/renderer/components/TabBar/TabItem.tsx)
 4. [src/renderer/components/AppCard/AppCard.tsx](../src/renderer/components/AppCard/AppCard.tsx)
-5. [src/renderer/components/WebviewSurface/WebviewSurface.tsx](../src/renderer/components/WebviewSurface/WebviewSurface.tsx)
-6. [src/renderer/components/PretextBlock/PretextBlock.tsx](../src/renderer/components/PretextBlock/PretextBlock.tsx)
-7. [src/renderer/components/AppIcon/AppIcon.tsx](../src/renderer/components/AppIcon/AppIcon.tsx)
-8. [src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx](../src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx)
+5. [src/renderer/components/PretextBlock/PretextBlock.tsx](../src/renderer/components/PretextBlock/PretextBlock.tsx)
+6. [src/renderer/components/AppIcon/AppIcon.tsx](../src/renderer/components/AppIcon/AppIcon.tsx)
+7. [src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx](../src/renderer/components/AppErrorBoundary/AppErrorBoundary.tsx)
 
 这层主要回答：
 
@@ -145,7 +143,6 @@
 1. [src/renderer/lib/assets.ts](../src/renderer/lib/assets.ts)
 2. [src/renderer/lib/pretext.ts](../src/renderer/lib/pretext.ts)
 3. [src/renderer/hooks/useElementWidth.ts](../src/renderer/hooks/useElementWidth.ts)
-4. [src/renderer/types/webview.d.ts](../src/renderer/types/webview.d.ts)
 
 这些文件属于“工具层 / 类型补充”，不是理解主业务链路的第一优先级。
 
@@ -172,7 +169,7 @@
 
 1. 实例的真相源存在哪里？
 2. renderer 为什么不自己维护业务状态？
-3. 为什么大多数站点走 `WebContentsView`？
-4. 为什么 Google 是 `<webview>` 特例？
+3. 为什么所有站点统一走 `WebContentsView`？
+4. 导航和弹窗规则由谁统一控制？
 5. 为什么隐藏实例会先节流、再释放？
 6. 从点击应用卡片到显示工作台，中间经过了哪些文件？

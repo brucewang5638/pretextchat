@@ -6,6 +6,7 @@
 
 import Store from "electron-store";
 import type {
+  CustomAppRecord,
   PersistedWorkspaceState,
   Preferences,
   RecentInstanceEntry,
@@ -28,6 +29,7 @@ const defaults: StoreSchema = {
     startupMode: "home",
     pinnedAppIds: [],
     viewReleasePolicy: "balanced",
+    customApps: [],
   },
 };
 
@@ -63,6 +65,7 @@ class LocalStore {
       pinnedAppIds: prefs.pinnedAppIds || [],
       customSidebarOrder: prefs.customSidebarOrder || [],
       viewReleasePolicy: prefs.viewReleasePolicy || 'balanced',
+      customApps: prefs.customApps || [],
     };
   }
 
@@ -106,6 +109,42 @@ class LocalStore {
 
   setViewReleasePolicy(value: NonNullable<Preferences["viewReleasePolicy"]>): void {
     this.store.set("preferences.viewReleasePolicy", value);
+  }
+
+  getCustomApps(): CustomAppRecord[] {
+    return this.getPreferences().customApps || [];
+  }
+
+  upsertCustomApp(app: CustomAppRecord): void {
+    const customApps = this.getCustomApps();
+    const existingIndex = customApps.findIndex((item) => item.id === app.id);
+
+    if (existingIndex === -1) {
+      this.store.set("preferences.customApps", [...customApps, app]);
+      return;
+    }
+
+    const nextApps = [...customApps];
+    nextApps[existingIndex] = app;
+    this.store.set("preferences.customApps", nextApps);
+  }
+
+  removeCustomApp(appId: string): void {
+    this.store.set(
+      "preferences.customApps",
+      this.getCustomApps().filter((item) => item.id !== appId),
+    );
+  }
+
+  markCustomAppSubmitted(appId: string, submittedAt: number): void {
+    const app = this.getCustomApps().find((item) => item.id === appId);
+    if (!app) return;
+
+    this.upsertCustomApp({
+      ...app,
+      lastSubmittedAt: submittedAt,
+      updatedAt: submittedAt,
+    });
   }
 
   togglePinApp(appId: string): void {

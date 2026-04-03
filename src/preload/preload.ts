@@ -8,10 +8,12 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC } from '../shared/constants';
 import type {
+  CustomAppRecord,
   StateSnapshot,
   PersistedInstance,
   PersistedWorkspaceState,
   Preferences,
+  ReviewSubmissionResult,
   UpdateCheckResult,
 } from '../shared/types';
 
@@ -65,6 +67,16 @@ const api = {
     policy: NonNullable<Preferences['viewReleasePolicy']>,
   ): Promise<void> => ipcRenderer.invoke(IPC.SET_VIEW_RELEASE_POLICY, policy),
 
+  // 新增或保存自定义应用。
+  upsertCustomApp: (
+    draft: Pick<CustomAppRecord, 'name' | 'startUrl' | 'category' | 'description'>,
+  ): Promise<void> =>
+    ipcRenderer.invoke(IPC.UPSERT_CUSTOM_APP, draft),
+
+  // 删除自定义应用。
+  deleteCustomApp: (id: string): Promise<void> =>
+    ipcRenderer.invoke(IPC.DELETE_CUSTOM_APP, id),
+
   // 固定/取消固定某个应用。
   // 能力含义：影响侧边栏入口展示，不直接创建实例。
   togglePinApp: (appId: string): Promise<void> =>
@@ -78,6 +90,10 @@ const api = {
   // 能力含义：已安装的 Windows 版本会真正访问更新源，其他环境返回说明文本。
   checkForUpdates: (): Promise<UpdateCheckResult> =>
     ipcRenderer.invoke(IPC.CHECK_FOR_UPDATES),
+
+  // 提交自定义应用到审核通道。
+  submitCustomAppForReview: (id: string): Promise<ReviewSubmissionResult> =>
+    ipcRenderer.invoke(IPC.SUBMIT_CUSTOM_APP_REVIEW, id),
 
   // 用系统默认浏览器打开 URL。
   // 能力含义：renderer 不直接接触 shell，由主进程代为执行。

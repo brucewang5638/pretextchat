@@ -7,7 +7,13 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { shell } from 'electron';
 import { IPC } from '../shared/constants';
-import type { Application, PersistedWorkspaceState, PersistedInstance, StateSnapshot } from '../shared/types';
+import type {
+  Application,
+  CustomAppRecord,
+  PersistedWorkspaceState,
+  PersistedInstance,
+  StateSnapshot,
+} from '../shared/types';
 import { appRegistry } from './app-registry';
 import { instanceStore } from './instance-store';
 import { viewManager } from './view-manager';
@@ -74,6 +80,69 @@ function getAppForInstance(instanceId: string): Application | undefined {
   const instance = instanceStore.getInstance(instanceId);
   return instance ? appRegistry.get(instance.applicationId) : undefined;
 }
+
+function requireCustomAppId(value: unknown): string {
+  if (
+    typeof value !== 'string' ||
+    !localStore.getCustomApps().some((app) => app.id === value)
+  ) {
+    throw new Error(`Invalid custom app id: ${String(value)}`);
+  }
+  return value;
+}
+
+function normalizeCustomAppDraft(
+  value: unknown,
+): Pick<CustomAppRecord, 'name' | 'startUrl' | 'category' | 'description'> {
+  if (!value || typeof value !== 'object') {
+    throw new Error('Invalid custom app payload');
+  }
+
+  const draft = value as Record<string, unknown>;
+  if (typeof draft.name !== 'string' || draft.name.trim().length === 0) {
+    throw new Error('Custom app name is required');
+  }
+  if (typeof draft.startUrl !== 'string' || draft.startUrl.trim().length === 0) {
+    throw new Error('Custom app startUrl is required');
+  }
+
+  let startUrl: string;
+  try {
+    const parsed = new URL(draft.startUrl);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      throw new Error('Custom app URL must start with http:// or https://');
+    }
+    startUrl = parsed.toString();
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : 'Custom app URL is invalid',
+    );
+  }
+
+  return {
+    name: draft.name.trim(),
+    startUrl,
+    category:
+      typeof draft.category === 'string' && draft.category.trim().length > 0
+        ? draft.category.trim()
+        : '自定义应用',
+    description:
+      typeof draft.description === 'string' && draft.description.trim().length > 0
+        ? draft.description.trim()
+        : undefined,
+  };
+}
+
+function createCustomAppId(name: string): string {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 32);
+  return `custom-${slug || 'app'}-${Date.now().toString(36)}`;
+}
+
+const CUSTOM_APP_REVIEW_URL = 'https://github.com/brucewang5638/pretextchat/issues/new';
 
 function activateInstance(instanceId: string): void {
   const instance = instanceStore.getInstance(instanceId);
@@ -238,6 +307,81 @@ export function registerIpcHandlers(): void {
     localStore.setViewReleasePolicy(policy);
     viewManager.refreshReleasePolicy();
     syncState();
+  });
+
+  ipcMain.handle(IPC.UPSERT_CUSTOM_APP, (_event, payload: unknown) => {
+    const draft = normalizeCustomAppDraft(payload);
+    const now = Date.now();
+    const customApp = {
+      id: createCustomAppId(draft.name),
+      name: draft.name,
+      startUrl: draft.startUrl,
+      category: draft.category,
+      description: draft.description,
+      icon: 'custom',
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    localStore.upsertCustomApp(customApp);
+    syncState();
+    return customApp;
+  });
+
+  ipcMain.handle(IPC.DELETE_CUSTOM_APP, (_event, id: unknown) => {
+    const customAppId = requireCustomAppId(id);
+    const relatedInstanceIds = instanceStore
+      .getWorkspaceState()
+      .instances.filter((instance) => instance.applicationId === customAppId)
+      .map((instance) => instance.id);
+
+    relatedInstanceIds.forEach((instanceId) => {
+      viewManager.destroy(instanceId);
+      instanceStore.closeInstance(instanceId);
+    });
+
+    localStore.removeCustomApp(customAppId);
+    showCurrentActiveInstance();
+    syncState();
+  });
+
+  ipcMain.handle(IPC.SUBMIT_CUSTOM_APP_REVIEW, async (_event, id: unknown) => {
+    const customAppId = requireCustomAppId(id);
+    const customApp = localStore
+      .getCustomApps()
+      .find((app) => app.id === customAppId);
+
+    if (!customApp) {
+      throw new Error(`Unable to find custom app: ${customAppId}`);
+    }
+
+    const issueUrl = new URL(CUSTOM_APP_REVIEW_URL);
+    issueUrl.searchParams.set('labels', 'custom-app-review');
+    issueUrl.searchParams.set('title', `Custom app review: ${customApp.name}`);
+    issueUrl.searchParams.set(
+      'body',
+      [
+        '## 自定义应用审核申请',
+        '',
+        `- 名称：${customApp.name}`,
+        `- 入口：${customApp.startUrl}`,
+        `- 分类：${customApp.category || '自定义应用'}`,
+        `- 描述：${customApp.description || '无'}`,
+        '',
+        '```json',
+        JSON.stringify(customApp, null, 2),
+        '```',
+      ].join('\n'),
+    );
+
+    await shell.openExternal(issueUrl.toString());
+    localStore.markCustomAppSubmitted(customApp.id, Date.now());
+    const result = {
+      status: 'submitted' as const,
+      message: '已打开 GitHub 审核提交通道。',
+    };
+    syncState();
+    return result;
   });
 
   ipcMain.handle(IPC.TOGGLE_PIN_APP, (_event, appId: unknown) => {

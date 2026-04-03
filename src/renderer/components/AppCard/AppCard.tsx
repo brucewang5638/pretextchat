@@ -15,17 +15,39 @@ interface AppCardProps {
   image?: string;
   category?: string;
   description?: string;
+  source?: 'builtin' | 'custom';
+  lastSubmittedAt?: number;
   isPinned?: boolean;
   onTogglePin?: (id: string) => void;
+  onSubmitReview?: (id: string) => void;
+  onDeleteCustomApp?: (id: string) => void;
+  onOpen?: (id: string) => void | Promise<void>;
 }
 
-export function AppCard({ id, name, icon, image, description, isPinned, onTogglePin }: AppCardProps) {
+export function AppCard({
+  id,
+  name,
+  icon,
+  image,
+  description,
+  source,
+  lastSubmittedAt,
+  isPinned,
+  onTogglePin,
+  onSubmitReview,
+  onDeleteCustomApp,
+  onOpen,
+}: AppCardProps) {
   const setCurrentPage = useUIStore((s) => s.setCurrentPage);
   const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
   
   const handleClick = async () => {
     // 创建实例是“进入工作台”的真正业务动作；
     // LaunchPage 本身不保存实例，只负责发起这个动作。
+    if (onOpen) {
+      await onOpen(id);
+      return;
+    }
     await window.api.createInstance(id);
     setActiveAppFilter(id);
     setCurrentPage('workbench');
@@ -34,6 +56,16 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
   const handlePinClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onTogglePin) onTogglePin(id);
+  };
+
+  const handleSubmitReviewClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onSubmitReview?.(id);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDeleteCustomApp?.(id);
   };
 
   return (
@@ -45,29 +77,80 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
       aria-label={`新建 ${name} 实例`}
       type="button"
     >
-      <div
-        className={[
-          'absolute right-4 top-4 z-10 flex items-center justify-center rounded-md p-1.5 text-[var(--color-text-tertiary)] transition-all duration-200',
-          isPinned ? 'opacity-100 text-[var(--color-accent)]' : 'opacity-0 group-hover:opacity-100',
-          'hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]',
-        ].join(' ')}
-        onClick={handlePinClick}
-        title={isPinned ? "取消固定" : "固定到侧边栏"}
-      >
-        {/* 固定按钮通过 stopPropagation 阻止触发整卡打开逻辑。 */}
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill={isPinned ? "currentColor" : "none"}
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
-          <path d="M12 17v5" />
-        </svg>
+      <div className="absolute right-4 top-4 z-10 flex items-center gap-1.5">
+        {source === 'custom' && (
+          <>
+            <button
+              type="button"
+              className="flex items-center justify-center rounded-md p-1.5 text-[var(--color-text-tertiary)] opacity-0 transition-all duration-200 hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] group-hover:opacity-100"
+              onClick={handleSubmitReviewClick}
+              title={lastSubmittedAt ? '再次提交审核' : '提交到云端审核'}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 2 11 13" />
+                <path d="m22 2-7 20-4-9-9-4Z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center rounded-md p-1.5 text-[var(--color-text-tertiary)] opacity-0 transition-all duration-200 hover:bg-[var(--color-bg-tertiary)] hover:text-rose-500 group-hover:opacity-100"
+              onClick={handleDeleteClick}
+              title="删除自定义应用"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M8 6V4h8v2" />
+                <path d="m19 6-1 14H6L5 6" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+              </svg>
+            </button>
+          </>
+        )}
+        {onTogglePin && (
+          <div
+            className={[
+              'flex items-center justify-center rounded-md p-1.5 text-[var(--color-text-tertiary)] transition-all duration-200',
+              isPinned ? 'opacity-100 text-[var(--color-accent)]' : 'opacity-0 group-hover:opacity-100',
+              'hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]',
+            ].join(' ')}
+            onClick={handlePinClick}
+            title={isPinned ? "取消固定" : "固定到侧边栏"}
+          >
+            {/* 固定按钮通过 stopPropagation 阻止触发整卡打开逻辑。 */}
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill={isPinned ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+              <path d="M12 17v5" />
+            </svg>
+          </div>
+        )}
       </div>
       
       <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[16px] bg-[#f8fafc] p-[8px] shadow-[0_2px_8px_rgba(15,23,42,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] border border-[rgba(148,163,184,0.1)]">
@@ -81,6 +164,11 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
         <span className="truncate text-[15px] font-bold leading-[1.2] text-[var(--color-text-primary)]">
           {name}
         </span>
+        {source === 'custom' && (
+          <span className="inline-flex w-fit rounded-full bg-[rgba(59,130,246,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-accent)]">
+            {lastSubmittedAt ? '已提交审核' : '自定义'}
+          </span>
+        )}
         <p
           className="overflow-hidden text-[12px] leading-[17px] text-[var(--color-text-muted)]"
           style={{

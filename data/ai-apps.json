@@ -472,6 +472,21 @@
     }
   },
   {
+    "id": "github",
+    "name": "GitHub",
+    "icon": "github-copilot.webp",
+    "image": "/images/apps/github-copilot.webp",
+    "startUrl": "https://github.com/",
+    "category": "开发工具",
+    "description": "GitHub 官方入口，可用于登录身份与审核流转。",
+    "navigation": {
+      "allowedHosts": ["github.com", "*.github.com"],
+      "allowedPopupHosts": [],
+      "externalHostnames": [],
+      "externalUrlPrefixes": []
+    }
+  },
+  {
     "id": "github-copilot",
     "name": "GitHub Copilot",
     "icon": "github-copilot.webp",

@@ -34,6 +34,8 @@ export interface Application {
   startUrl: string;
   category?: string;
   description?: string;
+  source?: 'builtin' | 'custom';
+  lastSubmittedAt?: number;
   navigation: NavigationConfig;
   /**
    * 共享认证会话分组。
@@ -46,6 +48,18 @@ export interface Application {
    * Google 这类对嵌入式环境更敏感的服务，需要单独使用更接近系统浏览器的 UA。
    */
   authUserAgentProfile?: 'default' | 'google';
+}
+
+export interface CustomAppRecord {
+  id: string;
+  name: string;
+  startUrl: string;
+  category?: string;
+  description?: string;
+  icon?: string;
+  createdAt: number;
+  updatedAt: number;
+  lastSubmittedAt?: number;
 }
 
 // ─── 持久化实例（落盘可恢复的字段子集）─────────────────────
@@ -77,11 +91,17 @@ export interface Preferences {
   pinnedAppIds: string[];
   customSidebarOrder?: string[];
   viewReleasePolicy?: 'memorySaver' | 'balanced' | 'performance';
+  customApps?: CustomAppRecord[];
 }
 
 export interface UpdateCheckResult {
   status: 'unsupported' | 'checking' | 'available' | 'not-available' | 'downloaded' | 'error';
   version?: string;
+  message: string;
+}
+
+export interface ReviewSubmissionResult {
+  status: 'submitted' | 'cancelled' | 'error';
   message: string;
 }
 

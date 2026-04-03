@@ -15,8 +15,11 @@ export const IPC = {
   GET_INITIAL_STATE: 'state:initial',
   SET_STARTUP_MODE: 'preferences:setStartupMode',
   SET_VIEW_RELEASE_POLICY: 'preferences:setViewReleasePolicy',
+  UPSERT_CUSTOM_APP: 'preferences:upsertCustomApp',
+  DELETE_CUSTOM_APP: 'preferences:deleteCustomApp',
   TOGGLE_PIN_APP:  'preferences:togglePinApp',
   UPDATE_SIDEBAR_ORDER: 'preferences:updateSidebarOrder',
+  SUBMIT_CUSTOM_APP_REVIEW: 'review:submitCustomApp',
   CHECK_FOR_UPDATES: 'app:checkForUpdates',
   OPEN_EXTERNAL:   'system:openExternal',
 

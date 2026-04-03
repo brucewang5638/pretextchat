@@ -10,7 +10,12 @@ import { useUIStore } from "../../store";
 import { AppCard } from "../../components/AppCard/AppCard";
 import { resolveAssetPath } from "../../lib/assets";
 import { BRAND_LOGO_ASSET_PATH } from "../../../shared/branding";
-import type { UpdateCheckResult, Preferences } from "../../../shared/types";
+import type {
+  CustomAppRecord,
+  Preferences,
+  ReviewSubmissionResult,
+  UpdateCheckResult,
+} from "../../../shared/types";
 
 const VIEW_RELEASE_POLICY_OPTIONS: Array<{
   value: NonNullable<Preferences["viewReleasePolicy"]>;
@@ -22,12 +27,27 @@ const VIEW_RELEASE_POLICY_OPTIONS: Array<{
 ];
 
 export function LaunchPage() {
+  type CustomAppForm = Pick<
+    CustomAppRecord,
+    "name" | "startUrl" | "category" | "description"
+  >;
   const snapshot = useUIStore((s) => s.snapshot);
   const [searchQuery, setSearchQuery] = useState("");
   const [updateState, setUpdateState] = useState<UpdateCheckResult | null>(null);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [isCustomAppDialogOpen, setIsCustomAppDialogOpen] = useState(false);
+  const [customAppDraft, setCustomAppDraft] = useState<CustomAppForm>({
+    name: "",
+    startUrl: "https://",
+    category: "自定义应用",
+    description: "",
+  });
+  const [customAppError, setCustomAppError] = useState<string | null>(null);
+  const [customAppFeedback, setCustomAppFeedback] = useState<string | null>(null);
+  const [isSavingCustomApp, setIsSavingCustomApp] = useState(false);
   const apps = snapshot?.apps ?? [];
   const viewReleasePolicy = snapshot?.preferences.viewReleasePolicy ?? "balanced";
+  const customAppsCount = snapshot?.preferences.customApps?.length ?? 0;
 
   // 搜索是纯前端派生态，不需要落主进程；
   // 这样输入反馈会更直接，也不会污染业务真相源。
@@ -98,6 +118,57 @@ export function LaunchPage() {
     await window.api.setViewReleasePolicy(
       event.target.value as NonNullable<Preferences["viewReleasePolicy"]>,
     );
+  };
+
+  const handleCustomAppFieldChange = (
+    field: keyof CustomAppForm,
+    value: string,
+  ) => {
+    setCustomAppDraft((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const resetCustomAppDraft = () => {
+    setCustomAppDraft({
+      name: "",
+      startUrl: "https://",
+      category: "自定义应用",
+      description: "",
+    });
+    setCustomAppError(null);
+  };
+
+  const handleSaveCustomApp = async () => {
+    setIsSavingCustomApp(true);
+    setCustomAppError(null);
+    setCustomAppFeedback(null);
+
+    try {
+      await window.api.upsertCustomApp(customAppDraft);
+      setCustomAppFeedback("自定义应用已加入目录。");
+      setIsCustomAppDialogOpen(false);
+      resetCustomAppDraft();
+    } catch (error) {
+      setCustomAppError(
+        error instanceof Error ? error.message : "保存自定义应用失败。",
+      );
+    } finally {
+      setIsSavingCustomApp(false);
+    }
+  };
+
+  const handleDeleteCustomApp = async (id: string) => {
+    if (!window.confirm("确认删除这个自定义应用吗？")) return;
+    await window.api.deleteCustomApp(id);
+    setCustomAppFeedback("自定义应用已删除。");
+  };
+
+  const handleSubmitCustomAppForReview = async (id: string) => {
+    const result: ReviewSubmissionResult =
+      await window.api.submitCustomAppForReview(id);
+    setCustomAppFeedback(result.message);
   };
 
   return (
@@ -197,6 +268,13 @@ export function LaunchPage() {
                   </span>
                 </div>
               )}
+
+              {customAppFeedback && (
+                <div className="flex items-center gap-2 rounded-full border border-white/5 bg-black/20 px-3 py-[7px] text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-sm shadow-inner">
+                  <span className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_8px_currentColor]" />
+                  <span>{customAppFeedback}</span>
+                </div>
+              )}
             </div>
           </section>
 
@@ -221,7 +299,7 @@ export function LaunchPage() {
             </svg>
             <input
               type="text"
-              placeholder="搜索 AI 应用..."
+              placeholder={`搜索 AI 应用... 当前已接入 ${apps.length} 个，其中自定义 ${customAppsCount} 个`}
               className="flex-1 border-none bg-transparent font-medium text-[var(--color-text-primary)] outline-none placeholder:font-normal placeholder:text-[var(--color-text-muted)]"
               style={{ padding: "8px 16px", fontSize: "18px" }}
               value={searchQuery}
@@ -262,10 +340,26 @@ export function LaunchPage() {
                           image={app.image}
                           category={app.category}
                           description={app.description}
+                          source={app.source}
+                          lastSubmittedAt={app.lastSubmittedAt}
                           isPinned={snapshot.preferences?.pinnedAppIds?.includes(
                             app.id,
                           )}
-                          onTogglePin={(id) => window.api.togglePinApp(id)}
+                          onOpen={
+                            app.id === "custom-app-launcher"
+                              ? async () => {
+                                  setIsCustomAppDialogOpen(true);
+                                  setCustomAppFeedback(null);
+                                }
+                              : undefined
+                          }
+                          onTogglePin={
+                            app.id === "custom-app-launcher"
+                              ? undefined
+                              : (id) => window.api.togglePinApp(id)
+                          }
+                          onSubmitReview={handleSubmitCustomAppForReview}
+                          onDeleteCustomApp={handleDeleteCustomApp}
                         />
                       ))}
                     </div>
@@ -276,6 +370,184 @@ export function LaunchPage() {
           </div>
         </div>
       </main>
+
+      {isCustomAppDialogOpen && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.22),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(16,185,129,0.16),transparent_44%),rgba(15,23,42,0.58)] px-4 py-6 backdrop-blur-[8px]">
+          <div className="w-full max-w-[920px] overflow-hidden rounded-[32px] border border-white/30 bg-[rgba(255,255,255,0.94)] shadow-[0_34px_100px_rgba(15,23,42,0.32)]">
+            <div className="relative border-b border-white/40 bg-[linear-gradient(115deg,rgba(99,102,241,0.16),rgba(56,189,248,0.08),rgba(16,185,129,0.12))] px-7 py-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#4f46e5,#0ea5e9)] text-white shadow-[0_10px_24px_rgba(79,70,229,0.28)]">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 5v14" />
+                      <path d="M5 12h14" />
+                    </svg>
+                  </div>
+                  <div className="space-y-1">
+                    <h2 className="text-[26px] font-bold tracking-[-0.03em] text-slate-900">
+                      添加自定义 App
+                    </h2>
+                    <p className="max-w-[620px] text-[14px] leading-6 text-slate-600">
+                      输入站点入口后即可加入应用目录；你后续可以一键提交到 GitHub 审核通道。
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  aria-label="关闭添加自定义应用弹窗"
+                  className="cursor-pointer rounded-full border border-white/40 bg-white/70 p-2.5 text-slate-500 transition duration-200 hover:border-slate-200 hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                  onClick={() => {
+                    setIsCustomAppDialogOpen(false);
+                    resetCustomAppDraft();
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-6 px-7 py-6 lg:grid-cols-[minmax(0,1fr)_270px]">
+              <div className="grid gap-4">
+                <label className="grid gap-2">
+                  <span className="text-[13px] font-semibold tracking-wide text-slate-700">
+                    应用名称
+                  </span>
+                  <input
+                    type="text"
+                    value={customAppDraft.name}
+                    onChange={(event) =>
+                      handleCustomAppFieldChange("name", event.target.value)
+                    }
+                    placeholder="例如：Linear AI"
+                    className="rounded-2xl border border-slate-200/90 bg-white px-4 py-3 text-[15px] text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-[13px] font-semibold tracking-wide text-slate-700">
+                    入口地址
+                  </span>
+                  <input
+                    type="url"
+                    value={customAppDraft.startUrl}
+                    onChange={(event) =>
+                      handleCustomAppFieldChange("startUrl", event.target.value)
+                    }
+                    placeholder="https://example.com"
+                    className="rounded-2xl border border-slate-200/90 bg-white px-4 py-3 text-[15px] text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100"
+                  />
+                </label>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="grid gap-2">
+                    <span className="text-[13px] font-semibold tracking-wide text-slate-700">
+                      分类
+                    </span>
+                    <input
+                      type="text"
+                      value={customAppDraft.category || ""}
+                      onChange={(event) =>
+                        handleCustomAppFieldChange("category", event.target.value)
+                      }
+                      placeholder="自定义应用"
+                      className="rounded-2xl border border-slate-200/90 bg-white px-4 py-3 text-[15px] text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100"
+                    />
+                  </label>
+
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-[linear-gradient(145deg,#f8fafc,#f1f5f9)] px-4 py-3 text-[13px] leading-6 text-slate-600">
+                    GitHub 审核会在系统浏览器打开；未登录时直接由 GitHub 页面引导登录即可。
+                  </div>
+                </div>
+
+                <label className="grid gap-2">
+                  <span className="text-[13px] font-semibold tracking-wide text-slate-700">
+                    描述
+                  </span>
+                  <textarea
+                    value={customAppDraft.description || ""}
+                    onChange={(event) =>
+                      handleCustomAppFieldChange("description", event.target.value)
+                    }
+                    placeholder="补充这个应用的用途、适合的 AI 模式、是否需要登录等"
+                    className="min-h-[126px] rounded-2xl border border-slate-200/90 bg-white px-4 py-3 text-[15px] text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100"
+                  />
+                </label>
+
+                {customAppError && (
+                  <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-[13px] text-rose-600">
+                    {customAppError}
+                  </div>
+                )}
+              </div>
+
+              <aside className="flex flex-col gap-4 rounded-3xl border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff,#f8fafc)] p-5">
+                <h3 className="text-[15px] font-bold text-slate-900">
+                  提交前建议
+                </h3>
+                <ul className="grid gap-2.5 text-[13px] leading-6 text-slate-600">
+                  <li className="flex gap-2">
+                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                    <span>优先使用稳定首页或工作台地址作为入口。</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                    <span>名称尽量简洁，方便搜索和分组展示。</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                    <span>描述里写清用途，可提升审核通过效率。</span>
+                  </li>
+                </ul>
+                <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50 px-3.5 py-3 text-[12.5px] leading-5 text-emerald-700">
+                  保存后会立刻出现在你的应用列表里，可随时编辑或删除。
+                </div>
+              </aside>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-slate-200/80 bg-slate-50/80 px-7 py-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCustomAppDialogOpen(false);
+                  resetCustomAppDraft();
+                }}
+                className="cursor-pointer rounded-full border border-slate-200 bg-white px-4 py-2 text-[14px] font-semibold text-slate-600 transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                disabled={isSavingCustomApp}
+                onClick={handleSaveCustomApp}
+                className="cursor-pointer rounded-full bg-[linear-gradient(135deg,#111827,#334155)] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_22px_rgba(15,23,42,0.22)] transition duration-200 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isSavingCustomApp ? "保存中..." : "保存到我的应用"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

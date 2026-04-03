@@ -22,9 +22,9 @@ export function App() {
   }, [currentPage, setCurrentPage, snapshot?.workspace.activeInstanceId]);
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--color-bg-primary)' }}>
+    <div className="flex h-screen w-screen overflow-hidden bg-[var(--color-bg-primary)]">
       <Sidebar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div className="flex min-w-0 flex-1 flex-col">
         {currentPage === 'workbench' ? <WorkbenchPage /> : <LaunchPage />}
       </div>
     </div>

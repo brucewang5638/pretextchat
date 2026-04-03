@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { buildCanvasFont, measurePretextLines } from '../../lib/pretext';
 import { useElementWidth } from '../../hooks/useElementWidth';
-import styles from './PretextBlock.module.css';
 
 interface PretextBlockProps {
   text: string;
@@ -69,21 +68,36 @@ export function PretextBlock({
   return (
     <div
       ref={containerRef}
-      className={className ? `${styles.root} ${className}` : styles.root}
+      className={className ? `relative block overflow-hidden ${className}` : 'relative block overflow-hidden'}
       style={style}
       // 截断后仍然保留原始完整文案的可访问入口。
       title={text}
     >
-      <div className={styles.inner}>
+      <div
+        className="flex flex-col"
+        style={{
+          height: 'calc(var(--pretext-reserve-lines) * var(--pretext-line-height))',
+          lineHeight: 'var(--pretext-line-height)',
+        }}
+      >
         {visibleLines.map((line, index) => (
-          <span key={`${index}-${line}`} className={styles.line}>
+          <span
+            key={`${index}-${line}`}
+            className="block min-h-[var(--pretext-line-height)] whitespace-pre-wrap [overflow-wrap:anywhere]"
+          >
             {line}
           </span>
         ))}
       </div>
       {/* 当前版本的省略号是视觉提示，不参与 Pretext 的最后一行精确拟合。 */}
       {isTruncated ? (
-        <span aria-hidden="true" className={styles.ellipsis}>
+        <span
+          aria-hidden="true"
+          className="absolute bottom-0 right-0 pl-4"
+          style={{
+            background: 'linear-gradient(90deg, rgb(255 255 255 / 0%) 0%, var(--pretext-bg) 42%)',
+          }}
+        >
           …
         </span>
       ) : null}

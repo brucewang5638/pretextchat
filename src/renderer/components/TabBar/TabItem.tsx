@@ -1,6 +1,5 @@
 import { AppIcon } from '../AppIcon/AppIcon';
 import { useUIStore } from '../../store';
-import styles from './TabBar.module.css';
 
 interface TabItemProps {
   id: string;
@@ -52,7 +51,10 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
 
   return (
     <div
-      className={`${styles.tab} ${isActive ? styles.active : ''}`}
+      className={[
+        'relative flex min-w-0 max-w-[180px] cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)] transition-colors duration-150 [-webkit-app-region:no-drag]',
+        isActive ? 'bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]' : 'hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)]',
+      ].join(' ')}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onMouseEnter={() => setHoveredTab(id)}
@@ -62,7 +64,7 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
 
       {isRenaming ? (
         <input
-          className={styles.renameInput}
+          className="w-[100px] rounded-[3px] border border-[var(--color-accent)] bg-transparent px-1 py-px text-xs text-[var(--color-text-primary)] outline-none"
           value={renameDraft}
           onChange={(e) => updateRenameDraft(e.target.value)}
           onBlur={handleRenameSubmit}
@@ -70,13 +72,17 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
           autoFocus
         />
       ) : (
-        <span className={styles.tabLabel}>{label}</span>
+        <span className="min-w-0 flex-1 truncate">{label}</span>
       )}
 
-      {isLoading && <span className={styles.loadingDot} />}
+      {isLoading && <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[var(--color-accent)]" />}
 
       {(isHovered || isActive) && (
-        <button className={styles.closeBtn} onClick={handleClose} title="关闭">
+        <button
+          className="shrink-0 rounded-[3px] px-0.5 text-sm leading-none text-[var(--color-text-secondary)] hover:bg-[var(--color-danger)] hover:text-white"
+          onClick={handleClose}
+          title="关闭"
+        >
           ×
         </button>
       )}

@@ -3,7 +3,6 @@ import { useUIStore } from '../../store';
 import { TabBar } from '../../components/TabBar/TabBar';
 import { WebviewSurface } from '../../components/WebviewSurface/WebviewSurface';
 import { getAppPartition, GOOGLE_WEBVIEW_USER_AGENT, isRendererManagedApp } from '../../../shared/app-runtime';
-import styles from './WorkbenchPage.module.css';
 
 export function WorkbenchPage() {
   const snapshot = useUIStore((s) => s.snapshot);
@@ -22,9 +21,9 @@ export function WorkbenchPage() {
   const isRendererWebview = isRendererManagedApp(activeApp);
 
   return (
-    <div className={styles.workbench}>
+    <div className="flex h-full flex-col">
       <TabBar />
-      <div className={styles.viewArea}>
+      <div className="flex flex-1 min-h-0 bg-[var(--color-bg-primary)]">
         {activeApp && isRendererWebview ? (
           <WebviewSurface
             src={activeApp.startUrl}
@@ -33,7 +32,7 @@ export function WorkbenchPage() {
             title={activeApp.name}
           />
         ) : (
-          <div className={styles.nativeViewPlaceholder}>
+          <div className="h-full w-full min-h-0 flex-1">
             {/* WebContentsView 由 main 进程管理并叠加在此区域上方。
                 renderer 只需要留出高度空间。*/}
           </div>

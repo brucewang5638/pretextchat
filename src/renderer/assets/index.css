@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ============================================================
    PretextChat — Global Styles + Design Tokens
    ============================================================ */
@@ -12,11 +14,16 @@
   --color-text-primary: #0f172a; /* slate-900 */
   --color-text-secondary: #64748b; /* slate-500 */
   --color-text-muted: #94a3b8;   /* slate-400 */
+  --color-text-tertiary: #94a3b8;
   
   --color-accent: #3b82f6;       /* Default blue accent */
   --color-accent-hover: #2563eb;
   --color-border: #e2e8f0;       /* slate-200 */
   --color-danger: #ef4444;       /* red-500 */
+  --color-bg-page: #e2e8f0;
+  --color-bg-elevated: #ffffff;
+  --color-bg-active: #dbeafe;
+  --color-bg-tertiary: #f8fafc;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);

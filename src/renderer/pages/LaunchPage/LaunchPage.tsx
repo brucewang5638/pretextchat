@@ -2,12 +2,9 @@ import { useState, useMemo } from 'react';
 import { useUIStore } from '../../store';
 import { AppCard } from '../../components/AppCard/AppCard';
 import { resolveAssetPath } from '../../lib/assets';
-import styles from './LaunchPage.module.css';
 
 export function LaunchPage() {
   const snapshot = useUIStore((s) => s.snapshot);
-  const setCurrentPage = useUIStore((s) => s.setCurrentPage);
-  const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
   const [searchQuery, setSearchQuery] = useState('');
   const apps = snapshot?.apps ?? [];
 
@@ -45,62 +42,51 @@ export function LaunchPage() {
   }, [sortedApps]);
 
   if (!snapshot) {
-    return <div className={styles.layout}>加载中...</div>;
+    return <div className="flex h-full w-full bg-[var(--color-bg-primary)]">加载中...</div>;
   }
 
-  const handleRestore = async () => {
-    const restored = await window.api.restoreSession();
-    if (restored && restored.activeInstanceId) {
-      const activeInst = restored.instances.find(i => i.id === restored.activeInstanceId);
-      if (activeInst) {
-        setActiveAppFilter(activeInst.applicationId);
-      }
-    } else if (restored && restored.instances.length > 0) {
-      setActiveAppFilter(restored.instances[0].applicationId);
-    }
-    setCurrentPage('workbench');
-  };
-
   return (
-    <div className={styles.layout}>
-      <main className={styles.mainContent}>
-        <section className={styles.brandHero}>
-          <div className={styles.brandMarkWrap}>
+    <div className="flex h-full w-full overflow-hidden bg-[var(--color-bg-primary)]">
+      <main className="flex flex-1 flex-col gap-6 overflow-y-auto px-8 py-6">
+        <section className="grid items-center gap-[18px] rounded-3xl border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-6 py-[22px] shadow-[0_18px_38px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr]">
+          <div className="h-[76px] w-[76px] rounded-3xl bg-white/10 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] max-md:h-16 max-md:w-16">
             <img
               src={resolveAssetPath('/branding/pretextchat-logo.svg')}
               alt="PretextChat"
-              className={styles.brandMark}
+              className="block h-full w-full"
             />
           </div>
-          <div className={styles.brandCopy}>
-            <span className={styles.brandEyebrow}>AI-only multi-instance work client</span>
-            <h1 className={styles.brandTitle}>PretextChat</h1>
-            <p className={styles.brandDescription}>
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[rgba(167,243,208,0.86)]">
+              AI-only multi-instance work client
+            </span>
+            <h1 className="text-[30px] font-bold leading-none tracking-[-0.04em] text-slate-50 max-md:text-[26px]">
+              PretextChat
+            </h1>
+            <p className="max-w-[720px] text-sm leading-6 text-[rgba(226,232,240,0.84)]">
               把混乱的 AI 标签页变成可重开、可命名、可切换的任务工作位。
             </p>
-            <p className={styles.brandDescription}>
+            <p className="max-w-[720px] text-sm leading-6 text-[rgba(226,232,240,0.84)]">
               需要 Google 登录时，先打开下方的 Google 应用完成登录，再进入 ChatGPT、Claude、Gemini 等站点。
             </p>
           </div>
         </section>
 
         {/* Top Search Bar */}
-        <div className={styles.topBar}>
+        <div className="flex items-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg-card)] px-2 py-1 shadow-[var(--shadow-sm)]">
           <input
             type="text"
             placeholder="搜索 AI 应用..."
-            className={styles.searchInput}
+            className="flex-1 border-none bg-transparent px-3 py-2.5 text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-muted)]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-
-
         {/* Applications Clustered by Category */}
-        <div className={styles.categoryContainer}>
+        <div>
           {Object.keys(groupsInfo).length === 0 ? (
-            <div style={{ padding: '40px 0', color: 'var(--color-text-muted)' }}>
+            <div className="py-10 text-[var(--color-text-muted)]">
               没有找到与 "{searchQuery}" 相关的应用
             </div>
           ) : (
@@ -108,15 +94,15 @@ export function LaunchPage() {
               const categoryApps = sortedApps.filter(a => (a.category || '未分类') === category);
               
               return (
-                <section key={category} className={styles.section} style={{ marginTop: '24px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                    <h2 className={styles.sectionTitle} style={{ marginBottom: 0 }}>{category}</h2>
-                    <span className={styles.groupCardSubtitle} style={{ fontSize: '13px' }}>
+                <section key={category} className="mt-6 flex flex-col gap-3">
+                  <div className="mb-4 flex items-center gap-2">
+                    <h2 className="text-[15px] font-bold text-[var(--color-text-primary)]">{category}</h2>
+                    <span className="text-[13px] text-[var(--color-text-muted)]">
                       {count} 个应用
                     </span>
                   </div>
                   
-                  <div className={styles.appGrid}>
+                  <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
                     {categoryApps.map((app) => (
                       <AppCard
                         key={app.id}

@@ -1,6 +1,5 @@
 import { useUIStore } from '../../store';
 import { TabItem } from './TabItem';
-import styles from './TabBar.module.css';
 
 export function TabBar() {
   const snapshot = useUIStore((s) => s.snapshot);
@@ -30,14 +29,14 @@ export function TabBar() {
   });
 
   return (
-    <div className={styles.tabBar}>
-      <div className={styles.tabs}>
+    <div className="flex h-10 items-center gap-0.5 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-2 [-webkit-app-region:drag]">
+      <div className="flex flex-1 items-center gap-0.5 overflow-x-auto [-webkit-app-region:no-drag] [&::-webkit-scrollbar]:hidden">
         {tabs.map((tab) => (
           <TabItem key={tab.id} {...tab} />
         ))}
         
         <button
-          className={styles.newTabBtn}
+          className="ml-2 flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-dashed border-[var(--color-border)] bg-transparent px-2.5 py-1 text-xs font-medium text-[var(--color-text-secondary)] transition-all duration-150 hover:border-[var(--color-text-primary)] hover:bg-[var(--color-bg-card)] hover:text-[var(--color-text-primary)] [-webkit-app-region:no-drag]"
           onClick={() => window.api.createInstance(activeAppFilter)}
           title={`新建 ${activeApp?.name} 实例`}
         >

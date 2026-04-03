@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import styles from './WebviewSurface.module.css';
 
 interface WebviewSurfaceProps {
   src: string;
@@ -32,12 +31,12 @@ export function WebviewSurface({ src, partition, userAgent, title }: WebviewSurf
   }, []);
 
   return (
-    <div className={styles.surface}>
+    <div className="relative flex h-full w-full flex-1 min-h-0 bg-[radial-gradient(circle_at_top,rgba(115,138,255,0.08),transparent_32%),var(--color-bg-primary)]">
       {isLoading ? (
-        <div className={styles.loadingState}>
-          <div className={styles.loadingCard}>
-            <div className={styles.loadingTitle}>{title}</div>
-            <div className={styles.loadingText}>正在准备安全登录环境...</div>
+        <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center bg-[rgba(15,15,18,0.22)] [backdrop-filter:blur(8px)]">
+          <div className="min-w-[280px] rounded-[18px] border border-white/10 bg-[rgba(20,22,28,0.88)] px-5 py-[18px] shadow-[0_22px_60px_rgba(0,0,0,0.28)]">
+            <div className="text-sm font-bold text-[var(--color-text-primary)]">{title}</div>
+            <div className="mt-2 text-[13px] leading-5 text-[var(--color-text-muted)]">正在准备安全登录环境...</div>
           </div>
         </div>
       ) : null}
@@ -46,7 +45,7 @@ export function WebviewSurface({ src, partition, userAgent, title }: WebviewSurf
         ref={(node) => {
           webviewRef.current = node as HTMLWebViewElement | null;
         }}
-        className={styles.webview}
+        className="flex h-full w-full flex-1 border-0"
         src={src}
         partition={partition}
         allowpopups

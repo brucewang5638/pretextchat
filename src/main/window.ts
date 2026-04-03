@@ -15,7 +15,9 @@ declare const MAIN_WINDOW_VITE_NAME: string;
 const TAB_BAR_HEIGHT = 56; // 标签栏高度（像素）
 const APP_ICON_PATH = path.join(__dirname, BRAND_WINDOWS_ICON_RELATIVE_PATH);
 
-export function createMainWindow(): BrowserWindow {
+export function createMainWindow(
+  shouldMinimizeToTrayOnClose: () => boolean,
+): BrowserWindow {
   const syncContentBounds = () => {
     // 用 setImmediate 把布局更新放到当前事件循环尾部，
     // 避免窗口刚 resize 时同步读取尺寸导致抖动。
@@ -86,7 +88,13 @@ export function createMainWindow(): BrowserWindow {
   });
 
   // 关闭前保存会话快照
-  mainWindow.on("close", () => {
+  mainWindow.on("close", (event) => {
+    if (shouldMinimizeToTrayOnClose()) {
+      event.preventDefault();
+      mainWindow.hide();
+      return;
+    }
+
     viewManager.syncAllCurrentUrls();
     instanceStore.saveSnapshot();
   });

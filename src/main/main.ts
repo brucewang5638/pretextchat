@@ -11,26 +11,66 @@ import { createMainWindow } from './window';
 import { registerIpcHandlers } from './ipc-handlers';
 import { eventLogger } from './event-logger';
 import { updateManager } from './update-manager';
+import { trayManager } from './tray-manager';
+
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+
+if (!gotSingleInstanceLock) {
+  app.quit();
+}
 
 let mainWindow: BrowserWindow | null = null;
+let isQuitting = false;
+
+function showMainWindow(): void {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    mainWindow = createMainWindow(() => !isQuitting);
+    updateManager.init(mainWindow);
+    return;
+  }
+
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+
+  mainWindow.show();
+  mainWindow.setAlwaysOnTop(true);
+  mainWindow.focus();
+  mainWindow.setAlwaysOnTop(false);
+  mainWindow.focus();
+}
 
 app.on('ready', () => {
   // 主进程先把跨进程接口注册好，再创建窗口；
   // 这样 renderer 初次启动时，window.api 调用不会撞到“还没注册 handler”的空窗期。
   registerIpcHandlers();
-  mainWindow = createMainWindow();
+  mainWindow = createMainWindow(() => !isQuitting);
   updateManager.init(mainWindow);
+  trayManager.init(() => mainWindow, () => {
+    isQuitting = true;
+    app.quit();
+  });
   eventLogger.log('app_launched');
 });
 
+app.on('before-quit', () => {
+  isQuitting = true;
+});
+
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== 'darwin' && isQuitting) {
     app.quit();
   }
 });
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    mainWindow = createMainWindow();
-  }
+  showMainWindow();
+});
+
+app.on('second-instance', () => {
+  showMainWindow();
+});
+
+app.on('quit', () => {
+  trayManager.destroy();
 });

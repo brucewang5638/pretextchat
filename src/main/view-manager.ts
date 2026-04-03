@@ -5,18 +5,25 @@
 // 恢复策略：metadata 恢复 + lazy view recreate。
 // OAuth 弹窗：临时子 BrowserWindow + 可共享认证 partition。
 
-import { BrowserWindow, WebContentsView, session, shell } from 'electron';
-import type { Session, WebContents } from 'electron';
-import type { Rectangle, Application, PersistedInstance } from '../shared/types';
-import { getAppPartition, GOOGLE_WEBVIEW_USER_AGENT } from '../shared/app-runtime';
-import { localStore } from './local-store';
-import { NavigationPolicy } from './navigation-policy';
-import { instanceStore } from './instance-store';
-import { eventLogger } from './event-logger';
+import { BrowserWindow, WebContentsView, session, shell } from "electron";
+import type { Session, WebContents } from "electron";
+import type {
+  Rectangle,
+  Application,
+  PersistedInstance,
+} from "../shared/types";
+import {
+  getAppPartition,
+  GOOGLE_WEBVIEW_USER_AGENT,
+} from "../shared/app-runtime";
+import { localStore } from "./local-store";
+import { NavigationPolicy } from "./navigation-policy";
+import { instanceStore } from "./instance-store";
+import { eventLogger } from "./event-logger";
 
-const DEFAULT_ACCEPT_LANGUAGES = 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7';
+const DEFAULT_ACCEPT_LANGUAGES = "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
 
-type ViewReleasePolicy = 'memorySaver' | 'balanced' | 'performance';
+type ViewReleasePolicy = "memorySaver" | "balanced" | "performance";
 
 interface ReleasePolicyConfig {
   releaseAfterHiddenMs: number | null;
@@ -26,11 +33,11 @@ interface ReleasePolicyConfig {
 const VIEW_RELEASE_POLICIES: Record<ViewReleasePolicy, ReleasePolicyConfig> = {
   memorySaver: {
     releaseAfterHiddenMs: 5 * 60 * 1000,
-    keepAliveRecentCount: 1,
+    keepAliveRecentCount: 3,
   },
   balanced: {
     releaseAfterHiddenMs: 20 * 60 * 1000,
-    keepAliveRecentCount: 3,
+    keepAliveRecentCount: 20,
   },
   performance: {
     releaseAfterHiddenMs: null,
@@ -40,12 +47,15 @@ const VIEW_RELEASE_POLICIES: Record<ViewReleasePolicy, ReleasePolicyConfig> = {
 
 function sanitizeAppUserAgent(userAgent: string): string {
   return userAgent
-    .replace(/PretextChat\/[0-9\.-]+ /, '')
-    .replace(/Electron\/[0-9\.-]+ /, '');
+    .replace(/PretextChat\/[0-9\.-]+ /, "")
+    .replace(/Electron\/[0-9\.-]+ /, "");
 }
 
-function getUserAgentProfile(app: Application): { userAgent: string | null; acceptLanguages: string } {
-  if (app.authUserAgentProfile === 'google') {
+function getUserAgentProfile(app: Application): {
+  userAgent: string | null;
+  acceptLanguages: string;
+} {
+  if (app.authUserAgentProfile === "google") {
     return {
       userAgent: GOOGLE_WEBVIEW_USER_AGENT,
       acceptLanguages: DEFAULT_ACCEPT_LANGUAGES,
@@ -86,7 +96,7 @@ class ViewManager {
 
   /** 创建 WebContentsView 并加载 URL */
   create(instance: PersistedInstance, app: Application): WebContentsView {
-    if (!this.mainWindow) throw new Error('MainWindow not set');
+    if (!this.mainWindow) throw new Error("MainWindow not set");
     const instanceId = instance.id;
     this.cancelRelease(instanceId);
     const partition = getAppPartition(app);
@@ -111,27 +121,39 @@ class ViewManager {
     this.setupPopupHandler(view, app, policy);
 
     // 监听页面标题变更
-    view.webContents.on('page-title-updated', (_event, title) => {
+    view.webContents.on("page-title-updated", (_event, title) => {
       instanceStore.onPageTitleUpdated(instanceId, title);
     });
-    view.webContents.on('did-navigate', (_event, url) => {
+    view.webContents.on("did-navigate", (_event, url) => {
       instanceStore.onPageUrlUpdated(instanceId, url);
     });
-    view.webContents.on('did-navigate-in-page', (_event, url) => {
+    view.webContents.on("did-navigate-in-page", (_event, url) => {
       instanceStore.onPageUrlUpdated(instanceId, url);
     });
 
     // 监听加载状态
-    view.webContents.on('did-start-loading', () => {
-      instanceStore.updateRuntimeStatus(instanceId, 'loading');
+    view.webContents.on("did-start-loading", () => {
+      instanceStore.updateRuntimeStatus(instanceId, "loading");
     });
-    view.webContents.on('did-finish-load', () => {
-      instanceStore.updateRuntimeStatus(instanceId, 'ready');
+    view.webContents.on("did-finish-load", () => {
+      instanceStore.updateRuntimeStatus(instanceId, "ready");
     });
-    view.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
-      instanceStore.updateRuntimeStatus(instanceId, 'error', errorDescription);
-      eventLogger.log('load_failed', { appId: app.id, instanceId, errorCode, errorDescription });
-    });
+    view.webContents.on(
+      "did-fail-load",
+      (_event, errorCode, errorDescription) => {
+        instanceStore.updateRuntimeStatus(
+          instanceId,
+          "error",
+          errorDescription,
+        );
+        eventLogger.log("load_failed", {
+          appId: app.id,
+          instanceId,
+          errorCode,
+          errorDescription,
+        });
+      },
+    );
 
     // 记录 webContentsId
     instanceStore.setWebContentsId(instanceId, view.webContents.id);
@@ -234,28 +256,32 @@ class ViewManager {
       try {
         hostname = new URL(url).hostname.toLowerCase();
       } catch {
-        return { action: 'deny' as const };
+        return { action: "deny" as const };
       }
 
       // OAuth 弹窗 → 创建临时子窗口
       if (policy.isAllowedPopup(hostname)) {
         this.openOAuthPopup(url, app, policy);
-        return { action: 'deny' as const };
+        return { action: "deny" as const };
       }
 
       // 站内域名 → 在当前 View 内导航
       if (policy.isAllowedNavigation(hostname)) {
         view.webContents.loadURL(url);
-        return { action: 'deny' as const };
+        return { action: "deny" as const };
       }
 
       // 外部 → 系统浏览器
       shell.openExternal(url);
-      return { action: 'deny' as const };
+      return { action: "deny" as const };
     });
   }
 
-  private openOAuthPopup(url: string, app: Application, policy: NavigationPolicy): void {
+  private openOAuthPopup(
+    url: string,
+    app: Application,
+    policy: NavigationPolicy,
+  ): void {
     if (!this.mainWindow) return;
     const partition = getAppPartition(app);
     const sessionRef = this.configureSession(app);
@@ -276,12 +302,12 @@ class ViewManager {
     });
 
     this.applyUserAgent(popup.webContents, app);
-    popup.once('ready-to-show', () => popup.show());
+    popup.once("ready-to-show", () => popup.show());
 
     popup.loadURL(url);
 
     // 检测 OAuth 完成：跳回 AI 站域名时自动关闭
-    popup.webContents.on('will-navigate', (_event, navUrl) => {
+    popup.webContents.on("will-navigate", (_event, navUrl) => {
       try {
         const navHost = new URL(navUrl).hostname.toLowerCase();
         if (policy.isAllowedNavigation(navHost)) {
@@ -308,16 +334,16 @@ class ViewManager {
     sessionRef.setUserAgent(sanitizedUserAgent, profile.acceptLanguages);
 
     sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
-      const isGoogleRequest = details.url.includes('google.com');
+      const isGoogleRequest = details.url.includes("google.com");
       const userAgent = isGoogleRequest
         ? originalUserAgent
-        : profile.userAgent ?? sanitizedUserAgent;
+        : (profile.userAgent ?? sanitizedUserAgent);
 
       callback({
         requestHeaders: {
           ...details.requestHeaders,
-          'User-Agent': userAgent,
-          'Accept-Language': profile.acceptLanguages,
+          "User-Agent": userAgent,
+          "Accept-Language": profile.acceptLanguages,
         },
       });
     });
@@ -326,10 +352,7 @@ class ViewManager {
     return sessionRef;
   }
 
-  private applyUserAgent(
-    webContents: WebContents,
-    app: Application,
-  ): void {
+  private applyUserAgent(webContents: WebContents, app: Application): void {
     const profile = getUserAgentProfile(app);
 
     if (profile.userAgent) {
@@ -353,8 +376,14 @@ class ViewManager {
     view.webContents.setBackgroundThrottling(!isActive);
     // hostingState 描述的是“资源占用状态”，不是业务成功失败状态。
     // 因此它与 status(loading/ready/error) 分开维护。
-    instanceStore.setHostingState(instanceId, isActive ? 'active' : 'throttled');
-    instanceStore.setViewBounds(instanceId, isActive ? this.contentBounds : null);
+    instanceStore.setHostingState(
+      instanceId,
+      isActive ? "active" : "throttled",
+    );
+    instanceStore.setViewBounds(
+      instanceId,
+      isActive ? this.contentBounds : null,
+    );
     if (!isActive) {
       this.scheduleRelease(instanceId);
     }
@@ -387,16 +416,20 @@ class ViewManager {
 
   private syncCurrentUrl(instanceId: string, view: WebContentsView): void {
     const currentUrl = view.webContents.getURL();
-    if (!currentUrl || currentUrl.startsWith('about:blank')) return;
+    if (!currentUrl || currentUrl.startsWith("about:blank")) return;
     instanceStore.onPageUrlUpdated(instanceId, currentUrl);
   }
 
   private getReleasePolicy(): ReleasePolicyConfig {
-    const preference = localStore.getPreferences().viewReleasePolicy ?? 'balanced';
+    const preference =
+      localStore.getPreferences().viewReleasePolicy ?? "balanced";
     return VIEW_RELEASE_POLICIES[preference];
   }
 
-  private shouldKeepAlive(instanceId: string, keepAliveRecentCount: number): boolean {
+  private shouldKeepAlive(
+    instanceId: string,
+    keepAliveRecentCount: number,
+  ): boolean {
     if (keepAliveRecentCount <= 0) return false;
 
     const activeId = instanceStore.getWorkspaceState().activeInstanceId;

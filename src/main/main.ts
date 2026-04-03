@@ -7,11 +7,11 @@
 // ============================================================
 
 import { app, BrowserWindow } from 'electron';
-import { createMainWindow } from './window';
-import { registerIpcHandlers } from './ipc-handlers';
-import { eventLogger } from './event-logger';
-import { updateManager } from './update-manager';
-import { trayManager } from './tray-manager';
+import { createMainWindow } from './app/createMainWindow';
+import { registerIpcHandlers } from './ipc/registerIpcHandlers';
+import { eventLogger } from './runtime/event-logger';
+import { updateManager } from './runtime/update-manager';
+import { trayManager } from './runtime/tray-manager';
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock();
 

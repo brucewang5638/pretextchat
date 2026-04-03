@@ -6,7 +6,7 @@
 
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import { AppErrorBoundary } from './components/AppErrorBoundary/AppErrorBoundary';
+import { AppErrorBoundary } from './shared/ui/AppErrorBoundary/AppErrorBoundary';
 import './assets/index.css';
 
 const root = document.getElementById('root');

@@ -67,3 +67,40 @@
 - `docs/reading-order.md` 与 `docs/architecture.md` 的边界比较清晰，适合保留为开发者文档。
 - `public/images/product/1.png` 与 `public/images/product/2.png` 适合作为 README 的首屏产品示例图，优先承担“让陌生人快速看懂产品界面”的职责。
 - 这轮更稳的文档结构应收敛为：`README.md`、`docs/prd.md`、`docs/roadmap.md`、`docs/architecture.md`、`docs/reading-order.md`、`docs/release-checklist.md`，其余内容并入这几份主文档。
+
+## Component Refactor Findings
+
+- 当前 renderer 中最需要拆分的文件是 `src/renderer/pages/LaunchPage/LaunchPage.tsx`、`src/renderer/components/Sidebar/Sidebar.tsx`、`src/renderer/components/AppCard/AppCard.tsx` 和 `src/renderer/components/TabBar/TabItem.tsx`。
+- `LaunchPage` 同时承担页面布局、搜索过滤、分类聚合、更新检查状态、自定义应用弹窗状态与卡片渲染，已经超出单文件适合维护的复杂度。
+- `Sidebar` 同时承担数据筛选、排序、拖拽、关闭逻辑和单项视图展示，适合拆成“容器 + 列表项 + 纯函数辅助”结构。
+- `AppCard` 与 `Sidebar`、`TabItem`、`CustomAppModal` 中都出现了类似的图标动作按钮/关闭按钮模式，适合抽出共享的 icon action 组件。
+- 当前工作区里 `LaunchPage`、`ipc-handlers` 及若干新组件文件已存在未提交修改，说明仓库并非干净状态；重构时必须以现有改动为基础，不能回退或覆盖。
+- 对这个仓库来说，更合适的统一规则是：简单组件维持单文件；一旦组件同时包含多段 UI 区块、多个事件处理器或复用子片段，就升级为目录结构。
+- 实际拆分后，`LaunchPage.tsx` 从 390 行降到 99 行，`TabBar.tsx` 从 56 行降到 28 行，目录中的主文件明显更聚焦于“接线”和“组合”。
+- 这轮最适合横向共享的内容并不是“超级通用业务组件”，而是更轻量的 `IconButton` 和共享 SVG icons；它们显著减少了多个文件中的内联 SVG 噪音。
+- `LaunchPage` 和 `TabBar` 的数据准备逻辑在拆分后顺手改成了更集中、可复用的 map/group helper，也顺带消除了渲染期的一些重复查找与重复过滤。
+
+## Renderer Structure Findings
+
+- 原先 `renderer` 顶层同时存在 `pages`、`components`、`hooks`、`lib`，但其中很多文件实际已经是 feature 私有内容，导致“全局共享”和“局部实现”混放。
+- `AppCard` 只服务于 Launch 页面，`Sidebar` / `TabBar` 只服务于 Workbench，但之前都挂在全局 `components/` 下，会误导后续开发者把它们当成跨页面公共组件。
+- `lib/assets.ts` 只有 renderer 内平台适配职责，更适合归到 `src/renderer/shared/asset-path.ts`，而不是一个泛泛的 `lib` 目录。
+- `useIpc.ts` 实际承担的是应用启动与状态接线，不是一个可随处复用的通用 hook 集；改名为 `useAppBootstrap.ts` 后语义更清楚。
+- 对这个仓库更稳的 renderer 结构是：
+- `src/renderer/app/*`：应用级接线。
+- `src/renderer/features/*`：功能域自有页面、局部组件、私有 helpers/types。
+- `src/renderer/shared/*`：renderer 内跨 feature 复用的 UI 原语和适配层。
+- `src/shared/*`：main / preload / renderer 之间共享的跨进程契约。
+
+## Main Structure Findings
+
+- 原先 `src/main` 基本是所有主进程模块平铺在根目录，文件名本身虽然不差，但职责边界需要靠通读代码才能理解。
+- `ipc-handlers.ts` 的主要问题不是代码错误，而是它同时承担了状态快照、运行时校验、实例流转、偏好设置、自定义应用、系统能力等多个域。
+- 对这个项目更清晰的 main 结构是：
+- `src/main/app/*`：应用生命周期和窗口创建。
+- `src/main/catalog/*`：应用目录和自定义应用辅助逻辑。
+- `src/main/ipc/*`：跨进程接口注册与快照同步辅助。
+- `src/main/persistence/*`：本地持久化。
+- `src/main/runtime/*`：更新、托盘、导航策略、事件日志等 Electron 运行时能力。
+- `src/main/workspace/*`：实例状态和 `WebContentsView` 生命周期。
+- `registerIpcHandlers.ts` 拆分后，真正的总装配文件已经只剩注册顺序和 `instanceStore.onChange(syncState)` 这类应用级接线，阅读成本明显下降。

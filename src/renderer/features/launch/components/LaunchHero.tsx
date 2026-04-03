@@ -1,0 +1,126 @@
+import type { ChangeEvent } from "react";
+import type {
+  Preferences,
+  UpdateCheckResult,
+} from "../../../../shared/types";
+import { BRAND_LOGO_ASSET_PATH } from "../../../../shared/branding";
+import { resolveAssetPath } from "../../../shared/asset-path";
+import { StatusPill } from "../../../shared/ui/StatusPill";
+import { RefreshIcon, SpinnerArcIcon } from "../../../shared/ui/icons";
+import {
+  VIEW_RELEASE_POLICY_OPTIONS,
+} from "../launch.constants";
+import { getUpdateStatusTone } from "../launch.helpers";
+
+interface LaunchHeroProps {
+  viewReleasePolicy: NonNullable<Preferences["viewReleasePolicy"]>;
+  updateState: UpdateCheckResult | null;
+  isCheckingUpdate: boolean;
+  customAppFeedback: string | null;
+  onViewReleasePolicyChange: (
+    value: NonNullable<Preferences["viewReleasePolicy"]>,
+  ) => void | Promise<void>;
+  onCheckForUpdates: () => void | Promise<void>;
+}
+
+export function LaunchHero({
+  viewReleasePolicy,
+  updateState,
+  isCheckingUpdate,
+  customAppFeedback,
+  onViewReleasePolicyChange,
+  onCheckForUpdates,
+}: LaunchHeroProps) {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    void onViewReleasePolicyChange(
+      event.target.value as NonNullable<Preferences["viewReleasePolicy"]>,
+    );
+  };
+
+  return (
+    <section className="grid items-center gap-7 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-7 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr_auto] md:px-9">
+      <div className="h-[84px] w-[84px] rounded-[28px] bg-white/10 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] max-md:h-16 max-md:w-16">
+        <img
+          src={resolveAssetPath(BRAND_LOGO_ASSET_PATH)}
+          alt="PretextChat"
+          className="block h-full w-full"
+        />
+      </div>
+
+      <div className="flex min-w-0 flex-col gap-2.5">
+        <h1 className="text-[32px] font-bold leading-none tracking-[-0.045em] text-slate-50 max-md:text-[26px]">
+          PretextChat
+        </h1>
+        <p className="max-w-[760px] text-[15px] font-medium leading-7 tracking-wide text-[rgba(226,232,240,0.9)]">
+          一站式聚合所有 AI 会话 <span className="mx-2 opacity-50">|</span> All AI Chats in One App
+        </p>
+      </div>
+
+      <div className="mt-2 flex flex-col items-start gap-3 md:mt-0 md:items-end md:pl-4">
+        <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-md">
+          <span className="whitespace-nowrap text-white/75">标签内存</span>
+          <select
+            value={viewReleasePolicy}
+            onChange={handleChange}
+            className="cursor-pointer appearance-none bg-transparent pr-4 text-[12.5px] font-semibold text-white outline-none"
+          >
+            {VIEW_RELEASE_POLICY_OPTIONS.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+                className="bg-slate-900 text-white"
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <button
+          type="button"
+          onClick={() => void onCheckForUpdates()}
+          disabled={isCheckingUpdate}
+          className="group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full bg-white/[0.05] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-white/10 ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-white/[0.09] hover:ring-white/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+          style={{
+            boxShadow:
+              "inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <div className="absolute inset-x-0 bottom-0 -z-10 h-full origin-bottom translate-y-full bg-gradient-to-t from-[rgba(110,231,216,0.15)] to-transparent opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
+          <span
+            className={[
+              "relative z-10 flex h-4 w-4 items-center justify-center text-[rgba(110,231,216,0.9)] transition-transform duration-500",
+              isCheckingUpdate ? "animate-spin" : "group-hover:rotate-180",
+            ].join(" ")}
+          >
+            {isCheckingUpdate ? (
+              <SpinnerArcIcon size={16} />
+            ) : (
+              <RefreshIcon size={16} />
+            )}
+          </span>
+          <span className="relative z-10">
+            {isCheckingUpdate ? "极速探测中..." : "检查更新"}
+          </span>
+        </button>
+
+        {updateState && (
+          <div className="animate-in fade-in slide-in-from-right-2 duration-300 ease-out">
+            <StatusPill
+              message={updateState.message}
+              tone={getUpdateStatusTone(updateState.status)}
+              animated={
+                updateState.status === "available" ||
+                updateState.status === "checking"
+              }
+            />
+          </div>
+        )}
+
+        {customAppFeedback && (
+          <StatusPill message={customAppFeedback} tone="info" />
+        )}
+      </div>
+    </section>
+  );
+}

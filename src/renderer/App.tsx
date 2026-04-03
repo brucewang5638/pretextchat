@@ -7,19 +7,18 @@
 // 3. 决定当前显示 LaunchPage 还是 WorkbenchPage
 
 import { useEffect } from 'react';
-import { useStateSync, useInitialize } from './hooks/useIpc';
+import { useAppBootstrap } from './app/useAppBootstrap';
 import { useUIStore } from './store';
-import { LaunchPage } from './pages/LaunchPage/LaunchPage';
-import { WorkbenchPage } from './pages/WorkbenchPage/WorkbenchPage';
-import { Sidebar } from './components/Sidebar/Sidebar';
+import { LaunchPage } from './features/launch/LaunchPage';
+import { WorkbenchPage } from './features/workbench/WorkbenchPage';
+import { Sidebar } from './features/workbench/sidebar/Sidebar';
 
 export function App() {
   console.log('React App rendering. window.api present:', !!window.api);
 
   // 启动时先接上状态同步，再跑初始化逻辑；
   // 这样主进程一旦推送快照，UI 可以立即接住。
-  useStateSync();
-  useInitialize();
+  useAppBootstrap();
 
   const snapshot = useUIStore((s) => s.snapshot);
   const currentPage = useUIStore((s) => s.currentPage);

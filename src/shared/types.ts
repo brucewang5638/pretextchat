@@ -78,7 +78,6 @@ export interface Preferences {
   recentApps: string[];
   recentInstances: RecentInstanceEntry[];
   startupMode: 'home' | 'restoreLastSession';
-  restoreOnStartup: boolean;
   pinnedAppIds: string[];
 }
 

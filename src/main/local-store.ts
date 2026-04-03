@@ -26,7 +26,6 @@ const defaults: StoreSchema = {
     recentApps: [],
     recentInstances: [],
     startupMode: "home",
-    restoreOnStartup: true,
     pinnedAppIds: [],
   },
 };
@@ -59,7 +58,6 @@ class LocalStore {
       recentApps: prefs.recentApps || [],
       recentInstances: prefs.recentInstances || [],
       startupMode: prefs.startupMode || 'home',
-      restoreOnStartup: prefs.restoreOnStartup ?? true,
       pinnedAppIds: prefs.pinnedAppIds || [],
     };
   }
@@ -96,20 +94,8 @@ class LocalStore {
     this.store.set("preferences.recentInstances", entries.slice(0, 10));
   }
 
-  setRestoreOnStartup(value: boolean): void {
-    this.store.set("preferences.restoreOnStartup", value);
-    this.store.set(
-      "preferences.startupMode",
-      value ? "restoreLastSession" : "home",
-    );
-  }
-
   setStartupMode(value: Preferences["startupMode"]): void {
     this.store.set("preferences.startupMode", value);
-    this.store.set(
-      "preferences.restoreOnStartup",
-      value === "restoreLastSession",
-    );
   }
 
   togglePinApp(appId: string): void {

@@ -91,11 +91,13 @@ export function TabItem({ id, label, icon, appName, isActive, isLoading }: TabIt
 
       {(isHovered || isActive) && (
         <button
-          className="shrink-0 rounded-full px-2 py-1 text-sm leading-none text-[var(--color-text-secondary)] transition-colors duration-150 hover:bg-[var(--color-danger)] hover:text-white"
+          className="ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[var(--color-text-tertiary)] transition-colors duration-150 hover:bg-[var(--color-danger)] hover:text-white"
           onClick={handleClose}
           title="关闭"
         >
-          ×
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+          </svg>
         </button>
       )}
     </div>

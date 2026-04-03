@@ -54,7 +54,7 @@ export function Sidebar() {
     <aside className="z-[100] flex h-screen w-[68px] shrink-0 flex-col items-center overflow-y-auto border-r border-[var(--color-border)] bg-[var(--color-bg-page)] py-4 [&::-webkit-scrollbar]:hidden">
       <button
         className={[
-          "mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-transparent bg-transparent text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-elevated)] hover:text-[var(--color-text-primary)] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
+          "mb-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-transparent bg-transparent text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-elevated)] hover:text-[var(--color-text-primary)] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]",
           currentPage === "launch"
             ? "bg-[var(--color-bg-active)] text-[var(--color-accent)]"
             : "",
@@ -65,11 +65,14 @@ export function Sidebar() {
         <img
           src={resolveAssetPath(BRAND_LOGO_ASSET_PATH)}
           alt="PretextChat"
-          className="block h-7 w-7"
+          className="block h-full w-full object-contain p-1"
         />
       </button>
 
-      <div className="my-2 mb-5 h-0.5 w-10 rounded-full bg-[var(--color-border)]"></div>
+      <div
+        aria-hidden="true"
+        className="mb-5 mt-2 w-11 shrink-0 border-b border-[rgba(148,163,184,0.5)] pb-2"
+      />
 
       {apps.map((app) => {
         const isActive =

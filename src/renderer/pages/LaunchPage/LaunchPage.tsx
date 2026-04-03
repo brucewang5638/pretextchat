@@ -68,7 +68,7 @@ export function LaunchPage() {
         }}
       >
         <div
-          className="mx-auto flex w-full max-w-[1100px] flex-col pb-12"
+          className="mx-auto flex w-full flex-col pb-12"
           style={{ gap: "28px" }}
         >
           <section className="grid items-center gap-7 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-7 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr] md:px-9">

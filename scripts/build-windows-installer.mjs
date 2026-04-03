@@ -1,11 +1,13 @@
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
 const arch = process.argv[2] ?? 'x64';
 const rootDir = process.cwd();
 const outDir = path.join(rootDir, 'out');
-const packageJson = JSON.parse(await import(path.join(rootDir, 'package.json'), { with: { type: 'json' } }).then((mod) => mod.default));
+const packageJsonUrl = pathToFileURL(path.join(rootDir, 'package.json')).href;
+const packageJson = JSON.parse(await import(packageJsonUrl, { with: { type: 'json' } }).then((mod) => mod.default));
 
 function run(command, args) {
   const result = spawnSync(command, args, {

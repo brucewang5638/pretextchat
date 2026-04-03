@@ -36,7 +36,9 @@ function getUserAgentProfile(app: Application): { userAgent: string | null; acce
 }
 
 class ViewManager {
+  private static readonly RELEASE_AFTER_HIDDEN_MS = 3 * 60 * 1000;
   private views: Map<string, WebContentsView> = new Map();
+  private releaseTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
   private mainWindow: BrowserWindow | null = null;
   private configuredPartitions: Set<string> = new Set();
   /** 当前 WebContentsView 的可用布局区域 */
@@ -62,6 +64,7 @@ class ViewManager {
   /** 创建 WebContentsView 并加载 URL */
   create(instanceId: string, app: Application): WebContentsView {
     if (!this.mainWindow) throw new Error('MainWindow not set');
+    this.cancelRelease(instanceId);
     const partition = getAppPartition(app);
     const sessionRef = this.configureSession(app);
 
@@ -134,6 +137,7 @@ class ViewManager {
     const view = this.views.get(instanceId);
     if (!view || !this.mainWindow) return;
 
+    this.cancelRelease(instanceId);
     this.mainWindow.contentView.removeChildView(view);
     instanceStore.setViewBounds(instanceId, null);
     instanceStore.setWebContentsId(instanceId, null);
@@ -151,6 +155,17 @@ class ViewManager {
     for (const id of this.views.keys()) {
       this.destroy(id);
     }
+  }
+
+  release(instanceId: string): void {
+    const view = this.views.get(instanceId);
+    if (!view || !this.mainWindow) return;
+
+    this.cancelRelease(instanceId);
+    this.mainWindow.contentView.removeChildView(view);
+    view.webContents.close();
+    this.views.delete(instanceId);
+    instanceStore.markReleased(instanceId);
   }
 
   // ─── OAuth 弹窗处理 ────────────────────────────────────
@@ -275,9 +290,33 @@ class ViewManager {
     view: WebContentsView,
     isActive: boolean,
   ): void {
+    if (isActive) {
+      this.cancelRelease(instanceId);
+    }
     view.webContents.setAudioMuted(!isActive);
     view.webContents.setBackgroundThrottling(!isActive);
+    instanceStore.setHostingState(instanceId, isActive ? 'active' : 'throttled');
     instanceStore.setViewBounds(instanceId, isActive ? this.contentBounds : null);
+    if (!isActive) {
+      this.scheduleRelease(instanceId);
+    }
+  }
+
+  private scheduleRelease(instanceId: string): void {
+    this.cancelRelease(instanceId);
+    const timer = setTimeout(() => {
+      const activeId = instanceStore.getWorkspaceState().activeInstanceId;
+      if (activeId === instanceId) return;
+      this.release(instanceId);
+    }, ViewManager.RELEASE_AFTER_HIDDEN_MS);
+    this.releaseTimers.set(instanceId, timer);
+  }
+
+  private cancelRelease(instanceId: string): void {
+    const timer = this.releaseTimers.get(instanceId);
+    if (!timer) return;
+    clearTimeout(timer);
+    this.releaseTimers.delete(instanceId);
   }
 }
 

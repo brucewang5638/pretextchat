@@ -41,7 +41,8 @@ Native `WebContentsView` instances follow a simple runtime policy:
 - the active instance keeps normal rendering priority
 - hidden instances are moved off-screen
 - hidden instances are background-throttled and audio-muted
-- hidden instances still keep page state unless explicitly destroyed
+- hidden instances are released after a longer inactive period and recreated lazily on demand
+- runtime state distinguishes `active`, `throttled`, `released`, and `rendererManaged`
 
 ## 3. Preference Model
 

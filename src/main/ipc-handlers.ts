@@ -56,6 +56,7 @@ function showInstance(instanceId: string | null, app?: Application): void {
 
 function markRendererManagedReady(instanceId: string, app?: Application): void {
   if (isRendererManagedApp(app)) {
+    instanceStore.setHostingState(instanceId, 'rendererManaged');
     instanceStore.updateRuntimeStatus(instanceId, 'ready');
   }
 }

@@ -95,6 +95,7 @@ export interface RecentInstanceEntry {
 export interface RuntimeInstanceState {
   id: string;
   status: 'idle' | 'loading' | 'ready' | 'error';
+  hostingState: 'rendererManaged' | 'active' | 'throttled' | 'released';
   webContentsId: number | null;
   isVisible: boolean;
   lastLoadError: string | null;

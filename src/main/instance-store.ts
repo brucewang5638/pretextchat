@@ -63,6 +63,7 @@ class InstanceStore {
     this.runtimeStates.set(instance.id, {
       id: instance.id,
       status: 'loading',
+      hostingState: 'released',
       webContentsId: null,
       isVisible: true,
       lastLoadError: null,
@@ -163,6 +164,13 @@ class InstanceStore {
     this.notifyChange();
   }
 
+  setHostingState(id: string, hostingState: RuntimeInstanceState['hostingState']): void {
+    const runtime = this.runtimeStates.get(id);
+    if (!runtime) return;
+    runtime.hostingState = hostingState;
+    this.notifyChange();
+  }
+
   setWebContentsId(id: string, webContentsId: number | null): void {
     const runtime = this.runtimeStates.get(id);
     if (runtime) runtime.webContentsId = webContentsId;
@@ -172,6 +180,17 @@ class InstanceStore {
     const runtime = this.runtimeStates.get(id);
     if (!runtime) return;
     runtime.viewBounds = bounds;
+    this.notifyChange();
+  }
+
+  markReleased(id: string): void {
+    const runtime = this.runtimeStates.get(id);
+    if (!runtime) return;
+    runtime.hostingState = 'released';
+    runtime.status = 'idle';
+    runtime.webContentsId = null;
+    runtime.viewBounds = null;
+    runtime.isVisible = false;
     this.notifyChange();
   }
 
@@ -237,6 +256,7 @@ class InstanceStore {
     return {
       id,
       status: 'idle',
+      hostingState: 'released',
       webContentsId: null,
       isVisible: false,
       lastLoadError: null,

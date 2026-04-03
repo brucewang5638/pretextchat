@@ -94,7 +94,7 @@ export function LaunchPage() {
           className="mx-auto flex w-full flex-col pb-12"
           style={{ gap: "28px" }}
         >
-          <section className="grid items-center gap-7 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-7 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr] md:px-9">
+          <section className="grid items-center gap-7 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-7 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr_auto] md:px-9">
             <div className="h-[84px] w-[84px] rounded-[28px] bg-white/10 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] max-md:h-16 max-md:w-16">
               <img
                 src={resolveAssetPath(BRAND_LOGO_ASSET_PATH)}
@@ -102,30 +102,63 @@ export function LaunchPage() {
                 className="block h-full w-full"
               />
             </div>
+            
             <div className="flex min-w-0 flex-col gap-2.5">
               <h1 className="text-[32px] font-bold leading-none tracking-[-0.045em] text-slate-50 max-md:text-[26px]">
                 PretextChat
               </h1>
               <p className="max-w-[760px] text-[15px] font-medium tracking-wide leading-7 text-[rgba(226,232,240,0.9)]">
-                一站式聚合所有 AI 会话{" "}
-                <span className="mx-2 opacity-50">|</span> All AI Chats in One
-                App
+                一站式聚合所有 AI 会话 <span className="mx-2 opacity-50">|</span> All AI Chats in One App
               </p>
-              <div className="mt-1 flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleCheckForUpdates}
-                  disabled={isCheckingUpdate}
-                  className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-white/16 disabled:cursor-wait disabled:opacity-70"
+            </div>
+
+            <div className="mt-2 flex flex-col items-start gap-3 md:mt-0 md:items-end md:pl-4">
+              <button
+                type="button"
+                onClick={handleCheckForUpdates}
+                disabled={isCheckingUpdate}
+                className="group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full bg-white/[0.05] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-white/10 ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-white/[0.09] hover:ring-white/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+                style={{
+                  boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.1)'
+                }}
+              >
+                {/* Subtle Glow Background on Hover */}
+                <div className="absolute inset-x-0 bottom-0 -z-10 h-full origin-bottom translate-y-full bg-gradient-to-t from-[rgba(110,231,216,0.15)] to-transparent opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
+                
+                {/* Icon with Action Micro-Animation */}
+                <svg 
+                  className={`h-4 w-4 text-[rgba(110,231,216,0.9)] transition-transform duration-500 ${isCheckingUpdate ? 'animate-spin' : 'group-hover:rotate-180'}`}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                 >
-                  {isCheckingUpdate ? "检查中..." : "检查更新"}
-                </button>
-                {updateState ? (
-                  <span className="text-[13px] text-[rgba(226,232,240,0.82)]">
+                  {isCheckingUpdate ? (
+                    <path d="M21 12a9 9 0 11-6.219-8.56" />
+                  ) : (
+                    <>
+                      <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </>
+                  )}
+                </svg>
+                
+                <span className="relative z-10">{isCheckingUpdate ? "极速探测中..." : "检查更新"}</span>
+              </button>
+
+              {/* Status Pill Indicator */}
+              {updateState && (
+                <div className="flex animate-in fade-in slide-in-from-right-2 duration-300 ease-out items-center gap-2 rounded-full border border-white/5 bg-black/20 px-3 py-[7px] backdrop-blur-sm shadow-inner">
+                  <span 
+                    className={`h-2 w-2 rounded-full shadow-[0_0_8px_currentColor] ${
+                      updateState.status === 'error' ? 'bg-rose-400 text-rose-400' :
+                      updateState.status === 'available' ? 'bg-emerald-400 text-emerald-400 animate-pulse' :
+                      updateState.status === 'checking' ? 'bg-blue-400 text-blue-400 animate-pulse' :
+                      updateState.status === 'downloaded' ? 'bg-cyan-400 text-cyan-400' :
+                      'bg-slate-400 text-slate-400'
+                    }`} 
+                  />
+                  <span className="text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)]">
                     {updateState.message}
                   </span>
-                ) : null}
-              </div>
+                </div>
+              )}
             </div>
           </section>
 

@@ -78,11 +78,13 @@ export function AppCard({ id, name, icon, image, description, isPinned, onToggle
           <AppIcon name={name} icon={icon} size="md" />
         )}
       </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 pr-6">
-        <span className="truncate text-[15px] font-bold text-[var(--color-text-primary)] leading-none">{name}</span>
+      <div className="flex min-w-0 flex-1 flex-col justify-start gap-1.5 self-stretch pr-6 pt-0.5">
+        <span className="truncate text-[15px] font-bold leading-[1.2] text-[var(--color-text-primary)]">
+          {name}
+        </span>
         <PretextBlock
           text={description || '强大的 AI 助手'}
-          className="mt-0.5 text-[var(--color-text-muted)]"
+          className="text-[var(--color-text-muted)]"
           maxLines={2}
           reserveLines={2}
           fontSizePx={12}

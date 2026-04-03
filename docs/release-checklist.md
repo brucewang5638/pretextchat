@@ -36,7 +36,8 @@
 - [ ] 至少做过一次关闭后恢复测试
 - [ ] 至少验证过 3 个核心 AI 站点
 - [ ] 检查应用卡片、标签页、主工作区是否存在明显 UI 破损
-- [ ] 检查打包流程是否成功产出安装包
+- [ ] macOS / Linux 打包命令 `npm run make` 成功
+- [ ] Windows 打包命令 `npm run dist:win` 成功
 
 ## 5. Docs Readiness
 

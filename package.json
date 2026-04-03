@@ -10,7 +10,6 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "dist:win": "node scripts/build-windows-installer.mjs x64",
-    "publish": "electron-forge publish",
     "lint": "tsc --noEmit"
   },
   "keywords": [

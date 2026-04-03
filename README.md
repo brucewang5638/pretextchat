@@ -144,7 +144,11 @@ npm run lint
 ### Build distributables
 
 ```bash
+# macOS / Linux
 npm run make
+
+# Windows NSIS / portable
+npm run dist:win
 ```
 
 ## Release Flow
@@ -168,6 +172,12 @@ Windows distribution now follows a traditional installer strategy:
 - primary installer: `NSIS`
 - optional advanced-user build: `portable`
 - installer and app icon: branded `icon.ico`
+
+Current packaging split:
+
+- local development: Electron Forge + Vite
+- macOS / Linux packaging: Electron Forge makers
+- Windows packaging: `electron-builder` via `npm run dist:win`
 
 This better matches normal Windows user expectations around guided installation and install-path selection.
 

@@ -150,7 +150,11 @@ npm run lint
 ### 打包发布产物
 
 ```bash
+# macOS / Linux
 npm run make
+
+# Windows NSIS / portable
+npm run dist:win
 ```
 
 ## Release 流程
@@ -174,6 +178,12 @@ workflow 文件位于 [.github/workflows/release.yml](.github/workflows/release.
 - 主安装包：`NSIS` 向导安装版
 - 补充安装包：`portable` 便携版
 - 安装器与应用图标使用品牌 `icon.ico`
+
+当前打包职责拆分为：
+
+- 本地开发：Electron Forge + Vite
+- macOS / Linux 打包：Electron Forge makers
+- Windows 打包：通过 `npm run dist:win` 调用 `electron-builder`
 
 这样更符合普通 Windows 用户对“下一步安装、可选安装路径”的预期。
 

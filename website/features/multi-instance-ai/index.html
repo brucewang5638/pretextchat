@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiple AI Instances | 同一个 AI 开多个长期任务</title>
+    <meta
+      name="description"
+      content="了解 PretextChat 如何让同一个 AI 多开多个独立实例，用于开发、调研、写作等不同任务，减少标签混乱与上下文污染。"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://pretextchat.netlify.app/features/multi-instance-ai/" />
+    <meta property="og:site_name" content="PretextChat" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://pretextchat.netlify.app/features/multi-instance-ai/" />
+    <meta property="og:title" content="Multiple AI Instances | 同一个 AI 开多个长期任务" />
+    <meta
+      property="og:description"
+      content="多个 ChatGPT 或 Claude 窗口并不等于多任务工作流。真正重要的是把任务拆成独立工作位。"
+    />
+    <meta property="og:image" content="https://pretextchat.netlify.app/images/product/2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Multiple AI Instances | 同一个 AI 开多个长期任务" />
+    <meta
+      name="twitter:description"
+      content="理解多实例 AI 工作位为什么比“再开几个窗口”更适合长期任务。"
+    />
+    <meta name="twitter:image" content="https://pretextchat.netlify.app/images/product/2.png" />
+    <link rel="icon" type="image/svg+xml" href="/images/branding/pretextchat-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "name": "Multiple AI Instances",
+            "url": "https://pretextchat.netlify.app/features/multi-instance-ai/",
+            "description": "PretextChat 关于多实例 AI 工作位的说明页。"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "首页",
+                "item": "https://pretextchat.netlify.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "功能专题",
+                "item": "https://pretextchat.netlify.app/features/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Multiple AI Instances",
+                "item": "https://pretextchat.netlify.app/features/multi-instance-ai/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script>
+      const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'motion-reduce'
+        : 'motion-safe';
+      document.documentElement.classList.add(motionClass);
+    </script>
+    <script type="module" src="/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brandmark" href="/" aria-label="PretextChat 首页">
+          <img class="brandmark__logo" src="/images/branding/pretextchat-logo.svg" alt="" width="56" height="56" />
+          <span class="brandmark__text">
+            <strong>PretextChat</strong>
+            <span>AI Workspace for long-running tasks</span>
+          </span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="主要导航">
+          <a href="/">首页</a>
+          <a aria-current="page" href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">GitHub</a>
+          <a class="button button--primary" href="/download/">下载入口</a>
+        </div>
+      </header>
+
+      <main id="main-content" class="page-main">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="/">首页</a>
+          <span>/</span>
+          <a href="/features/">功能专题</a>
+          <span>/</span>
+          <a href="/features/multi-instance-ai/">多实例 AI</a>
+        </nav>
+
+        <section class="page-hero is-visible" data-reveal>
+          <div class="page-hero__copy">
+            <p class="inline-kicker">Multiple AI Instances</p>
+            <h1>同一个 AI 可以同时服务多个任务，但这些任务需要独立工作位。</h1>
+            <p class="page-hero__lead">
+              “再开一个 ChatGPT 窗口”只是临时动作，多实例任务位才是长期工作流。只有当每个任务都能被命名、切换和恢复时，多 AI 使用才真正可维护。
+            </p>
+            <ul class="badge-list">
+              <li>multiple ChatGPT windows</li>
+              <li>context isolation</li>
+              <li>task naming</li>
+            </ul>
+          </div>
+
+          <aside class="page-hero__aside">
+            <h2>多实例解决什么问题</h2>
+            <ul class="plain-list">
+              <li>避免一个会话同时承接写代码、调研、翻译等不同目标</li>
+              <li>让不同 AI 实例长期服务固定任务，不必来回清空上下文</li>
+              <li>降低切换时重新确认“这页到底在做什么”的成本</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="page-grid" data-reveal>
+          <article class="content-card">
+            <h2>为什么“多个窗口”还不够</h2>
+            <p>
+              浏览器层面的多开只是把网页复制了几份，但任务边界依然很脆弱。你很容易在几个相似标签里丢失方向，或者让多个目标共用同一条上下文。
+            </p>
+            <p>
+              PretextChat 的重点不只是开多个窗口，而是让这些实例天然带着任务身份存在。这样你看到的是“接口重构”“市场调研”“周报摘要”，而不是一排长得几乎一样的标签标题。
+            </p>
+          </article>
+
+          <article class="content-card">
+            <h2>典型使用方式</h2>
+            <ul class="resource-list">
+              <li>开发者把同一个 AI 拆成“写代码”“读代码”“做 review”三个工作位</li>
+              <li>研究者把“搜资料”“整理要点”“形成结论”分成独立任务</li>
+              <li>写作者把“改结构”“润色语气”“多语言改写”拆开长期维护</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="compare-panel" data-reveal>
+          <div class="compare-panel__header">
+            <h2>多实例任务位和普通标签页的差别</h2>
+            <p>关键不在于开了多少个窗口，而在于这些窗口有没有稳定任务身份。</p>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>普通多开</th>
+                <th>PretextChat 多实例任务位</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>任务命名</td>
+                <td>依赖你自己记住</td>
+                <td>实例天然可命名与长期维护</td>
+              </tr>
+              <tr>
+                <td>上下文隔离</td>
+                <td>容易串任务</td>
+                <td>每条任务有自己的独立容器</td>
+              </tr>
+              <tr>
+                <td>最近任务重开</td>
+                <td>通常依赖历史记录</td>
+                <td>有明确的最近任务入口</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="link-grid" data-reveal aria-label="相关页面">
+          <article class="link-card">
+            <strong>Related</strong>
+            <h3>AI workspace 为什么是更好的组织方式</h3>
+            <p>如果你想先理解整体概念，再回来看多实例，会更容易建立全局视角。</p>
+            <a class="link-card__anchor" href="/features/ai-workspace/">回到 AI workspace 专题</a>
+          </article>
+
+          <article class="link-card">
+            <strong>Related</strong>
+            <h3>如何恢复中断后的任务状态</h3>
+            <p>多实例让任务能拆开，会话恢复则让这些任务能持续留下来。</p>
+            <a class="link-card__anchor" href="/features/session-recovery/">查看会话恢复专题</a>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>PretextChat</p>
+        <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
+        <nav class="site-footer__links" aria-label="页脚导航">
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+          <a href="/changelog/">更新日志</a>
+        </nav>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
+      </footer>
+    </div>
+  </body>
+</html>

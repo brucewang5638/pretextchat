@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browser Tabs vs PretextChat | 更适合 AI 工作的桌面工作区</title>
+    <meta
+      name="description"
+      content="比较浏览器标签页和专用 AI workspace 在多任务、多 AI、会话恢复和长期维护上的差异，判断什么时候该从标签页切到 PretextChat。"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://pretextchat.netlify.app/compare/browser-tabs-vs-pretextchat/" />
+    <meta property="og:site_name" content="PretextChat" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://pretextchat.netlify.app/compare/browser-tabs-vs-pretextchat/" />
+    <meta property="og:title" content="Browser Tabs vs PretextChat | 更适合 AI 工作的桌面工作区" />
+    <meta
+      property="og:description"
+      content="如果你已经被多个 AI 标签页拖慢节奏，这个对比页会更直接地说明专用工作区的价值。"
+    />
+    <meta property="og:image" content="https://pretextchat.netlify.app/images/product/1.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Browser Tabs vs PretextChat | 更适合 AI 工作的桌面工作区" />
+    <meta
+      name="twitter:description"
+      content="用一页内容看清浏览器标签页和 PretextChat 在 AI 工作流上的根本差异。"
+    />
+    <meta name="twitter:image" content="https://pretextchat.netlify.app/images/product/1.png" />
+    <link rel="icon" type="image/svg+xml" href="/images/branding/pretextchat-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "name": "Browser Tabs vs PretextChat",
+            "url": "https://pretextchat.netlify.app/compare/browser-tabs-vs-pretextchat/",
+            "description": "PretextChat 与浏览器标签页的对比页。"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "首页",
+                "item": "https://pretextchat.netlify.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "标签页对比",
+                "item": "https://pretextchat.netlify.app/compare/browser-tabs-vs-pretextchat/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script>
+      const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'motion-reduce'
+        : 'motion-safe';
+      document.documentElement.classList.add(motionClass);
+    </script>
+    <script type="module" src="/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brandmark" href="/" aria-label="PretextChat 首页">
+          <img class="brandmark__logo" src="/images/branding/pretextchat-logo.svg" alt="" width="56" height="56" />
+          <span class="brandmark__text">
+            <strong>PretextChat</strong>
+            <span>AI Workspace for long-running tasks</span>
+          </span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="主要导航">
+          <a href="/">首页</a>
+          <a href="/features/">功能专题</a>
+          <a aria-current="page" href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">GitHub</a>
+          <a class="button button--primary" href="/download/">下载入口</a>
+        </div>
+      </header>
+
+      <main id="main-content" class="page-main">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="/">首页</a>
+          <span>/</span>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+        </nav>
+
+        <section class="page-hero is-visible" data-reveal>
+          <div class="page-hero__copy">
+            <p class="inline-kicker">Browser Tabs vs AI Workspace</p>
+            <h1>浏览器标签页很适合打开网页，但不一定适合管理长期 AI 工作。</h1>
+            <p class="page-hero__lead">
+              当你偶尔只开一个 AI 页面时，浏览器已经足够。但当你每天都要同时维护多个任务、多个 AI、多个上下文时，标签页很快会变成阻力。
+            </p>
+            <ul class="badge-list">
+              <li>browser tabs vs AI workspace</li>
+              <li>ChatGPT Claude workflow</li>
+              <li>desktop AI client</li>
+            </ul>
+          </div>
+
+          <aside class="page-hero__aside">
+            <h2>这个对比页适合谁</h2>
+            <ul class="plain-list">
+              <li>已经常驻多个 AI 标签页的开发者</li>
+              <li>需要跨 AI 对比结果的研究者、PM</li>
+              <li>想判断是否值得把 AI 工作迁移到专用客户端的人</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="compare-panel" data-reveal>
+          <div class="compare-panel__header">
+            <h2>核心差异一览</h2>
+            <p>标签页更像临时访问网页，PretextChat 更像围绕任务组织的工作区。</p>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>浏览器标签页</th>
+                <th>PretextChat</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>主要组织单位</td>
+                <td>网页 / 标签页</td>
+                <td>任务 / 工作位</td>
+              </tr>
+              <tr>
+                <td>同一 AI 多任务</td>
+                <td>容易混在一起</td>
+                <td>可拆为多个独立实例</td>
+              </tr>
+              <tr>
+                <td>跨 AI 对比</td>
+                <td>来回切换窗口与历史</td>
+                <td>在固定工作区中持续切换</td>
+              </tr>
+              <tr>
+                <td>中断恢复</td>
+                <td>依赖记忆与历史记录</td>
+                <td>优先恢复上次工作状态</td>
+              </tr>
+              <tr>
+                <td>长期任务维护</td>
+                <td>容易散成很多零碎页面</td>
+                <td>适合命名、保留和重开任务</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="page-grid" data-reveal>
+          <article class="content-card">
+            <h2>什么时候浏览器其实已经不够用了</h2>
+            <ul class="resource-list">
+              <li>你每天同时开 5 个以上 AI 页面，并且常常分不清哪个在做什么</li>
+              <li>你经常要比较 ChatGPT、Claude、Gemini 的回答</li>
+              <li>你需要关闭应用后还能快速回到昨天的任务链</li>
+              <li>你已经不满足于“再建几个书签文件夹”</li>
+            </ul>
+          </article>
+
+          <article class="callout-card">
+            <h2>什么时候 PretextChat 值得试</h2>
+            <p>
+              当你的痛点已经从“找不到 AI 网站”升级成“找不回任务上下文、切换成本太高、恢复太慢”时，专用 AI workspace 才会真正体现价值。
+            </p>
+            <p>它不一定适合轻度用户，但对重度 AI 工作流会更有针对性。</p>
+          </article>
+        </section>
+
+        <section class="link-grid" data-reveal aria-label="下一步阅读">
+          <article class="link-card">
+            <strong>Next</strong>
+            <h3>理解 AI workspace 的整体逻辑</h3>
+            <p>如果你更想先看“为什么要做成工作区”，可以回到 AI workspace 专题页。</p>
+            <a class="link-card__anchor" href="/features/ai-workspace/">查看 AI workspace 专题</a>
+          </article>
+
+          <article class="link-card">
+            <strong>Next</strong>
+            <h3>直接试用下载版</h3>
+            <p>如果你的使用方式已经很接近上述场景，最直接的判断方式还是实际跑一遍自己的工作流。</p>
+            <a class="link-card__anchor" href="/download/">前往下载页</a>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>PretextChat</p>
+        <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
+        <nav class="site-footer__links" aria-label="页脚导航">
+          <a href="/features/">功能专题</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+          <a href="/changelog/">更新日志</a>
+        </nav>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
+      </footer>
+    </div>
+  </body>
+</html>

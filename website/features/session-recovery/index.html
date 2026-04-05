@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session Recovery | 恢复 AI 会话与长期任务</title>
+    <meta
+      name="description"
+      content="关闭应用或重启电脑后继续恢复 AI 会话和任务上下文。PretextChat 让长期 AI 工作流具备更稳定的恢复能力。"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://pretextchat.netlify.app/features/session-recovery/" />
+    <meta property="og:site_name" content="PretextChat" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://pretextchat.netlify.app/features/session-recovery/" />
+    <meta property="og:title" content="Session Recovery | 恢复 AI 会话与长期任务" />
+    <meta
+      property="og:description"
+      content="恢复能力不是锦上添花，而是长期 AI 工作流能否持续存在的前提。"
+    />
+    <meta property="og:image" content="https://pretextchat.netlify.app/images/product/2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Session Recovery | 恢复 AI 会话与长期任务" />
+    <meta
+      name="twitter:description"
+      content="理解会话恢复为什么直接影响 AI 工具的留存与日常使用。"
+    />
+    <meta name="twitter:image" content="https://pretextchat.netlify.app/images/product/2.png" />
+    <link rel="icon" type="image/svg+xml" href="/images/branding/pretextchat-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "name": "Session Recovery",
+            "url": "https://pretextchat.netlify.app/features/session-recovery/",
+            "description": "PretextChat 关于会话恢复与任务续接的说明页。"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "首页",
+                "item": "https://pretextchat.netlify.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "功能专题",
+                "item": "https://pretextchat.netlify.app/features/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Session Recovery",
+                "item": "https://pretextchat.netlify.app/features/session-recovery/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script>
+      const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'motion-reduce'
+        : 'motion-safe';
+      document.documentElement.classList.add(motionClass);
+    </script>
+    <script type="module" src="/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brandmark" href="/" aria-label="PretextChat 首页">
+          <img class="brandmark__logo" src="/images/branding/pretextchat-logo.svg" alt="" width="56" height="56" />
+          <span class="brandmark__text">
+            <strong>PretextChat</strong>
+            <span>AI Workspace for long-running tasks</span>
+          </span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="主要导航">
+          <a href="/">首页</a>
+          <a aria-current="page" href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">GitHub</a>
+          <a class="button button--primary" href="/download/">下载入口</a>
+        </div>
+      </header>
+
+      <main id="main-content" class="page-main">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="/">首页</a>
+          <span>/</span>
+          <a href="/features/">功能专题</a>
+          <span>/</span>
+          <a href="/features/session-recovery/">会话恢复</a>
+        </nav>
+
+        <section class="page-hero is-visible" data-reveal>
+          <div class="page-hero__copy">
+            <p class="inline-kicker">Session Recovery</p>
+            <h1>真正能留下来的 AI 工具，必须让你在中断后迅速续上。</h1>
+            <p class="page-hero__lead">
+              长期 AI 工作流的价值，不只取决于你开始得有多快，也取决于你在离开之后能不能无痛接回。恢复能力越弱，任务就越容易在半路散掉。
+            </p>
+            <ul class="badge-list">
+              <li>resume AI conversations</li>
+              <li>restore last session</li>
+              <li>long-running tasks</li>
+            </ul>
+          </div>
+
+          <aside class="page-hero__aside">
+            <h2>PretextChat 关注的恢复点</h2>
+            <ul class="plain-list">
+              <li>上次工作位还能不能被迅速找回</li>
+              <li>最近任务能不能直接重新打开</li>
+              <li>登录态与常用入口是否仍保持可用</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="page-grid" data-reveal>
+          <article class="content-card">
+            <h2>为什么恢复能力会影响留存</h2>
+            <p>
+              如果你每次重启应用、切换电脑任务、临时离开之后，都要靠记忆重新找回那条工作线，久而久之就会退回浏览器或别的习惯工具。恢复能力决定了 AI
+              工具能否进入日常，而不是只在新鲜感阶段被试用。
+            </p>
+            <p>
+              对重度用户来说，“我能不能马上回到昨天那条工作链”往往比“今天又新接了哪个模型”更重要。
+            </p>
+          </article>
+
+          <article class="content-card">
+            <h2>PretextChat 当前的恢复方向</h2>
+            <ul class="resource-list">
+              <li>支持恢复上次工作状态</li>
+              <li>保留最近任务，降低重新进入成本</li>
+              <li>围绕长期任务位，而不是一次性页面历史来组织回归路径</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="metric-grid" data-reveal aria-label="典型场景">
+          <article class="metric-card">
+            <strong>Scenario 1</strong>
+            <h3>电脑重启后继续昨天的任务</h3>
+            <p>不需要重新回忆“昨天那个 Claude 标签页在第几个窗口里”。</p>
+          </article>
+
+          <article class="metric-card">
+            <strong>Scenario 2</strong>
+            <h3>被别的工作打断后快速续上</h3>
+            <p>把注意力用在任务本身，而不是花在重新寻找入口和上下文上。</p>
+          </article>
+
+          <article class="metric-card">
+            <strong>Scenario 3</strong>
+            <h3>长期维护多条 AI 任务链</h3>
+            <p>恢复能力越强，长期任务越容易留在同一个工作空间里持续推进。</p>
+          </article>
+        </section>
+
+        <section class="link-grid" data-reveal aria-label="相关页面">
+          <article class="link-card">
+            <strong>Related</strong>
+            <h3>为什么 AI workspace 比标签页更适合长期任务</h3>
+            <p>恢复能力是 workspace 的一部分，而不是独立补丁。</p>
+            <a class="link-card__anchor" href="/features/ai-workspace/">查看 AI workspace 专题</a>
+          </article>
+
+          <article class="link-card">
+            <strong>Related</strong>
+            <h3>如何为同一个 AI 拆分多个任务</h3>
+            <p>当任务拆得更清楚，恢复时也更容易迅速定位到正确上下文。</p>
+            <a class="link-card__anchor" href="/features/multi-instance-ai/">查看多实例专题</a>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>PretextChat</p>
+        <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
+        <nav class="site-footer__links" aria-label="页脚导航">
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+          <a href="/changelog/">更新日志</a>
+        </nav>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
+      </footer>
+    </div>
+  </body>
+</html>

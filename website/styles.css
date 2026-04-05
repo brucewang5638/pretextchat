@@ -170,6 +170,11 @@ a {
   font-size: 0.95rem;
 }
 
+.topbar__nav a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 700;
+}
+
 .topbar__nav a:hover,
 .topbar__nav a:focus-visible {
   color: var(--ink);
@@ -478,7 +483,10 @@ section[id] {
 .feature-section,
 .showcase,
 .workflow,
-.cta-banner {
+.cta-banner,
+.topic-hub,
+.audience-section,
+.faq-section {
   margin-top: 56px;
 }
 
@@ -626,6 +634,398 @@ section[id] {
   color: #fff;
 }
 
+.page-main {
+  display: grid;
+  gap: 56px;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.breadcrumbs span {
+  color: rgba(16, 32, 51, 0.42);
+}
+
+.page-hero,
+.page-grid,
+.link-grid,
+.audience-grid,
+.faq-preview,
+.feature-topic-grid,
+.metric-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.page-hero,
+.page-grid {
+  grid-template-columns: minmax(0, 1.06fr) minmax(300px, 0.94fr);
+}
+
+.page-hero__copy,
+.page-hero__aside,
+.content-card,
+.link-card,
+.faq-item,
+.timeline-item,
+.compare-panel,
+.audience-card,
+.metric-card,
+.callout-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-md);
+}
+
+.page-hero__copy,
+.page-hero__aside,
+.content-card,
+.link-card,
+.timeline-item,
+.compare-panel,
+.audience-card,
+.metric-card,
+.callout-card {
+  padding: 26px;
+}
+
+.page-hero__copy {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.page-hero__copy h1 {
+  margin: 0;
+  max-width: 12ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 6vw, 5.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.page-hero__lead,
+.content-card p,
+.content-card li,
+.link-card p,
+.faq-item p,
+.faq-item li,
+.timeline-item p,
+.compare-panel p,
+.compare-table td,
+.audience-card p,
+.metric-card p,
+.callout-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
+
+.page-hero__copy p + p,
+.content-card p + p,
+.callout-card p + p {
+  margin-top: 14px;
+}
+
+.page-hero__aside {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.page-hero__aside h2,
+.content-card h2,
+.compare-panel h2,
+.callout-card h2 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.content-card h3,
+.link-card h3,
+.timeline-item h3,
+.audience-card h3,
+.metric-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  line-height: 1.18;
+}
+
+.inline-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--brand-sea);
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.inline-kicker::before {
+  content: "";
+  width: 46px;
+  height: 1px;
+  background: rgba(31, 95, 120, 0.35);
+}
+
+.badge-list,
+.plain-list,
+.resource-list,
+.topic-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.badge-list li,
+.topic-list li {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid rgba(16, 32, 51, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.plain-list,
+.resource-list {
+  display: grid;
+  gap: 10px;
+}
+
+.plain-list li,
+.resource-list li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--ink-soft);
+}
+
+.plain-list li::before,
+.resource-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.72em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(31, 95, 120, 0.6);
+}
+
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.feature-topic-grid,
+.metric-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.link-grid,
+.audience-grid,
+.faq-preview {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.link-card {
+  display: grid;
+  gap: 12px;
+}
+
+.link-card strong {
+  color: var(--brand-sea);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.link-card__anchor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  color: var(--brand-deep);
+  font-weight: 700;
+}
+
+.link-card__anchor::after {
+  content: "->";
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+}
+
+.metric-card {
+  display: grid;
+  gap: 10px;
+}
+
+.metric-card strong {
+  color: var(--brand-sea);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.callout-card {
+  background:
+    linear-gradient(135deg, rgba(16, 32, 51, 0.92), rgba(31, 95, 120, 0.88));
+  color: #fff;
+}
+
+.callout-card p,
+.callout-card .plain-list li,
+.callout-card .resource-list li {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.callout-card .plain-list li::before,
+.callout-card .resource-list li::before {
+  background: rgba(110, 231, 216, 0.76);
+}
+
+.compare-panel {
+  padding: 0;
+}
+
+.compare-panel__header {
+  padding: 26px 26px 0;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(16, 32, 51, 0.08);
+  vertical-align: top;
+}
+
+.compare-table th {
+  text-align: left;
+  color: var(--brand-sea);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(16, 32, 51, 0.04);
+}
+
+.compare-table tr:last-child td {
+  border-bottom: none;
+}
+
+.faq-item {
+  padding: 0;
+}
+
+.faq-item summary {
+  position: relative;
+  padding: 20px 24px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 1.04rem;
+  font-weight: 700;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--brand-sea);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.faq-item[open] summary::after {
+  content: "-";
+}
+
+.faq-item__body {
+  display: grid;
+  gap: 12px;
+  padding: 0 24px 24px;
+}
+
+.timeline {
+  display: grid;
+  gap: 16px;
+}
+
+.timeline-item {
+  display: grid;
+  gap: 16px;
+}
+
+.timeline-item__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.timeline-item__version {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand-sea);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timeline-item__version::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(31, 95, 120, 0.64);
+}
+
+.timeline-item time {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -634,6 +1034,17 @@ section[id] {
   padding: 34px 6px 0;
   color: var(--ink-soft);
   font-size: 0.92rem;
+}
+
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.site-footer__links a:hover,
+.site-footer__links a:focus-visible {
+  color: var(--ink);
 }
 
 @media (max-width: 1100px) {
@@ -647,7 +1058,14 @@ section[id] {
   .showcase__grid,
   .problem-grid__cards,
   .workflow__steps,
-  .cta-banner {
+  .cta-banner,
+  .page-hero,
+  .page-grid,
+  .feature-topic-grid,
+  .metric-grid,
+  .link-grid,
+  .audience-grid,
+  .faq-preview {
     grid-template-columns: 1fr;
   }
 
@@ -743,14 +1161,36 @@ section[id] {
   .cta-banner,
   .hero__stats div,
   .stage-panel,
-  .signal-card {
+  .signal-card,
+  .page-hero__copy,
+  .page-hero__aside,
+  .content-card,
+  .link-card,
+  .compare-panel__header,
+  .timeline-item,
+  .metric-card,
+  .audience-card,
+  .callout-card {
     padding: 20px;
   }
 
   .section-heading h2,
-  .cta-banner h2 {
+  .cta-banner h2,
+  .page-hero__copy h1,
+  .page-hero__aside h2,
+  .content-card h2,
+  .compare-panel h2,
+  .callout-card h2 {
     max-width: none;
     font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .compare-table th,
+  .compare-table td,
+  .faq-item summary,
+  .faq-item__body {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .site-footer {

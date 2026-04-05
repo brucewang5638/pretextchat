@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Workspace 是什么 | PretextChat 桌面 AI 工作区</title>
+    <meta
+      name="description"
+      content="解释什么是 AI workspace，以及 PretextChat 如何把 ChatGPT、Claude、Gemini 等 AI 从浏览器标签页变成可维护的桌面工作区。"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://pretextchat.netlify.app/features/ai-workspace/" />
+    <meta property="og:site_name" content="PretextChat" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://pretextchat.netlify.app/features/ai-workspace/" />
+    <meta property="og:title" content="AI Workspace 是什么 | PretextChat 桌面 AI 工作区" />
+    <meta
+      property="og:description"
+      content="当 AI 已经变成主工作界面时，真正需要的是一个按任务组织的 workspace，而不是继续堆叠浏览器标签页。"
+    />
+    <meta property="og:image" content="https://pretextchat.netlify.app/images/product/1.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AI Workspace 是什么 | PretextChat 桌面 AI 工作区" />
+    <meta
+      name="twitter:description"
+      content="理解 AI workspace 的定义、适用场景，以及它与浏览器标签页的根本区别。"
+    />
+    <meta name="twitter:image" content="https://pretextchat.netlify.app/images/product/1.png" />
+    <link rel="icon" type="image/svg+xml" href="/images/branding/pretextchat-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "name": "AI Workspace 是什么",
+            "url": "https://pretextchat.netlify.app/features/ai-workspace/",
+            "description": "PretextChat 关于 AI workspace 的定义页。"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "首页",
+                "item": "https://pretextchat.netlify.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "功能专题",
+                "item": "https://pretextchat.netlify.app/features/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "AI Workspace",
+                "item": "https://pretextchat.netlify.app/features/ai-workspace/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script>
+      const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'motion-reduce'
+        : 'motion-safe';
+      document.documentElement.classList.add(motionClass);
+    </script>
+    <script type="module" src="/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brandmark" href="/" aria-label="PretextChat 首页">
+          <img class="brandmark__logo" src="/images/branding/pretextchat-logo.svg" alt="" width="56" height="56" />
+          <span class="brandmark__text">
+            <strong>PretextChat</strong>
+            <span>AI Workspace for long-running tasks</span>
+          </span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="主要导航">
+          <a href="/">首页</a>
+          <a aria-current="page" href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">GitHub</a>
+          <a class="button button--primary" href="/download/">下载入口</a>
+        </div>
+      </header>
+
+      <main id="main-content" class="page-main">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="/">首页</a>
+          <span>/</span>
+          <a href="/features/">功能专题</a>
+          <span>/</span>
+          <a href="/features/ai-workspace/">AI workspace</a>
+        </nav>
+
+        <section class="page-hero is-visible" data-reveal>
+          <div class="page-hero__copy">
+            <p class="inline-kicker">AI Workspace</p>
+            <h1>当 AI 成为主工作界面后，你需要的是 workspace，不只是标签页。</h1>
+            <p class="page-hero__lead">
+              所谓 AI workspace，不是把更多 AI 网站装进一个壳里，而是让你的 AI 使用方式从“网页切换”升级成“任务管理”。
+            </p>
+            <ul class="badge-list">
+              <li>desktop AI client</li>
+              <li>task-based workflow</li>
+              <li>multi-model switching</li>
+            </ul>
+          </div>
+
+          <aside class="page-hero__aside">
+            <h2>它解决什么问题</h2>
+            <ul class="plain-list">
+              <li>同一个 AI 承接太多任务，导致上下文互相污染</li>
+              <li>跨 AI 对比时频繁丢失注意力</li>
+              <li>中断之后很难快速恢复上次工作状态</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="page-grid" data-reveal>
+          <article class="content-card">
+            <h2>AI workspace 的核心，不是入口，而是任务容器</h2>
+            <p>
+              浏览器对网页很友好，但对长期 AI 工作流并不友好。因为浏览器默认的组织单位是网页和标签页，而不是“写方案”“读代码”“市场调研”这种有明确目标的任务。
+            </p>
+            <p>
+              AI workspace 的价值，在于把这些任务变成稳定容器。你不需要记住某个问题藏在哪个标签页里，而是可以直接回到那条任务线。
+            </p>
+          </article>
+
+          <article class="content-card">
+            <h2>PretextChat 如何理解 workspace</h2>
+            <ul class="resource-list">
+              <li>同一个 AI 可以有多个独立工作位，而不是被迫共用一条会话</li>
+              <li>工作位可以重命名，便于长期维护任务上下文</li>
+              <li>目录、标签栏与侧边栏一起服务于切换效率，而不是只做入口展示</li>
+              <li>恢复能力优先于“看起来接入很多模型”</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="compare-panel" data-reveal>
+          <div class="compare-panel__header">
+            <h2>AI workspace 和浏览器标签页的区别</h2>
+            <p>两者都能打开 AI 网站，但默认组织逻辑完全不同。</p>
+          </div>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>维度</th>
+                <th>浏览器标签页</th>
+                <th>PretextChat AI workspace</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>组织单位</td>
+                <td>网页 / 标签页</td>
+                <td>任务 / 工作位</td>
+              </tr>
+              <tr>
+                <td>同一 AI 多任务</td>
+                <td>容易混在一起</td>
+                <td>可拆成多个独立实例</td>
+              </tr>
+              <tr>
+                <td>跨 AI 对比</td>
+                <td>频繁切窗或翻找历史</td>
+                <td>在同一工作区中持续切换</td>
+              </tr>
+              <tr>
+                <td>中断恢复</td>
+                <td>依赖你记住位置</td>
+                <td>优先回到上次任务状态</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="link-grid" data-reveal aria-label="相关专题">
+          <article class="link-card">
+            <strong>Related</strong>
+            <h3>多个同类 AI 任务怎么拆开管理</h3>
+            <p>如果你最常遇到的问题是“同一个 ChatGPT 被用来做十件事”，先看多实例专题。</p>
+            <a class="link-card__anchor" href="/features/multi-instance-ai/">查看多实例专题</a>
+          </article>
+
+          <article class="link-card">
+            <strong>Related</strong>
+            <h3>如何恢复中断后的 AI 会话</h3>
+            <p>如果你常在重启电脑或切换工作后丢失上下文，会话恢复页更贴近你的痛点。</p>
+            <a class="link-card__anchor" href="/features/session-recovery/">查看会话恢复专题</a>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>PretextChat</p>
+        <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
+        <nav class="site-footer__links" aria-label="页脚导航">
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+          <a href="/changelog/">更新日志</a>
+        </nav>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
+      </footer>
+    </div>
+  </body>
+</html>

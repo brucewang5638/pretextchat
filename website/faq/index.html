@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PretextChat FAQ | AI Workspace, Download, Multi-Instance, Session Recovery</title>
+    <meta
+      name="description"
+      content="关于 PretextChat 的常见问题：它是什么、适合谁、支持哪些 AI、如何下载、为什么不是浏览器、如何恢复会话。"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://pretextchat.netlify.app/faq/" />
+    <meta property="og:site_name" content="PretextChat" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pretextchat.netlify.app/faq/" />
+    <meta property="og:title" content="PretextChat FAQ | AI Workspace, Download, Multi-Instance, Session Recovery" />
+    <meta
+      property="og:description"
+      content="用 FAQ 形式快速理解 PretextChat 是什么、适合谁，以及为什么它不是另一个普通浏览器。"
+    />
+    <meta property="og:image" content="https://pretextchat.netlify.app/images/product/1.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PretextChat FAQ | AI Workspace, Download, Multi-Instance, Session Recovery" />
+    <meta
+      name="twitter:description"
+      content="常见问题汇总，方便搜索引擎、AI 助手和真实用户快速理解 PretextChat。"
+    />
+    <meta name="twitter:image" content="https://pretextchat.netlify.app/images/product/1.png" />
+    <link rel="icon" type="image/svg+xml" href="/images/branding/pretextchat-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "PretextChat 是什么？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "PretextChat 是一个面向重度 AI 用户的桌面工作区，把多个 AI 网站变成可命名、可切换、可恢复的任务工作位。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "它适合哪些人？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "它更适合每天同时使用多个 AI、同一个 AI 会维护多个长期任务、并且已经被浏览器标签页拖慢节奏的用户。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "它支持哪些 AI？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "当前目录覆盖主流全球与中文 AI 产品，包括 ChatGPT、Claude、Gemini、Perplexity、DeepSeek、Kimi 等。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "现在如何下载？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "当前公开下载入口集中在 GitHub Releases，下载页也会提供通往 release 和源码仓库的入口。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "它和普通浏览器有什么区别？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "浏览器主要按网页组织内容，PretextChat 主要按 AI 任务组织工作，重点解决多实例、多任务切换和恢复问题。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "为什么会话恢复重要？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "因为重度 AI 用户往往长期维护多个任务线，如果每次中断后都要重新找上下文，工具就很难进入日常工作流。"
+            }
+          }
+        ]
+      }
+    </script>
+    <script>
+      const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'motion-reduce'
+        : 'motion-safe';
+      document.documentElement.classList.add(motionClass);
+    </script>
+    <script type="module" src="/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brandmark" href="/" aria-label="PretextChat 首页">
+          <img class="brandmark__logo" src="/images/branding/pretextchat-logo.svg" alt="" width="56" height="56" />
+          <span class="brandmark__text">
+            <strong>PretextChat</strong>
+            <span>AI Workspace for long-running tasks</span>
+          </span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="主要导航">
+          <a href="/">首页</a>
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a aria-current="page" href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">GitHub</a>
+          <a class="button button--primary" href="/download/">下载入口</a>
+        </div>
+      </header>
+
+      <main id="main-content" class="page-main">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="/">首页</a>
+          <span>/</span>
+          <a href="/faq/">FAQ</a>
+        </nav>
+
+        <section class="page-hero is-visible" data-reveal>
+          <div class="page-hero__copy">
+            <p class="inline-kicker">FAQ</p>
+            <h1>把最常被问到的问题写清楚，才能让人和搜索引擎都更快理解你。</h1>
+            <p class="page-hero__lead">
+              FAQ 不只是客服页面，它也是搜索入口、AI 引用入口和品牌澄清页。这里优先回答“是什么、适合谁、为什么不是浏览器、怎么开始用”。
+            </p>
+            <ul class="badge-list">
+              <li>AI workspace FAQ</li>
+              <li>desktop AI client</li>
+              <li>download and setup</li>
+            </ul>
+          </div>
+
+          <aside class="page-hero__aside">
+            <h2>你会在这里找到</h2>
+            <ul class="plain-list">
+              <li>定位问题：它到底是什么</li>
+              <li>选择问题：我适不适合它</li>
+              <li>行动问题：从哪里下载、如何继续了解</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="faq-preview" data-reveal aria-label="常见问题">
+          <details class="faq-item" open>
+            <summary>PretextChat 是什么？</summary>
+            <div class="faq-item__body">
+              <p>它是一个面向重度 AI 用户的桌面工作区，把多个 AI 网站变成可命名、可切换、可恢复的任务工作位。</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>它适合哪些人？</summary>
+            <div class="faq-item__body">
+              <p>更适合每天同时使用多个 AI、同一个 AI 会维护多个长期任务、并且已经被浏览器标签页拖慢节奏的用户。</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>它支持哪些 AI？</summary>
+            <div class="faq-item__body">
+              <p>当前目录覆盖主流全球与中文 AI 产品，包括 ChatGPT、Claude、Gemini、Perplexity、DeepSeek、Kimi 等。</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>它和普通浏览器有什么区别？</summary>
+            <div class="faq-item__body">
+              <p>浏览器按网页组织内容，PretextChat 按 AI 任务组织工作，重点解决多实例、多任务切换和恢复问题。</p>
+              <p><a class="link-card__anchor" href="/compare/browser-tabs-vs-pretextchat/">查看对比页</a></p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>为什么会话恢复很重要？</summary>
+            <div class="faq-item__body">
+              <p>因为长期 AI 工作流往往会跨天、跨任务中断。如果中断后找不回上下文，工具就很难进入日常使用习惯。</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>现在从哪里下载？</summary>
+            <div class="faq-item__body">
+              <p>当前公开下载入口集中在 GitHub Releases，下载页会汇总 release 与源码入口。</p>
+              <p><a class="link-card__anchor" href="/download/">前往下载页</a></p>
+            </div>
+          </details>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>PretextChat</p>
+        <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
+        <nav class="site-footer__links" aria-label="页脚导航">
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/download/">下载</a>
+          <a href="/changelog/">更新日志</a>
+        </nav>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
+      </footer>
+    </div>
+  </body>
+</html>

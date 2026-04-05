@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PretextChat Changelog | Desktop AI Workspace updates</title>
+    <meta
+      name="description"
+      content="查看 PretextChat 的产品更新轨迹，包括运行时重构、视图管理、托盘与工作流相关改进，以及近期发布版本。"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://pretextchat.netlify.app/changelog/" />
+    <meta property="og:site_name" content="PretextChat" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pretextchat.netlify.app/changelog/" />
+    <meta property="og:title" content="PretextChat Changelog | Desktop AI Workspace updates" />
+    <meta
+      property="og:description"
+      content="按版本查看 PretextChat 的近期改进，帮助用户和搜索引擎理解产品持续演进的方向。"
+    />
+    <meta property="og:image" content="https://pretextchat.netlify.app/images/product/2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PretextChat Changelog | Desktop AI Workspace updates" />
+    <meta
+      name="twitter:description"
+      content="近期版本改动摘要：运行时、视图、托盘、更新分发与工作流改进。"
+    />
+    <meta name="twitter:image" content="https://pretextchat.netlify.app/images/product/2.png" />
+    <link rel="icon" type="image/svg+xml" href="/images/branding/pretextchat-logo.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "name": "PretextChat Changelog",
+            "url": "https://pretextchat.netlify.app/changelog/",
+            "description": "PretextChat 的近期更新日志页面。"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "首页",
+                "item": "https://pretextchat.netlify.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "更新日志",
+                "item": "https://pretextchat.netlify.app/changelog/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script>
+      const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'motion-reduce'
+        : 'motion-safe';
+      document.documentElement.classList.add(motionClass);
+    </script>
+    <script type="module" src="/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brandmark" href="/" aria-label="PretextChat 首页">
+          <img class="brandmark__logo" src="/images/branding/pretextchat-logo.svg" alt="" width="56" height="56" />
+          <span class="brandmark__text">
+            <strong>PretextChat</strong>
+            <span>AI Workspace for long-running tasks</span>
+          </span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="主要导航">
+          <a href="/">首页</a>
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+
+        <div class="topbar__actions">
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat/releases">Releases</a>
+          <a class="button button--primary" href="/download/">下载入口</a>
+        </div>
+      </header>
+
+      <main id="main-content" class="page-main">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="/">首页</a>
+          <span>/</span>
+          <a href="/changelog/">更新日志</a>
+        </nav>
+
+        <section class="page-hero is-visible" data-reveal>
+          <div class="page-hero__copy">
+            <p class="inline-kicker">Changelog</p>
+            <h1>持续更新会帮助用户理解：这个产品不是静态展示页，而是在真实演进。</h1>
+            <p class="page-hero__lead">
+              对桌面应用来说，更新日志不仅服务现有用户，也能帮助搜索引擎、目录站和潜在用户理解产品目前聚焦在哪些能力上。
+            </p>
+          </div>
+
+          <aside class="page-hero__aside">
+            <h2>近期版本关注点</h2>
+            <ul class="plain-list">
+              <li>运行时与身份管理稳定性</li>
+              <li>视图管理与工作台承载方式</li>
+              <li>托盘、更新分发与桌面端体验</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="timeline" data-reveal aria-label="版本时间线">
+          <article class="timeline-item">
+            <div class="timeline-item__meta">
+              <span class="timeline-item__version">v0.1.5</span>
+              <time datetime="2026-04-05">2026-04-05</time>
+            </div>
+            <h3>优化 OAuth 弹窗处理，简化窗口创建逻辑</h3>
+            <p>这一版重点收敛在授权流程与窗口创建路径，让桌面客户端在接入第三方 AI 站点时更稳定。</p>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-item__meta">
+              <span class="timeline-item__version">v0.1.4</span>
+              <time datetime="2026-04-05">2026-04-05</time>
+            </div>
+            <h3>重构运行时与嵌入网页身份管理</h3>
+            <p>围绕 partition、用户代理、视图管理、架构拆分和嵌入站点数据清理做了较大整理，目的是让多实例工作流更稳。</p>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-item__meta">
+              <span class="timeline-item__version">v0.1.1 - v0.1.3</span>
+              <time datetime="2026-04-03">2026-04-03</time>
+            </div>
+            <h3>补齐托盘、更新分发和自定义应用能力</h3>
+            <p>这一阶段逐步加入系统托盘、单实例锁、可配置的 view release policy、自定义应用管理和目录增强，为桌面端长期使用做准备。</p>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-item__meta">
+              <span class="timeline-item__version">v0.1.0</span>
+              <time datetime="2026-04-03">2026-04-03</time>
+            </div>
+            <h3>围绕工作台、更新能力和承载架构完成第一轮落地</h3>
+            <p>包括 URL 持久化、Windows 更新检查、拖拽排序、实例关闭与工作台布局整理等关键基础，逐步把产品从原型推进到可持续使用的桌面工具。</p>
+          </article>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>PretextChat</p>
+        <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
+        <nav class="site-footer__links" aria-label="页脚导航">
+          <a href="/features/">功能专题</a>
+          <a href="/compare/browser-tabs-vs-pretextchat/">标签页对比</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/download/">下载</a>
+        </nav>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
+      </footer>
+    </div>
+  </body>
+</html>

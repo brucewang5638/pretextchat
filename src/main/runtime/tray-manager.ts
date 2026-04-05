@@ -12,10 +12,7 @@ class TrayManager {
       return;
     }
 
-    const trayIcon = nativeImage.createFromPath(TRAY_ICON_PATH).resize({
-      width: 16,
-      height: 16,
-    });
+    const trayIcon = nativeImage.createFromPath(TRAY_ICON_PATH);
     this.tray = new Tray(trayIcon);
     this.tray.setToolTip('PretextChat');
 

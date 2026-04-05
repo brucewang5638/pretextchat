@@ -37,11 +37,6 @@ export interface Application {
   source?: 'builtin' | 'custom';
   lastSubmittedAt?: number;
   navigation: NavigationConfig;
-  /**
-   * 认证链路的 UA 策略。
-   * Google 这类对嵌入式环境更敏感的服务，需要单独使用更接近系统浏览器的 UA。
-   */
-  authUserAgentProfile?: 'default' | 'google';
 }
 
 export interface CustomAppRecord {

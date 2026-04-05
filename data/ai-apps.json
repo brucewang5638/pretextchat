@@ -7,7 +7,6 @@
     "startUrl": "https://www.google.com/",
     "category": "身份登录",
     "description": "先在这里登录 Google，再打开支持 Google 登录的 AI 应用。",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "accounts.google.com",
@@ -29,7 +28,6 @@
     "startUrl": "https://chatgpt.com",
     "category": "AI 助手",
     "description": "OpenAI's flagship conversational model.",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "chatgpt.com",
@@ -57,7 +55,6 @@
     "startUrl": "https://claude.ai",
     "category": "AI 助手",
     "description": "Anthropic's advanced reasoning & coding assistant.",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": ["claude.ai", "*.claude.ai", "console.anthropic.com"],
       "allowedPopupHosts": ["accounts.google.com"],
@@ -73,7 +70,6 @@
     "startUrl": "https://gemini.google.com",
     "category": "AI 助手",
     "description": "Google's direct multimodal AI model.",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": [
         "gemini.google.com",
@@ -94,7 +90,6 @@
     "startUrl": "https://www.perplexity.ai",
     "category": "搜索引擎",
     "description": "AI-powered conversational search engine.",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": ["perplexity.ai", "*.perplexity.ai", "www.perplexity.ai"],
       "allowedPopupHosts": ["accounts.google.com", "appleid.apple.com"],
@@ -110,7 +105,6 @@
     "startUrl": "https://chat.deepseek.com",
     "category": "AI 助手",
     "description": "Powerful AI and reasoning model.",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": ["chat.deepseek.com", "*.deepseek.com", "deepseek.com"],
       "allowedPopupHosts": ["accounts.google.com"],
@@ -171,7 +165,6 @@
     "startUrl": "https://chat.qwen.ai/",
     "category": "AI 助手",
     "description": "Qwen 国际版聊天入口",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": ["chat.qwen.ai", "*.qwen.ai"],
       "allowedPopupHosts": ["accounts.google.com", "*.google.com"],
@@ -262,7 +255,6 @@
     "startUrl": "https://aistudio.google.com/",
     "category": "模型平台",
     "description": "Google AI Studio 官方入口。",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": ["aistudio.google.com", "*.google.com"],
       "allowedPopupHosts": ["accounts.google.com"],
@@ -713,7 +705,6 @@
     "startUrl": "https://notebooklm.google.com/",
     "category": "知识助手",
     "description": "Google NotebookLM 入口。",
-    "authUserAgentProfile": "google",
     "navigation": {
       "allowedHosts": ["notebooklm.google.com", "*.google.com"],
       "allowedPopupHosts": ["accounts.google.com"],

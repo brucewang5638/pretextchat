@@ -14,15 +14,15 @@ import type {
 } from "../../shared/types";
 import {
   getAppPartition,
-  GOOGLE_WEBVIEW_USER_AGENT,
+  SHARED_ACCEPT_LANGUAGES,
+  SHARED_CHROME_USER_AGENT,
+  SHARED_EMBEDDED_WEB_PARTITION,
 } from "../../shared/app-runtime";
 import { appRegistry } from "../catalog/app-registry";
 import { localStore } from "../persistence/local-store";
 import { eventLogger } from "../runtime/event-logger";
 import { NavigationPolicy } from "../runtime/navigation-policy";
 import { instanceStore } from "./instance-store";
-
-const DEFAULT_ACCEPT_LANGUAGES = "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7";
 
 type ViewReleasePolicy = "memorySaver" | "balanced" | "performance";
 
@@ -45,29 +45,6 @@ const VIEW_RELEASE_POLICIES: Record<ViewReleasePolicy, ReleasePolicyConfig> = {
     keepAliveRecentCount: Number.MAX_SAFE_INTEGER,
   },
 };
-
-function sanitizeAppUserAgent(userAgent: string): string {
-  return userAgent
-    .replace(/PretextChat\/[0-9\.-]+ /, "")
-    .replace(/Electron\/[0-9\.-]+ /, "");
-}
-
-function getUserAgentProfile(app: Application): {
-  userAgent: string | null;
-  acceptLanguages: string;
-} {
-  if (app.authUserAgentProfile === "google") {
-    return {
-      userAgent: GOOGLE_WEBVIEW_USER_AGENT,
-      acceptLanguages: DEFAULT_ACCEPT_LANGUAGES,
-    };
-  }
-
-  return {
-    userAgent: null,
-    acceptLanguages: DEFAULT_ACCEPT_LANGUAGES,
-  };
-}
 
 class ViewManager {
   private views: Map<string, WebContentsView> = new Map();
@@ -101,7 +78,7 @@ class ViewManager {
     const instanceId = instance.id;
     this.cancelRelease(instanceId);
     const partition = getAppPartition(app);
-    const sessionRef = this.configureSession(app);
+    const sessionRef = this.configureSession();
 
     const view = new WebContentsView({
       webPreferences: {
@@ -112,7 +89,7 @@ class ViewManager {
       },
     });
 
-    this.applyUserAgent(view.webContents, app);
+    this.applyUserAgent(view.webContents);
 
     // 绑定导航策略
     const policy = new NavigationPolicy(app);
@@ -312,7 +289,7 @@ class ViewManager {
   ): void {
     if (!this.mainWindow) return;
     const partition = getAppPartition(app);
-    const sessionRef = this.configureSession(app);
+    const sessionRef = this.configureSession();
 
     const popup = new BrowserWindow({
       width: 500,
@@ -329,7 +306,7 @@ class ViewManager {
       },
     });
 
-    this.applyUserAgent(popup.webContents, app);
+    this.applyUserAgent(popup.webContents);
     popup.once("ready-to-show", () => popup.show());
 
     popup.loadURL(url);
@@ -348,31 +325,26 @@ class ViewManager {
     });
   }
 
-  private configureSession(app: Application): Session {
-    const partition = getAppPartition(app);
+  private configureSession(): Session {
+    const partition = SHARED_EMBEDDED_WEB_PARTITION;
     const sessionRef = session.fromPartition(partition);
     if (this.configuredPartitions.has(partition)) {
       return sessionRef;
     }
 
-    const originalUserAgent = sessionRef.getUserAgent();
-    const sanitizedUserAgent = sanitizeAppUserAgent(originalUserAgent);
-    const profile = getUserAgentProfile(app);
     // Session 级别统一设置 UA / Accept-Language，
     // 这样同一 partition 下的后续请求会保持一致身份特征。
-    sessionRef.setUserAgent(sanitizedUserAgent, profile.acceptLanguages);
+    sessionRef.setUserAgent(
+      SHARED_CHROME_USER_AGENT,
+      SHARED_ACCEPT_LANGUAGES,
+    );
 
     sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
-      const isGoogleRequest = details.url.includes("google.com");
-      const userAgent = isGoogleRequest
-        ? originalUserAgent
-        : (profile.userAgent ?? sanitizedUserAgent);
-
       callback({
         requestHeaders: {
           ...details.requestHeaders,
-          "User-Agent": userAgent,
-          "Accept-Language": profile.acceptLanguages,
+          "User-Agent": SHARED_CHROME_USER_AGENT,
+          "Accept-Language": SHARED_ACCEPT_LANGUAGES,
         },
       });
     });
@@ -381,16 +353,8 @@ class ViewManager {
     return sessionRef;
   }
 
-  private applyUserAgent(webContents: WebContents, app: Application): void {
-    const profile = getUserAgentProfile(app);
-
-    if (profile.userAgent) {
-      webContents.setUserAgent(profile.userAgent);
-      return;
-    }
-
-    const sanitizedUA = sanitizeAppUserAgent(webContents.userAgent);
-    webContents.setUserAgent(sanitizedUA);
+  private applyUserAgent(webContents: WebContents): void {
+    webContents.setUserAgent(SHARED_CHROME_USER_AGENT);
   }
 
   private applyViewActivity(

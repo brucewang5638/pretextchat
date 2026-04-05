@@ -3,12 +3,13 @@
 // ============================================================
 // 这层只负责回答两个问题：
 // 1. 当前 app 用哪个 partition
-// 2. 当前 app 该使用怎样的 UA / 会话画像
+// 2. 当前嵌入网页统一使用哪套浏览器身份
 
 import type { Application } from './types';
 
-export const GOOGLE_WEBVIEW_USER_AGENT =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36';
+export const SHARED_CHROME_USER_AGENT =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36';
+export const SHARED_ACCEPT_LANGUAGES = 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7';
 export const SHARED_EMBEDDED_WEB_PARTITION = 'persist:embedded-web';
 
 export function getAppPartition(app: Application): string {

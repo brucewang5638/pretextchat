@@ -97,6 +97,16 @@ npm run start
 npm run lint
 ```
 
+### 官网静态站
+
+官网源码单独放在 `website/` 目录，和 Electron 主应用解耦：
+
+```bash
+npm run site:build
+```
+
+构建产物输出到 `website/dist/`，适合直接部署到静态托管平台。部署建议见 [docs/website-deployment.md](docs/website-deployment.md)。
+
 ### 打包发布产物
 
 ```bash

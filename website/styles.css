@@ -224,7 +224,7 @@ html.motion-reduce [data-reveal],
   grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
   gap: 32px;
   padding: 26px 0 34px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .eyebrow {
@@ -329,7 +329,19 @@ section[id] {
   position: relative;
   display: grid;
   gap: 18px;
+  align-content: start;
   padding-top: 24px;
+}
+
+.stage-highlights,
+.stage-gallery,
+.hero__support {
+  display: grid;
+  gap: 14px;
+}
+
+.stage-highlights {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .stage-panel {
@@ -341,12 +353,29 @@ section[id] {
   box-shadow: var(--shadow-lg);
 }
 
-.stage-panel img,
-.showcase-card img {
+.stage-frame {
+  overflow: hidden;
   border-radius: 20px;
   border: 1px solid rgba(16, 32, 51, 0.08);
-  aspect-ratio: 1431 / 801;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.stage-frame--hero {
+  aspect-ratio: 16 / 10;
+}
+
+.stage-frame--wide,
+.stage-frame--showcase {
+  aspect-ratio: 16 / 9;
+}
+
+.stage-frame img,
+.showcase-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
   object-fit: cover;
+  object-position: center top;
 }
 
 .stage-panel figcaption {
@@ -354,7 +383,6 @@ section[id] {
 }
 
 .signal-card {
-  width: min(260px, 72%);
   padding: 18px 18px 16px;
 }
 
@@ -370,7 +398,6 @@ section[id] {
   font-family: var(--font-mono);
   font-size: 0.76rem;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .signal-card strong,
@@ -383,45 +410,54 @@ section[id] {
   line-height: 1.2;
 }
 
-.signal-card--problem {
-  justify-self: end;
-}
-
 .signal-card--solution {
   background:
     linear-gradient(135deg, rgba(110, 231, 216, 0.22), rgba(255, 255, 255, 0.82));
 }
 
-.app-ribbon {
-  overflow: hidden;
-  padding: 4px 0 0;
+.stage-gallery {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.app-ribbon__track {
-  display: flex;
-  flex-wrap: wrap;
+.stage-mini {
+  display: grid;
   gap: 12px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: var(--shadow-md);
 }
 
-.app-chip {
+.stage-mini figcaption {
+  display: grid;
+  gap: 6px;
+}
+
+.stage-mini strong {
+  font-size: 1.06rem;
+}
+
+.stage-mini p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.hero__support {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex-wrap: wrap;
+}
+
+.hero__support span {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  padding: 8px 14px;
+  justify-content: center;
+  min-height: 52px;
+  padding: 10px 14px;
   border: 1px solid rgba(16, 32, 51, 0.08);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.62);
-}
-
-.app-chip img {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.app-chip span {
   font-size: 0.94rem;
   font-weight: 600;
 }
@@ -505,35 +541,45 @@ section[id] {
 
 .showcase__grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 18px;
 }
 
 .showcase-card {
   margin: 0;
   padding: 18px;
-}
-
-.showcase-card--wide {
-  grid-column: span 7;
-}
-
-.showcase-card {
-  grid-column: span 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  align-items: center;
+  gap: 18px;
 }
 
 .showcase-card figcaption {
   display: grid;
   gap: 6px;
-  padding-top: 14px;
+}
+
+.showcase-card--reverse {
+  grid-template-columns: minmax(280px, 0.65fr) minmax(0, 1.35fr);
+}
+
+.showcase-card--reverse .stage-frame {
+  order: 2;
+}
+
+.showcase-card--reverse figcaption {
+  order: 1;
 }
 
 .showcase-card strong {
   font-size: 1.12rem;
 }
 
+.showcase-card p {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+}
+
 .showcase-note {
-  grid-column: span 12;
   display: grid;
   gap: 14px;
   align-items: center;
@@ -620,22 +666,21 @@ section[id] {
     gap: 26px;
   }
 
+  .stage-highlights,
+  .stage-gallery,
+  .hero__support,
   .hero__stats {
     grid-template-columns: 1fr;
   }
 
-  .signal-card {
-    width: auto;
-  }
-
-  .signal-card--problem {
-    justify-self: stretch;
-  }
-
   .showcase-card,
-  .showcase-card--wide,
-  .showcase-note {
-    grid-column: span 1;
+  .showcase-card--reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase-card--reverse .stage-frame,
+  .showcase-card--reverse figcaption {
+    order: initial;
   }
 
   .cta-banner {
@@ -673,6 +718,7 @@ section[id] {
   .feature-card p,
   .problem-card p,
   .showcase-note p,
+  .showcase-card p,
   .workflow__steps p,
   .signal-card p {
     font-size: 0.97rem;

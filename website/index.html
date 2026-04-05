@@ -20,7 +20,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:image" content="./images/product/1.png" />
     <link rel="icon" type="image/svg+xml" href="./images/branding/pretextchat-logo.svg" />
-    <title>PretextChat | AI-only Desktop Workspace</title>
+    <title>PretextChat | AI 专用桌面工作区</title>
     <script>
       const motionClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         ? 'motion-reduce'
@@ -44,7 +44,7 @@
           />
           <span class="brandmark__text">
             <strong>PretextChat</strong>
-            <span>AI-only Desktop Workspace</span>
+            <span>AI 专用桌面工作区</span>
           </span>
         </a>
 
@@ -56,9 +56,7 @@
         </nav>
 
         <div class="topbar__actions">
-          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">
-            GitHub
-          </a>
+          <a class="button button--ghost" href="https://github.com/brucewang5638/pretextchat">源码仓库</a>
           <a
             class="button button--primary"
             href="https://github.com/brucewang5638/pretextchat/releases"
@@ -71,11 +69,11 @@
       <main id="main-content">
         <section class="hero is-visible" data-reveal>
           <div class="hero__copy">
-            <p class="eyebrow">For serious AI workflows, not another tab strip.</p>
+            <p class="eyebrow">为重度 AI 工作流而生</p>
             <h1>把散落的 AI 标签页，收拢成一个真正能工作的桌面。</h1>
             <p class="hero__lead">
-              PretextChat 面向把 AI 当成主工作界面的重度用户而生。它不是 AI 导航站，也不是大而全聚合器，而是把
-              ChatGPT、Claude、Gemini、DeepSeek、Kimi、豆包、通义等入口变成可新建、恢复、切换和长期维护的任务工作位。
+              PretextChat 面向把 AI 当成主工作界面的重度用户而生。它不是 AI 导航站，也不是大而全聚合器，而是把多个主流 AI
+              入口变成可新建、恢复、切换和长期维护的任务工作位。
             </p>
 
             <div class="hero__actions">
@@ -83,7 +81,7 @@
                 class="button button--primary"
                 href="https://github.com/brucewang5638/pretextchat/releases"
               >
-                下载 Windows 版
+                下载桌面版
               </a>
               <a class="button button--ghost" href="#showcase">先看产品界面</a>
             </div>
@@ -105,40 +103,81 @@
           </div>
 
           <div class="hero__stage" aria-label="产品展示">
-            <div class="signal-card signal-card--problem">
-              <span>Before</span>
-              <strong>浏览器标签页越开越多</strong>
-              <p>写方案、改代码、查资料、做总结全部挤在一个浏览器窗口里。</p>
+            <div class="stage-highlights">
+              <div class="signal-card signal-card--problem">
+                <span>开始前</span>
+                <strong>浏览器标签页越开越多</strong>
+                <p>写方案、改代码、查资料、做总结，全都被塞进一个浏览器窗口里。</p>
+              </div>
+
+              <div class="signal-card signal-card--solution">
+                <span>开始后</span>
+                <strong>结构化 AI 工作区</strong>
+                <p>以任务为单位打开、重命名、恢复和切换，而不是总被上下文打散。</p>
+              </div>
             </div>
 
-            <figure class="stage-panel">
-              <img
-                src="./images/product/1.png"
-                alt="PretextChat 启动页，展示 AI 应用目录和分类卡片"
-                width="1431"
-                height="801"
-                fetchpriority="high"
-              />
+            <figure class="stage-panel stage-panel--hero">
+              <div class="stage-frame stage-frame--hero">
+                <img
+                  src="./images/product/1.png"
+                  alt="PretextChat 启动页，展示 AI 应用目录和分类卡片"
+                  width="1431"
+                  height="801"
+                  fetchpriority="high"
+                />
+              </div>
               <figcaption>
-                一个启动页，收纳常用 AI；一个工作台，承接真正长期进行的任务。
+                首屏就直接展示横向主界面。入口、搜索、分类和工作位都应该一眼能扫到，不应该被拉成一条竖着的长页面。
               </figcaption>
             </figure>
 
-            <div class="signal-card signal-card--solution">
-              <span>After</span>
-              <strong>结构化 AI 工作区</strong>
-              <p>以任务为单位打开、重命名、恢复和切换，而不是在标签页里迷路。</p>
+            <div class="stage-gallery" aria-label="界面预览">
+              <figure class="stage-mini">
+                <div class="stage-frame stage-frame--wide">
+                  <img
+                    src="./images/product/1.png"
+                    alt="PretextChat 启动页横向展示"
+                    width="1431"
+                    height="801"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>启动页</strong>
+                  <p>应用目录应该横向舒展展示，先看到全局，再进入具体任务。</p>
+                </figcaption>
+              </figure>
+
+              <figure class="stage-mini">
+                <div class="stage-frame stage-frame--wide">
+                  <img
+                    src="./images/product/2.png"
+                    alt="PretextChat 工作台横向展示"
+                    width="1431"
+                    height="801"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption>
+                  <strong>工作台</strong>
+                  <p>会话区域、输入区和侧边结构要完整露出来，视觉上必须是横向主界面。</p>
+                </figcaption>
+              </figure>
             </div>
 
-            <div class="app-ribbon" aria-label="已支持的 AI 应用">
-              <div class="app-ribbon__track" data-app-grid></div>
+            <div class="hero__support" aria-label="能力摘要">
+              <span>多实例任务位</span>
+              <span>会话恢复</span>
+              <span>全球与中文 AI</span>
+              <span>桌面级切换效率</span>
             </div>
           </div>
         </section>
 
         <section class="problem-grid" id="why" data-reveal>
           <div class="section-heading">
-            <p class="eyebrow">Why it exists</p>
+            <p class="eyebrow">为什么要做这个产品</p>
             <h2>你需要的不是更多入口，而是更少混乱。</h2>
           </div>
 
@@ -155,7 +194,7 @@
               <span class="problem-card__index">02</span>
               <h3>跨 AI 对比成本高</h3>
               <p>
-                你知道该对比 Claude、ChatGPT、Gemini、Perplexity 的回答，但来回切换窗口会把注意力切碎。
+                你知道应该对比不同 AI 的回答，但来回切换窗口、标签页和历史记录，会把注意力切得很碎。
               </p>
             </article>
 
@@ -171,16 +210,16 @@
 
         <section class="feature-section" id="features" data-reveal>
           <div class="section-heading">
-            <p class="eyebrow">Core capabilities</p>
+            <p class="eyebrow">核心能力</p>
             <h2>围绕“长期 AI 工作流”组织，而不是围绕网站入口堆砌。</h2>
           </div>
 
           <div class="feature-grid">
             <article class="feature-card feature-card--tall">
-              <p class="feature-card__label">Workspace first</p>
+              <p class="feature-card__label">工作位优先</p>
               <h3>一项任务，一个稳定的工作位</h3>
               <p>
-                你可以为同一个 AI 开多个独立实例，分别服务于 coding、调研、写作、翻译、资料清洗等不同目标。
+                你可以为同一个 AI 开多个独立实例，分别服务于开发、调研、写作、翻译、资料清洗等不同目标。
               </p>
               <ul class="feature-card__list">
                 <li>多开同一 AI，互不干扰</li>
@@ -190,26 +229,26 @@
             </article>
 
             <article class="feature-card">
-              <p class="feature-card__label">Fast switching</p>
+              <p class="feature-card__label">快速切换</p>
               <h3>桌面级切换效率</h3>
-              <p>标签栏 + 侧边栏组合，让你像在 IDE 里切任务一样切 AI。</p>
+              <p>标签栏 + 侧边栏组合，让你像在专业工作台里切任务一样切换不同助手。</p>
             </article>
 
             <article class="feature-card">
-              <p class="feature-card__label">Catalog</p>
+              <p class="feature-card__label">应用目录</p>
               <h3>全球与中文 AI 一起维护</h3>
               <p>把真正常用的 AI 产品收进一个目录，而不是把浏览器书签当工作台。</p>
             </article>
 
             <article class="feature-card">
-              <p class="feature-card__label">Recovery</p>
+              <p class="feature-card__label">状态恢复</p>
               <h3>恢复上次工作状态</h3>
               <p>关闭应用、系统重启、临时离开之后，回来仍能迅速接上。</p>
             </article>
 
             <article class="feature-card feature-card--accent">
-              <p class="feature-card__label">Positioning</p>
-              <h3>不是通用浏览器，不是模型 API 平台。</h3>
+              <p class="feature-card__label">产品定位</p>
+              <h3>不是通用浏览器，也不是模型接口平台。</h3>
               <p>
                 它只服务一件事：让重度 AI 用户以更少切换损耗，管理更多长期任务。
               </p>
@@ -219,41 +258,47 @@
 
         <section class="showcase" id="showcase" data-reveal>
           <div class="section-heading">
-            <p class="eyebrow">Showcase</p>
+            <p class="eyebrow">产品界面</p>
             <h2>从启动页到工作台，界面语言始终服务于“正在进行的任务”。</h2>
           </div>
 
           <div class="showcase__grid">
-            <figure class="showcase-card showcase-card--wide">
-              <img
-                src="./images/product/1.png"
-                alt="PretextChat 的启动页，包含搜索栏与按分类排列的 AI 应用卡片"
-                width="1431"
-                height="801"
-                loading="lazy"
-              />
+            <figure class="showcase-card showcase-card--row">
+              <div class="stage-frame stage-frame--showcase">
+                <img
+                  src="./images/product/1.png"
+                  alt="PretextChat 的启动页，包含搜索栏与按分类排列的 AI 应用卡片"
+                  width="1431"
+                  height="801"
+                  loading="lazy"
+                />
+              </div>
               <figcaption>
                 <strong>启动页</strong>
                 <span>快速找到你要开的 AI，并以任务视角进入工作流。</span>
+                <p>这里应该完整展示横向主界面的信息密度，而不是只看到一段被裁开的竖向内容。</p>
               </figcaption>
             </figure>
 
-            <figure class="showcase-card">
-              <img
-                src="./images/product/2.png"
-                alt="PretextChat 的工作台页面，展示 AI 会话区域与输入区"
-                width="1431"
-                height="801"
-                loading="lazy"
-              />
+            <figure class="showcase-card showcase-card--row showcase-card--reverse">
+              <div class="stage-frame stage-frame--showcase">
+                <img
+                  src="./images/product/2.png"
+                  alt="PretextChat 的工作台页面，展示 AI 会话区域与输入区"
+                  width="1431"
+                  height="801"
+                  loading="lazy"
+                />
+              </div>
               <figcaption>
                 <strong>工作台</strong>
                 <span>在一个稳定容器里承接长期会话，而不是任由浏览器上下文散掉。</span>
+                <p>工作台的价值，在于横向地同时展现导航、会话和输入区域，让任务结构一眼可见。</p>
               </figcaption>
             </figure>
 
             <article class="showcase-note">
-              <p class="showcase-note__label">Built for power users</p>
+              <p class="showcase-note__label">为重度用户而做</p>
               <h3>把“多模型并行”从理论能力，变成实际可持续的日常动作。</h3>
               <p>
                 对开发者、研究者、PM、翻译用户、写作者来说，真正的损耗往往不在模型本身，而在切换、重找和恢复任务上下文。
@@ -264,7 +309,7 @@
 
         <section class="workflow" data-reveal>
           <div class="section-heading">
-            <p class="eyebrow">A better loop</p>
+            <p class="eyebrow">更顺手的工作循环</p>
             <h2>把 AI 使用从“浏览”升级成“工作流”。</h2>
           </div>
 
@@ -289,7 +334,7 @@
 
         <section class="cta-banner" id="deploy" data-reveal>
           <div>
-            <p class="eyebrow">Get started</p>
+            <p class="eyebrow">开始使用</p>
             <h2>如果你已经把 AI 当作主工作界面，PretextChat 值得拥有一个固定位置。</h2>
           </div>
 
@@ -310,7 +355,7 @@
       <footer class="site-footer">
         <p>PretextChat</p>
         <p>把混乱的 AI 标签页，变成结构化的 AI 任务工作区。</p>
-        <p><span data-current-year></span> brucewang. Built for serious AI workflows.</p>
+        <p><span data-current-year></span> brucewang。为长期 AI 工作流而做。</p>
       </footer>
     </div>
   </body>

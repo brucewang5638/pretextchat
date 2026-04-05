@@ -177,10 +177,19 @@ class ViewManager {
     // 隐藏所有其他 View
     for (const [id, view] of this.views) {
       if (instanceId !== null && id === instanceId) {
+        try {
+          this.mainWindow.contentView.addChildView(view);
+        } catch {
+          // 忽略重复添加可能抛出的错误
+        }
         view.setBounds(this.contentBounds);
         this.applyViewActivity(id, view, true);
       } else {
-        view.setBounds({ x: -10000, y: -10000, width: 0, height: 0 });
+        try {
+          this.mainWindow.contentView.removeChildView(view);
+        } catch {
+          // 忽略已经移除可能抛出的错误
+        }
         this.applyViewActivity(id, view, false);
       }
     }

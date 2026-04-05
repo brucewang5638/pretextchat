@@ -6,7 +6,12 @@
 // OAuth 弹窗：临时子 BrowserWindow + 可共享认证 partition。
 
 import { BrowserWindow, WebContentsView, session, shell } from "electron";
-import type { Session, WebContents } from "electron";
+import type {
+  BrowserWindowConstructorOptions,
+  Session,
+  WebContents,
+  WindowOpenHandlerResponse,
+} from "electron";
 import type {
   Rectangle,
   Application,
@@ -270,8 +275,7 @@ class ViewManager {
 
       // OAuth 弹窗 → 创建临时子窗口
       if (policy.isAllowedPopup(hostname)) {
-        this.openOAuthPopup(url, app, policy);
-        return { action: "deny" as const };
+        return this.openOAuthPopup();
       }
 
       // 站内域名 → 在当前 View 内导航
@@ -286,47 +290,49 @@ class ViewManager {
     });
   }
 
-  private openOAuthPopup(
-    url: string,
-    app: Application,
-    policy: NavigationPolicy,
-  ): void {
-    if (!this.mainWindow) return;
+  private openOAuthPopup(): WindowOpenHandlerResponse {
+    if (!this.mainWindow) {
+      return { action: "deny" };
+    }
     const partition = getAppPartition();
     const sessionRef = this.configureSession();
-
-    const popup = new BrowserWindow({
-      width: 500,
-      height: 700,
-      parent: this.mainWindow,
-      modal: false,
-      autoHideMenuBar: true,
-      show: false,
-      webPreferences: {
-        partition, // 共享 session，OAuth 成功后 Cookie 自动复用到同 auth group
-        session: sessionRef,
-        contextIsolation: true,
-        sandbox: true,
+    return {
+      action: "allow",
+      overrideBrowserWindowOptions: {
+        width: 500,
+        height: 700,
+        parent: this.mainWindow,
+        modal: false,
+        autoHideMenuBar: true,
+        show: false,
+        webPreferences: {
+          partition,
+          session: sessionRef,
+          contextIsolation: true,
+          sandbox: true,
+        },
       },
-    });
+      createWindow: (options: BrowserWindowConstructorOptions) => {
+        const popup = new BrowserWindow({
+          ...options,
+          parent: this.mainWindow ?? undefined,
+          modal: false,
+          autoHideMenuBar: true,
+          show: false,
+          webPreferences: {
+            ...options.webPreferences,
+            partition,
+            session: sessionRef,
+            contextIsolation: true,
+            sandbox: true,
+          },
+        });
 
-    this.applyUserAgent(popup.webContents);
-    popup.once("ready-to-show", () => popup.show());
-
-    popup.loadURL(url);
-
-    // 检测 OAuth 完成：只有真正跳回目标站点时才关闭。
-    // Google 自身的 accounts/myaccount 中间页仍然保留弹窗，避免“点下一步就消失”。
-    popup.webContents.on("will-navigate", (_event, navUrl) => {
-      try {
-        const navHost = new URL(navUrl).hostname.toLowerCase();
-        if (this.shouldCloseOAuthPopup(navHost, policy)) {
-          popup.close();
-        }
-      } catch {
-        // ignore invalid URLs
-      }
-    });
+        this.applyUserAgent(popup.webContents);
+        popup.once("ready-to-show", () => popup.show());
+        return popup.webContents;
+      },
+    };
   }
 
   private configureSession(): Session {
@@ -528,21 +534,6 @@ class ViewManager {
       "idle",
       `[RECOVERABLE_VIEW_LOSS] ${reason}`,
     );
-  }
-
-  private shouldCloseOAuthPopup(
-    hostname: string,
-    policy: NavigationPolicy,
-  ): boolean {
-    if (!policy.isAllowedNavigation(hostname)) {
-      return false;
-    }
-
-    if (policy.isAllowedPopup(hostname)) {
-      return false;
-    }
-
-    return hostname !== "myaccount.google.com";
   }
 
   private getReleasePolicy(): ReleasePolicyConfig {

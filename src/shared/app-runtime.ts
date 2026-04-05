@@ -9,13 +9,12 @@ import type { Application } from './types';
 
 export const GOOGLE_WEBVIEW_USER_AGENT =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36';
+export const SHARED_EMBEDDED_WEB_PARTITION = 'persist:embedded-web';
 
 export function getAppPartition(app: Application): string {
-  // 有共享认证需求的站点共用同一个 persist partition，
-  // 这样 OAuth 完成后，相关站点能复用同一套 Cookie / 会话状态。
-  if (app.authSessionGroup) {
-    return `persist:auth-${app.authSessionGroup}`;
-  }
-
-  return `persist:${app.id}`;
+  // 当前产品策略：所有嵌入网页统一共用同一套持久化浏览器身份。
+  // 这样不同站点的登录态、Cookie、缓存与 OAuth 会自然复用，
+  // 结构也更简单，不再区分按 app / auth group 的多 partition 模型。
+  void app;
+  return SHARED_EMBEDDED_WEB_PARTITION;
 }

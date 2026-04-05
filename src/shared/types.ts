@@ -38,12 +38,6 @@ export interface Application {
   lastSubmittedAt?: number;
   navigation: NavigationConfig;
   /**
-   * 共享认证会话分组。
-   * 例如多个站点都依赖 Google OAuth 时，放进同一个 auth group，
-   * 这样它们会复用同一个持久化 session。
-   */
-  authSessionGroup?: string;
-  /**
    * 认证链路的 UA 策略。
    * Google 这类对嵌入式环境更敏感的服务，需要单独使用更接近系统浏览器的 UA。
    */

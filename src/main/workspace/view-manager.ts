@@ -16,6 +16,7 @@ import {
   getAppPartition,
   GOOGLE_WEBVIEW_USER_AGENT,
 } from "../../shared/app-runtime";
+import { appRegistry } from "../catalog/app-registry";
 import { localStore } from "../persistence/local-store";
 import { eventLogger } from "../runtime/event-logger";
 import { NavigationPolicy } from "../runtime/navigation-policy";
@@ -155,6 +156,19 @@ class ViewManager {
       },
     );
 
+    // 监控底层渲染器因内存不足等原因在后台被系统杀死
+    view.webContents.on("render-process-gone", (_event, details) => {
+      this.handleUnexpectedViewLoss(
+        instanceId,
+        view,
+        app,
+        `render-process-gone:${details.reason}`,
+      );
+    });
+    view.webContents.on("destroyed", () => {
+      this.handleUnexpectedViewLoss(instanceId, view, app, "webcontents-destroyed");
+    });
+
     // 记录 webContentsId
     instanceStore.setWebContentsId(instanceId, view.webContents.id);
 
@@ -173,10 +187,19 @@ class ViewManager {
   /** 显示指定实例的 View，传 null 隐藏所有 */
   show(instanceId: string | null): void {
     if (!this.mainWindow) return;
+    if (instanceId !== null) {
+      const activeView = this.ensureView(instanceId);
+      if (!activeView) {
+        return;
+      }
+    }
 
     // 隐藏所有其他 View
     for (const [id, view] of this.views) {
       if (instanceId !== null && id === instanceId) {
+        if (!this.isViewUsable(view)) {
+          continue;
+        }
         try {
           this.mainWindow.contentView.addChildView(view);
         } catch {
@@ -198,20 +221,13 @@ class ViewManager {
   /** 销毁 View */
   destroy(instanceId: string): void {
     const view = this.views.get(instanceId);
-    if (!view || !this.mainWindow) return;
-
-    this.cancelRelease(instanceId);
-    this.syncCurrentUrl(instanceId, view);
-    this.mainWindow.contentView.removeChildView(view);
-    instanceStore.setViewBounds(instanceId, null);
-    instanceStore.setWebContentsId(instanceId, null);
-    view.webContents.close();
-    this.views.delete(instanceId);
+    if (!view) return;
+    this.disposeView(instanceId, view, { syncCurrentUrl: true });
   }
 
   /** 检查 View 是否已创建 */
   hasView(instanceId: string): boolean {
-    return this.views.has(instanceId);
+    return this.getReusableView(instanceId) !== null;
   }
 
   /** 销毁所有 View */
@@ -240,16 +256,12 @@ class ViewManager {
 
   release(instanceId: string): void {
     const view = this.views.get(instanceId);
-    if (!view || !this.mainWindow) return;
+    if (!view) return;
 
     // release 和 destroy 的区别：
     // destroy 用于用户主动关闭实例；
     // release 用于长时间未激活后的资源回收，实例 metadata 仍然保留。
-    this.cancelRelease(instanceId);
-    this.syncCurrentUrl(instanceId, view);
-    this.mainWindow.contentView.removeChildView(view);
-    view.webContents.close();
-    this.views.delete(instanceId);
+    this.disposeView(instanceId, view, { syncCurrentUrl: true });
     instanceStore.markReleased(instanceId);
   }
 
@@ -424,9 +436,109 @@ class ViewManager {
   }
 
   private syncCurrentUrl(instanceId: string, view: WebContentsView): void {
+    if (!this.isViewUsable(view)) return;
     const currentUrl = view.webContents.getURL();
     if (!currentUrl || currentUrl.startsWith("about:blank")) return;
     instanceStore.onPageUrlUpdated(instanceId, currentUrl);
+  }
+
+  private isViewUsable(view: WebContentsView): boolean {
+    return !view.webContents.isDestroyed();
+  }
+
+  private getReusableView(instanceId: string): WebContentsView | null {
+    const view = this.views.get(instanceId);
+    if (!view) {
+      return null;
+    }
+    if (this.isViewUsable(view)) {
+      return view;
+    }
+
+    this.disposeView(instanceId, view, { syncCurrentUrl: false });
+    instanceStore.markReleased(instanceId);
+    return null;
+  }
+
+  private ensureView(instanceId: string): WebContentsView | null {
+    const reusableView = this.getReusableView(instanceId);
+    if (reusableView) {
+      return reusableView;
+    }
+
+    const instance = instanceStore.getInstance(instanceId);
+    const app = instance ? appRegistry.get(instance.applicationId) : undefined;
+    if (!instance || !app) {
+      return null;
+    }
+
+    return this.create(instance, app);
+  }
+
+  private disposeView(
+    instanceId: string,
+    view: WebContentsView,
+    options: { syncCurrentUrl: boolean },
+  ): void {
+    this.cancelRelease(instanceId);
+
+    if (options.syncCurrentUrl) {
+      this.syncCurrentUrl(instanceId, view);
+    }
+
+    if (this.mainWindow) {
+      try {
+        this.mainWindow.contentView.removeChildView(view);
+      } catch {
+        // view 可能已经不在当前窗口层级，忽略即可
+      }
+    }
+
+    this.views.delete(instanceId);
+    instanceStore.setViewBounds(instanceId, null);
+    instanceStore.setWebContentsId(instanceId, null);
+
+    if (!view.webContents.isDestroyed()) {
+      try {
+        view.webContents.close();
+      } catch {
+        // 已损坏的 WebContents 有时无法正常关闭，移除引用即可
+      }
+    }
+  }
+
+  private handleUnexpectedViewLoss(
+    instanceId: string,
+    view: WebContentsView,
+    app: Application,
+    reason: string,
+  ): void {
+    if (this.views.get(instanceId) !== view) {
+      return;
+    }
+
+    eventLogger.log("load_failed", {
+      appId: app.id,
+      instanceId,
+      errorCode: 1,
+      errorDescription: `渲染进程丢失: ${reason}`,
+    });
+
+    this.disposeView(instanceId, view, { syncCurrentUrl: true });
+    instanceStore.markReleased(instanceId);
+
+    const activeId = instanceStore.getWorkspaceState().activeInstanceId;
+    if (activeId === instanceId) {
+      this.ensureView(instanceId);
+      this.show(instanceId);
+      return;
+    }
+
+    instanceStore.updateRuntimeStatus(
+      instanceId,
+      "idle",
+      `[RECOVERABLE_VIEW_LOSS] ${reason}`,
+    );
   }
 
   private getReleasePolicy(): ReleasePolicyConfig {

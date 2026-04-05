@@ -13,10 +13,9 @@ import type {
   PersistedInstance,
 } from "../../shared/types";
 import {
+  EMBEDDED_WEB_ACCEPT_LANGUAGES,
+  EMBEDDED_WEB_USER_AGENT,
   getAppPartition,
-  SHARED_ACCEPT_LANGUAGES,
-  SHARED_CHROME_USER_AGENT,
-  SHARED_EMBEDDED_WEB_PARTITION,
 } from "../../shared/app-runtime";
 import { appRegistry } from "../catalog/app-registry";
 import { localStore } from "../persistence/local-store";
@@ -82,7 +81,7 @@ class ViewManager {
     if (!this.mainWindow) throw new Error("MainWindow not set");
     const instanceId = instance.id;
     this.cancelRelease(instanceId);
-    const partition = getAppPartition(app);
+    const partition = getAppPartition();
     const sessionRef = this.configureSession();
 
     const view = new WebContentsView({
@@ -293,7 +292,7 @@ class ViewManager {
     policy: NavigationPolicy,
   ): void {
     if (!this.mainWindow) return;
-    const partition = getAppPartition(app);
+    const partition = getAppPartition();
     const sessionRef = this.configureSession();
 
     const popup = new BrowserWindow({
@@ -331,7 +330,7 @@ class ViewManager {
   }
 
   private configureSession(): Session {
-    const partition = SHARED_EMBEDDED_WEB_PARTITION;
+    const partition = getAppPartition();
     const sessionRef = session.fromPartition(partition);
     if (this.configuredPartitions.has(partition)) {
       return sessionRef;
@@ -340,16 +339,16 @@ class ViewManager {
     // Session 级别统一设置 UA / Accept-Language，
     // 这样同一 partition 下的后续请求会保持一致身份特征。
     sessionRef.setUserAgent(
-      SHARED_CHROME_USER_AGENT,
-      SHARED_ACCEPT_LANGUAGES,
+      EMBEDDED_WEB_USER_AGENT,
+      EMBEDDED_WEB_ACCEPT_LANGUAGES,
     );
 
     sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
       callback({
         requestHeaders: {
           ...details.requestHeaders,
-          "User-Agent": SHARED_CHROME_USER_AGENT,
-          "Accept-Language": SHARED_ACCEPT_LANGUAGES,
+          "User-Agent": EMBEDDED_WEB_USER_AGENT,
+          "Accept-Language": EMBEDDED_WEB_ACCEPT_LANGUAGES,
         },
       });
     });
@@ -359,7 +358,7 @@ class ViewManager {
   }
 
   private applyUserAgent(webContents: WebContents): void {
-    webContents.setUserAgent(SHARED_CHROME_USER_AGENT);
+    webContents.setUserAgent(EMBEDDED_WEB_USER_AGENT);
   }
 
   private applyViewActivity(

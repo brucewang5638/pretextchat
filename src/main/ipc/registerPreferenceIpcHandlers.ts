@@ -55,7 +55,7 @@ export function registerPreferenceIpcHandlers(): void {
         appRegistry
           .getAll()
           .filter((app) => app.startUrl !== "about:blank")
-          .map((app) => getAppPartition(app)),
+          .map(() => getAppPartition()),
       ),
     );
 

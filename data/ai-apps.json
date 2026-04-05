@@ -4,7 +4,7 @@
     "name": "Google",
     "icon": "google.svg",
     "image": "/images/apps/google.svg",
-    "startUrl": "https://accounts.google.com/",
+    "startUrl": "https://www.google.com/",
     "category": "身份登录",
     "description": "先在这里登录 Google，再打开支持 Google 登录的 AI 应用。",
     "authSessionGroup": "google",

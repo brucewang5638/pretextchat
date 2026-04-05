@@ -100,6 +100,11 @@ export interface UpdateCheckResult {
   message: string;
 }
 
+export interface MaintenanceActionResult {
+  status: 'success' | 'error';
+  message: string;
+}
+
 export interface ReviewSubmissionResult {
   status: 'submitted' | 'cancelled' | 'error';
   message: string;

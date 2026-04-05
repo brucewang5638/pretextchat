@@ -1,12 +1,13 @@
 import type { ChangeEvent } from "react";
 import type {
+  MaintenanceActionResult,
   Preferences,
   UpdateCheckResult,
 } from "../../../../shared/types";
 import { BRAND_LOGO_ASSET_PATH } from "../../../../shared/branding";
 import { resolveAssetPath } from "../../../shared/asset-path";
 import { StatusPill } from "../../../shared/ui/StatusPill";
-import { RefreshIcon, SpinnerArcIcon } from "../../../shared/ui/icons";
+import { RefreshIcon, SpinnerArcIcon, TrashIcon } from "../../../shared/ui/icons";
 import {
   VIEW_RELEASE_POLICY_OPTIONS,
 } from "../launch.constants";
@@ -16,20 +17,26 @@ interface LaunchHeroProps {
   viewReleasePolicy: NonNullable<Preferences["viewReleasePolicy"]>;
   updateState: UpdateCheckResult | null;
   isCheckingUpdate: boolean;
+  maintenanceState: MaintenanceActionResult | null;
+  isClearingSiteData: boolean;
   customAppFeedback: string | null;
   onViewReleasePolicyChange: (
     value: NonNullable<Preferences["viewReleasePolicy"]>,
   ) => void | Promise<void>;
   onCheckForUpdates: () => void | Promise<void>;
+  onClearEmbeddedSiteData: () => void | Promise<void>;
 }
 
 export function LaunchHero({
   viewReleasePolicy,
   updateState,
   isCheckingUpdate,
+  maintenanceState,
+  isClearingSiteData,
   customAppFeedback,
   onViewReleasePolicyChange,
   onCheckForUpdates,
+  onClearEmbeddedSiteData,
 }: LaunchHeroProps) {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     void onViewReleasePolicyChange(
@@ -104,6 +111,25 @@ export function LaunchHero({
           </span>
         </button>
 
+        <button
+          type="button"
+          onClick={() => void onClearEmbeddedSiteData()}
+          disabled={isClearingSiteData}
+          className="group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full bg-[rgba(248,113,113,0.12)] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-[rgba(248,113,113,0.22)] ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-[rgba(248,113,113,0.18)] hover:ring-[rgba(248,113,113,0.35)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+        >
+          <span
+            className={[
+              "relative z-10 flex h-4 w-4 items-center justify-center text-[rgba(254,202,202,0.95)] transition-transform duration-300",
+              isClearingSiteData ? "animate-pulse" : "group-hover:scale-110",
+            ].join(" ")}
+          >
+            <TrashIcon size={16} />
+          </span>
+          <span className="relative z-10">
+            {isClearingSiteData ? "正在清理..." : "清理站点数据"}
+          </span>
+        </button>
+
         {updateState && (
           <div className="animate-in fade-in slide-in-from-right-2 duration-300 ease-out">
             <StatusPill
@@ -115,6 +141,13 @@ export function LaunchHero({
               }
             />
           </div>
+        )}
+
+        {maintenanceState && (
+          <StatusPill
+            message={maintenanceState.message}
+            tone={maintenanceState.status === "success" ? "success" : "danger"}
+          />
         )}
 
         {customAppFeedback && (

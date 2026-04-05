@@ -19,6 +19,9 @@ export function LaunchPage() {
     updateState,
     isCheckingUpdate,
     handleCheckForUpdates,
+    maintenanceState,
+    isClearingSiteData,
+    handleClearEmbeddedSiteData,
     viewReleasePolicy,
     handleViewReleasePolicyChange,
     customAppsCount,
@@ -63,9 +66,12 @@ export function LaunchPage() {
             viewReleasePolicy={viewReleasePolicy}
             updateState={updateState}
             isCheckingUpdate={isCheckingUpdate}
+            maintenanceState={maintenanceState}
+            isClearingSiteData={isClearingSiteData}
             customAppFeedback={customAppFeedback}
             onViewReleasePolicyChange={handleViewReleasePolicyChange}
             onCheckForUpdates={handleCheckForUpdates}
+            onClearEmbeddedSiteData={handleClearEmbeddedSiteData}
           />
 
           <LaunchSearchBar

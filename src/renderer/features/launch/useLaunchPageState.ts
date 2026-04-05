@@ -1,5 +1,6 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import type {
+  MaintenanceActionResult,
   Preferences,
   ReviewSubmissionResult,
   StateSnapshot,
@@ -22,6 +23,9 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const [updateState, setUpdateState] = useState<UpdateCheckResult | null>(null);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [maintenanceState, setMaintenanceState] =
+    useState<MaintenanceActionResult | null>(null);
+  const [isClearingSiteData, setIsClearingSiteData] = useState(false);
   const [isCustomAppDialogOpen, setIsCustomAppDialogOpen] = useState(false);
   const [customAppDraft, setCustomAppDraft] = useState<CustomAppForm>(
     createDefaultCustomAppForm,
@@ -76,6 +80,31 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
     await window.api.setViewReleasePolicy(value);
   };
 
+  const handleClearEmbeddedSiteData = async () => {
+    if (
+      !window.confirm(
+        "这会清空所有嵌入应用的登录态、Cookie、缓存和离线数据。确认继续吗？",
+      )
+    ) {
+      return;
+    }
+
+    setIsClearingSiteData(true);
+    setMaintenanceState(null);
+
+    try {
+      const result = await window.api.clearEmbeddedSiteData();
+      setMaintenanceState(result);
+    } catch (error) {
+      setMaintenanceState({
+        status: "error",
+        message: error instanceof Error ? error.message : "清理站点数据失败。",
+      });
+    } finally {
+      setIsClearingSiteData(false);
+    }
+  };
+
   const handleCustomAppFieldChange = (
     field: keyof CustomAppForm,
     value: string,
@@ -122,6 +151,9 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
     updateState,
     isCheckingUpdate,
     handleCheckForUpdates,
+    maintenanceState,
+    isClearingSiteData,
+    handleClearEmbeddedSiteData,
     viewReleasePolicy,
     handleViewReleasePolicyChange,
     customAppsCount,

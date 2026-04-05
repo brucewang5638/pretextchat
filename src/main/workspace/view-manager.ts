@@ -265,6 +265,13 @@ class ViewManager {
     instanceStore.markReleased(instanceId);
   }
 
+  releaseAll(): void {
+    for (const [instanceId, view] of Array.from(this.views.entries())) {
+      this.disposeView(instanceId, view, { syncCurrentUrl: true });
+      instanceStore.markReleased(instanceId);
+    }
+  }
+
   // ─── OAuth 弹窗处理 ────────────────────────────────────
 
   private setupPopupHandler(
@@ -327,11 +334,12 @@ class ViewManager {
 
     popup.loadURL(url);
 
-    // 检测 OAuth 完成：跳回 AI 站域名时自动关闭
+    // 检测 OAuth 完成：只有真正跳回目标站点时才关闭。
+    // Google 自身的 accounts/myaccount 中间页仍然保留弹窗，避免“点下一步就消失”。
     popup.webContents.on("will-navigate", (_event, navUrl) => {
       try {
         const navHost = new URL(navUrl).hostname.toLowerCase();
-        if (policy.isAllowedNavigation(navHost)) {
+        if (this.shouldCloseOAuthPopup(navHost, policy)) {
           popup.close();
         }
       } catch {
@@ -539,6 +547,21 @@ class ViewManager {
       "idle",
       `[RECOVERABLE_VIEW_LOSS] ${reason}`,
     );
+  }
+
+  private shouldCloseOAuthPopup(
+    hostname: string,
+    policy: NavigationPolicy,
+  ): boolean {
+    if (!policy.isAllowedNavigation(hostname)) {
+      return false;
+    }
+
+    if (policy.isAllowedPopup(hostname)) {
+      return false;
+    }
+
+    return hostname !== "myaccount.google.com";
   }
 
   private getReleasePolicy(): ReleasePolicyConfig {

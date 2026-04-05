@@ -19,6 +19,7 @@ export const IPC = {
   DELETE_CUSTOM_APP: 'preferences:deleteCustomApp',
   TOGGLE_PIN_APP:  'preferences:togglePinApp',
   UPDATE_SIDEBAR_ORDER: 'preferences:updateSidebarOrder',
+  CLEAR_EMBEDDED_SITE_DATA: 'preferences:clearEmbeddedSiteData',
   SUBMIT_CUSTOM_APP_REVIEW: 'review:submitCustomApp',
   CHECK_FOR_UPDATES: 'app:checkForUpdates',
   OPEN_EXTERNAL:   'system:openExternal',

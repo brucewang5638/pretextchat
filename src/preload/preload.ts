@@ -15,6 +15,7 @@ import type {
   Preferences,
   ReviewSubmissionResult,
   UpdateCheckResult,
+  MaintenanceActionResult,
 } from '../shared/types';
 
 const api = {
@@ -90,6 +91,10 @@ const api = {
   // 能力含义：已安装的 Windows 版本会真正访问更新源，其他环境返回说明文本。
   checkForUpdates: (): Promise<UpdateCheckResult> =>
     ipcRenderer.invoke(IPC.CHECK_FOR_UPDATES),
+
+  // 清理所有嵌入网页的会话、缓存和离线存储。
+  clearEmbeddedSiteData: (): Promise<MaintenanceActionResult> =>
+    ipcRenderer.invoke(IPC.CLEAR_EMBEDDED_SITE_DATA),
 
   // 提交自定义应用到审核通道。
   submitCustomAppForReview: (id: string): Promise<ReviewSubmissionResult> =>

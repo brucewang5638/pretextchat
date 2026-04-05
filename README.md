@@ -141,6 +141,7 @@ npm run dist:win
 - [docs/roadmap.md](docs/roadmap.md)：分阶段路线图与优先级
 - [docs/launch-plan.md](docs/launch-plan.md)：定位、发布叙事、渠道策略与首发文案
 - [docs/release-checklist.md](docs/release-checklist.md)：发布检查清单
+- [docs/release-notes.md](docs/release-notes.md)：下一版发布说明草稿
 
 ### 开发与架构
 

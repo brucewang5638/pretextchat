@@ -12,6 +12,7 @@ import { registerIpcHandlers } from './ipc/registerIpcHandlers';
 import { eventLogger } from './runtime/event-logger';
 import { updateManager } from './runtime/update-manager';
 import { trayManager } from './runtime/tray-manager';
+import { viewManager } from './workspace/view-manager';
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock();
 
@@ -55,6 +56,7 @@ app.on('ready', () => {
 
 app.on('before-quit', () => {
   isQuitting = true;
+  viewManager.markShuttingDown();
 });
 
 app.on('window-all-closed', () => {

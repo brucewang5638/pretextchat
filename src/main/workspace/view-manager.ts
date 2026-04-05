@@ -51,11 +51,16 @@ class ViewManager {
   private releaseTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
   private mainWindow: BrowserWindow | null = null;
   private configuredPartitions: Set<string> = new Set();
+  private isShuttingDown = false;
   /** 当前 WebContentsView 的可用布局区域 */
   private contentBounds: Rectangle = { x: 0, y: 0, width: 800, height: 600 };
 
   setMainWindow(window: BrowserWindow): void {
     this.mainWindow = window;
+  }
+
+  markShuttingDown(): void {
+    this.isShuttingDown = true;
   }
 
   setContentBounds(bounds: Rectangle): void {
@@ -409,13 +414,21 @@ class ViewManager {
 
   private syncCurrentUrl(instanceId: string, view: WebContentsView): void {
     if (!this.isViewUsable(view)) return;
-    const currentUrl = view.webContents.getURL();
+    const webContents = this.getWebContents(view);
+    if (!webContents) return;
+    const currentUrl = webContents.getURL();
     if (!currentUrl || currentUrl.startsWith("about:blank")) return;
     instanceStore.onPageUrlUpdated(instanceId, currentUrl);
   }
 
   private isViewUsable(view: WebContentsView): boolean {
-    return !view.webContents.isDestroyed();
+    const webContents = this.getWebContents(view);
+    return webContents !== null && !webContents.isDestroyed();
+  }
+
+  private getWebContents(view: WebContentsView): WebContents | null {
+    const candidate = (view as { webContents?: WebContents }).webContents;
+    return candidate ?? null;
   }
 
   private getReusableView(instanceId: string): WebContentsView | null {
@@ -470,9 +483,10 @@ class ViewManager {
     instanceStore.setViewBounds(instanceId, null);
     instanceStore.setWebContentsId(instanceId, null);
 
-    if (!view.webContents.isDestroyed()) {
+    const webContents = this.getWebContents(view);
+    if (webContents && !webContents.isDestroyed()) {
       try {
-        view.webContents.close();
+        webContents.close();
       } catch {
         // 已损坏的 WebContents 有时无法正常关闭，移除引用即可
       }
@@ -485,6 +499,10 @@ class ViewManager {
     app: Application,
     reason: string,
   ): void {
+    if (this.isShuttingDown) {
+      return;
+    }
+
     if (this.views.get(instanceId) !== view) {
       return;
     }

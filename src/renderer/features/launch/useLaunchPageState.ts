@@ -1,7 +1,8 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import type {
   MaintenanceActionResult,
   Preferences,
+  LaunchAtLoginState,
   ReviewSubmissionResult,
   StateSnapshot,
   UpdateCheckResult,
@@ -14,6 +15,9 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
   const apps = snapshot?.apps ?? [];
   const viewReleasePolicy = snapshot?.preferences.viewReleasePolicy ?? "balanced";
   const customAppsCount = snapshot?.preferences.customApps?.length ?? 0;
+  const [launchAtLoginState, setLaunchAtLoginState] =
+    useState<LaunchAtLoginState | null>(null);
+  const [isUpdatingLaunchAtLogin, setIsUpdatingLaunchAtLogin] = useState(false);
   const pinnedAppIds = useMemo(
     () => new Set(snapshot?.preferences.pinnedAppIds ?? []),
     [snapshot?.preferences.pinnedAppIds],
@@ -33,6 +37,26 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
   const [customAppError, setCustomAppError] = useState<string | null>(null);
   const [customAppFeedback, setCustomAppFeedback] = useState<string | null>(null);
   const [isSavingCustomApp, setIsSavingCustomApp] = useState(false);
+
+  useEffect(() => {
+    let isActive = true;
+    void window.api
+      .getLaunchAtLoginState()
+      .then((state) => {
+        if (isActive) {
+          setLaunchAtLoginState(state);
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setLaunchAtLoginState(null);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const appGroups = useMemo(
     () => buildLaunchAppGroups(apps, deferredSearchQuery),
@@ -159,6 +183,9 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
     customAppsCount,
     appGroups,
     pinnedAppIds,
+    launchAtLoginState,
+    isUpdatingLaunchAtLogin,
+    handleLaunchAtLoginChange,
     isCustomAppDialogOpen,
     openCustomAppDialog,
     closeCustomAppDialog,

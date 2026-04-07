@@ -20,9 +20,12 @@ interface LaunchHeroProps {
   maintenanceState: MaintenanceActionResult | null;
   isClearingSiteData: boolean;
   customAppFeedback: string | null;
+  launchAtLoginState: LaunchAtLoginState | null;
+  isUpdatingLaunchAtLogin: boolean;
   onViewReleasePolicyChange: (
     value: NonNullable<Preferences["viewReleasePolicy"]>,
   ) => void | Promise<void>;
+  onLaunchAtLoginChange: (value: boolean) => void | Promise<void>;
   onCheckForUpdates: () => void | Promise<void>;
   onClearEmbeddedSiteData: () => void | Promise<void>;
 }
@@ -34,7 +37,10 @@ export function LaunchHero({
   maintenanceState,
   isClearingSiteData,
   customAppFeedback,
+  launchAtLoginState,
+  isUpdatingLaunchAtLogin,
   onViewReleasePolicyChange,
+  onLaunchAtLoginChange,
   onCheckForUpdates,
   onClearEmbeddedSiteData,
 }: LaunchHeroProps) {
@@ -43,6 +49,14 @@ export function LaunchHero({
       event.target.value as NonNullable<Preferences["viewReleasePolicy"]>,
     );
   };
+
+  const launchAtLoginEnabled = launchAtLoginState?.enabled ?? false;
+  const launchAtLoginSupported = launchAtLoginState?.supported ?? true;
+  const launchAtLoginTone: "neutral" | "success" | "warning" = !launchAtLoginSupported
+    ? "warning"
+    : launchAtLoginEnabled
+      ? "success"
+      : "neutral";
 
   return (
     <section className="grid items-center gap-7 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-7 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr_auto] md:px-9">
@@ -64,6 +78,53 @@ export function LaunchHero({
       </div>
 
       <div className="mt-2 flex flex-col items-start gap-3 md:mt-0 md:items-end md:pl-4">
+        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-md">
+          <span className="whitespace-nowrap text-white/75">开机自启</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={launchAtLoginEnabled}
+            disabled={!launchAtLoginSupported || isUpdatingLaunchAtLogin}
+            onClick={() => void onLaunchAtLoginChange(!launchAtLoginEnabled)}
+            className={[
+              "inline-flex items-center gap-2 rounded-full px-2 py-1 text-[12.5px] font-semibold tracking-wide transition-all duration-200",
+              launchAtLoginEnabled
+                ? "bg-emerald-400/15 text-emerald-200"
+                : "bg-white/5 text-slate-200",
+              !launchAtLoginSupported || isUpdatingLaunchAtLogin
+                ? "cursor-not-allowed opacity-60"
+                : "cursor-pointer hover:bg-white/10",
+            ].join(" ")}
+          >
+            <span
+              className={[
+                "relative h-5 w-9 rounded-full p-0.5 transition-colors duration-200",
+                launchAtLoginEnabled
+                  ? "bg-emerald-500/80"
+                  : "bg-white/15",
+              ].join(" ")}
+            >
+              <span
+                className={[
+                  "block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+                  launchAtLoginEnabled ? "translate-x-4" : "translate-x-0",
+                ].join(" ")}
+              />
+            </span>
+            <span className="min-w-[3.5rem] text-left">
+              {launchAtLoginEnabled ? "已开启" : "已关闭"}
+            </span>
+          </button>
+        </div>
+
+        {launchAtLoginState && (
+          <StatusPill
+            message={launchAtLoginState.message}
+            tone={launchAtLoginTone}
+            animated={isUpdatingLaunchAtLogin}
+          />
+        )}
+
         <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-md">
           <span className="whitespace-nowrap text-white/75">标签内存</span>
           <select

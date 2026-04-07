@@ -9,6 +9,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { IPC } from '../shared/constants';
 import type {
   CustomAppRecord,
+  LaunchAtLoginState,
   StateSnapshot,
   PersistedInstance,
   PersistedWorkspaceState,
@@ -61,6 +62,16 @@ const api = {
   // 能力含义：决定下次启动默认进入主页还是自动恢复上次会话。
   setStartupMode: (mode: Preferences['startupMode']): Promise<void> =>
     ipcRenderer.invoke(IPC.SET_STARTUP_MODE, mode),
+
+  // 修改开机自启设置。
+  // 能力含义：主进程会同步 Electron 登录项，并返回当前系统实际状态。
+  setLaunchAtLogin: (enabled: boolean): Promise<LaunchAtLoginState> =>
+    ipcRenderer.invoke(IPC.SET_LAUNCH_AT_LOGIN, enabled),
+
+  // 读取当前开机自启状态。
+  // 能力含义：renderer 可以据此展示实际系统状态和平台降级提示。
+  getLaunchAtLoginState: (): Promise<LaunchAtLoginState> =>
+    ipcRenderer.invoke(IPC.GET_LAUNCH_AT_LOGIN_STATE),
 
   // 修改隐藏标签页的内存策略。
   // 能力含义：决定隐藏实例多久后释放 WebContentsView。

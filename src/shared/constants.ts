@@ -14,6 +14,8 @@ export const IPC = {
   RESTORE_SESSION: 'session:restore',
   GET_INITIAL_STATE: 'state:initial',
   SET_STARTUP_MODE: 'preferences:setStartupMode',
+  SET_LAUNCH_AT_LOGIN: 'preferences:setLaunchAtLogin',
+  GET_LAUNCH_AT_LOGIN_STATE: 'preferences:getLaunchAtLoginState',
   SET_VIEW_RELEASE_POLICY: 'preferences:setViewReleasePolicy',
   UPSERT_CUSTOM_APP: 'preferences:upsertCustomApp',
   DELETE_CUSTOM_APP: 'preferences:deleteCustomApp',

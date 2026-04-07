@@ -10,6 +10,7 @@ import { app, BrowserWindow } from 'electron';
 import { createMainWindow } from './app/createMainWindow';
 import { registerIpcHandlers } from './ipc/registerIpcHandlers';
 import { eventLogger } from './runtime/event-logger';
+import { syncLaunchAtLoginPreference } from './runtime/launch-at-login';
 import { updateManager } from './runtime/update-manager';
 import { trayManager } from './runtime/tray-manager';
 import { viewManager } from './workspace/view-manager';
@@ -45,6 +46,7 @@ app.on('ready', () => {
   // 主进程先把跨进程接口注册好，再创建窗口；
   // 这样 renderer 初次启动时，window.api 调用不会撞到“还没注册 handler”的空窗期。
   registerIpcHandlers();
+  syncLaunchAtLoginPreference();
   mainWindow = createMainWindow(() => !isQuitting);
   updateManager.init(mainWindow);
   trayManager.init(() => mainWindow, () => {

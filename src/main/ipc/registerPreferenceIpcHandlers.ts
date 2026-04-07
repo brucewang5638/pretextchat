@@ -17,6 +17,20 @@ export function registerPreferenceIpcHandlers(): void {
     syncState();
   });
 
+  ipcMain.handle(IPC.SET_LAUNCH_AT_LOGIN, (_event, enabled: unknown) => {
+    if (typeof enabled !== "boolean") {
+      throw new Error(`Invalid launch-at-login value: ${String(enabled)}`);
+    }
+
+    const state = applyLaunchAtLogin(enabled);
+    syncState();
+    return state;
+  });
+
+  ipcMain.handle(IPC.GET_LAUNCH_AT_LOGIN_STATE, () => {
+    return getLaunchAtLoginState();
+  });
+
   ipcMain.handle(IPC.SET_VIEW_RELEASE_POLICY, (_event, policy: unknown) => {
     if (
       policy !== "memorySaver" &&

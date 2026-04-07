@@ -77,10 +77,18 @@ export interface Preferences {
   recentApps: string[];
   recentInstances: RecentInstanceEntry[];
   startupMode: 'home' | 'restoreLastSession';
+  launchAtLogin: boolean;
+  launchAtLoginConfigured: boolean;
   pinnedAppIds: string[];
   customSidebarOrder?: string[];
   viewReleasePolicy?: 'memorySaver' | 'balanced' | 'performance';
   customApps?: CustomAppRecord[];
+}
+
+export interface LaunchAtLoginState {
+  supported: boolean;
+  enabled: boolean;
+  message: string;
 }
 
 export interface UpdateCheckResult {

@@ -27,6 +27,8 @@ const defaults: StoreSchema = {
     recentApps: [],
     recentInstances: [],
     startupMode: "home",
+    launchAtLogin: false,
+    launchAtLoginConfigured: false,
     pinnedAppIds: [],
     viewReleasePolicy: "balanced",
     customApps: [],
@@ -62,6 +64,8 @@ class LocalStore {
       recentApps: prefs.recentApps || [],
       recentInstances: prefs.recentInstances || [],
       startupMode: prefs.startupMode || 'home',
+      launchAtLogin: prefs.launchAtLogin || false,
+      launchAtLoginConfigured: prefs.launchAtLoginConfigured || false,
       pinnedAppIds: prefs.pinnedAppIds || [],
       customSidebarOrder: prefs.customSidebarOrder || [],
       viewReleasePolicy: prefs.viewReleasePolicy || 'balanced',
@@ -105,6 +109,14 @@ class LocalStore {
 
   setStartupMode(value: Preferences["startupMode"]): void {
     this.store.set("preferences.startupMode", value);
+  }
+
+  setLaunchAtLogin(value: boolean): void {
+    this.store.set("preferences.launchAtLogin", value);
+  }
+
+  setLaunchAtLoginConfigured(value: boolean): void {
+    this.store.set("preferences.launchAtLoginConfigured", value);
   }
 
   setViewReleasePolicy(value: NonNullable<Preferences["viewReleasePolicy"]>): void {

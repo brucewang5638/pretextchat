@@ -25,6 +25,9 @@ export function LaunchPage() {
     viewReleasePolicy,
     handleViewReleasePolicyChange,
     customAppsCount,
+    launchAtLoginState,
+    isUpdatingLaunchAtLogin,
+    handleLaunchAtLoginChange,
     appGroups,
     pinnedAppIds,
     isCustomAppDialogOpen,
@@ -69,7 +72,10 @@ export function LaunchPage() {
             maintenanceState={maintenanceState}
             isClearingSiteData={isClearingSiteData}
             customAppFeedback={customAppFeedback}
+            launchAtLoginState={launchAtLoginState}
+            isUpdatingLaunchAtLogin={isUpdatingLaunchAtLogin}
             onViewReleasePolicyChange={handleViewReleasePolicyChange}
+            onLaunchAtLoginChange={handleLaunchAtLoginChange}
             onCheckForUpdates={handleCheckForUpdates}
             onClearEmbeddedSiteData={handleClearEmbeddedSiteData}
           />

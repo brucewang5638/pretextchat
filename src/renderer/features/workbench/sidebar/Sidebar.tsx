@@ -10,7 +10,10 @@ import type { DropResult } from "@hello-pangea/dnd";
 import type { MouseEvent } from "react";
 import { SidebarAppList } from "./SidebarAppList";
 import { SidebarHomeButton } from "./SidebarHomeButton";
-import { buildSidebarModel } from "./sidebar.helpers";
+import {
+  buildSidebarModel,
+  getMostRecentInstanceForApp,
+} from "./sidebar.helpers";
 
 export function Sidebar() {
   const snapshot = useUIStore((s) => s.snapshot);
@@ -70,12 +73,10 @@ export function Sidebar() {
   const handleSelectApp = async (appId: string) => {
     setActiveAppFilter(appId);
 
-    const instancesForApp =
-      snapshot?.workspace.instances.filter((i) => i.applicationId === appId) ||
-      [];
-    if (instancesForApp.length > 0) {
-      // 如果该应用已经有实例，侧边栏点击的语义是“切回这个应用的工作上下文”。
-      await window.api.switchInstance(instancesForApp[0].id);
+    const mostRecentInstance = getMostRecentInstanceForApp(snapshot, appId);
+    if (mostRecentInstance) {
+      // 如果该应用已经打开过多个实例，切回最近一次活动的那个标签页。
+      await window.api.switchInstance(mostRecentInstance.id);
     } else {
       // 否则直接代替用户创建一个新实例，让入口行为保持“总能打开”。
       await window.api.createInstance(appId);

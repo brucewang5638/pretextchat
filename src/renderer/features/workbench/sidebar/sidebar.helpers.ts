@@ -58,3 +58,39 @@ export function buildSidebarModel(
     instancesByAppId,
   };
 }
+
+export function getMostRecentInstanceForApp(
+  snapshot: StateSnapshot | null,
+  appId: string,
+): PersistedInstance | null {
+  if (!snapshot) {
+    return null;
+  }
+
+  const instances = snapshot.workspace.instances.filter(
+    (instance) => instance.applicationId === appId,
+  );
+  if (instances.length === 0) {
+    return null;
+  }
+
+  const tabOrderIndex = new Map(
+    snapshot.workspace.tabOrder.map((id, index) => [id, index]),
+  );
+
+  instances.sort((a, b) => {
+    if (b.lastOpenedAt !== a.lastOpenedAt) {
+      return b.lastOpenedAt - a.lastOpenedAt;
+    }
+
+    if (b.createdAt !== a.createdAt) {
+      return b.createdAt - a.createdAt;
+    }
+
+    return (
+      (tabOrderIndex.get(b.id) ?? -1) - (tabOrderIndex.get(a.id) ?? -1)
+    );
+  });
+
+  return instances[0] ?? null;
+}

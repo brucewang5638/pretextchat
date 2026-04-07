@@ -7,6 +7,11 @@ import { Application } from '../../shared/types';
 import aiAppsData from '../../../data/ai-apps.json';
 import { localStore } from '../persistence/local-store';
 
+const DEFAULT_GOOGLE_AUTH_HOSTS = [
+  'accounts.google.com',
+  '*.google.com',
+] as const;
+
 const CUSTOM_APP_LAUNCHER: Application = {
   id: 'custom-app-launcher',
   name: '新增应用',
@@ -23,13 +28,36 @@ const CUSTOM_APP_LAUNCHER: Application = {
   },
 };
 
+function mergeUnique(values: string[]): string[] {
+  return Array.from(new Set(values));
+}
+
+function withDefaultGoogleAuthNavigation(app: Application): Application {
+  return {
+    ...app,
+    navigation: {
+      ...app.navigation,
+      allowedPopupHosts: mergeUnique([
+        ...app.navigation.allowedPopupHosts,
+        ...DEFAULT_GOOGLE_AUTH_HOSTS,
+      ]),
+    },
+  };
+}
+
 class AppRegistry {
   private builtinApps: Map<string, Application>;
 
   constructor() {
     const apps = aiAppsData as Application[];
     this.builtinApps = new Map(
-      apps.map((app) => [app.id, { ...app, source: 'builtin' as const }]),
+      apps.map((app) => [
+        app.id,
+        withDefaultGoogleAuthNavigation({
+          ...app,
+          source: 'builtin' as const,
+        }),
+      ]),
     );
   }
 
@@ -64,15 +92,14 @@ class AppRegistry {
           lastSubmittedAt: app.lastSubmittedAt,
           navigation: {
             allowedHosts: [hostname],
-            allowedPopupHosts: [
-              'accounts.google.com',
-              '*.google.com',
+            allowedPopupHosts: mergeUnique([
               'github.com',
               '*.github.com',
               'login.live.com',
               'login.microsoftonline.com',
               'appleid.apple.com',
-            ],
+              ...DEFAULT_GOOGLE_AUTH_HOSTS,
+            ]),
             externalHostnames: [],
             externalUrlPrefixes: [],
           },

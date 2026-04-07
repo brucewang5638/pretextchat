@@ -32,6 +32,7 @@ function useStateSync(): void {
 function useInitialize(): void {
   const setSnapshot = useUIStore((s) => s.setSnapshot);
   const setCurrentPage = useUIStore((s) => s.setCurrentPage);
+  const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
 
   useEffect(() => {
     async function init() {
@@ -44,14 +45,29 @@ function useInitialize(): void {
         snapshot.preferences.startupMode === 'restoreLastSession' &&
         snapshot.workspace.instances.length > 0
       ) {
-        setCurrentPage('workbench');
         await window.api.restoreSession();
-      } else {
-        setCurrentPage('launch');
+
+        const refreshedSnapshot = await window.api.getInitialState();
+        setSnapshot(refreshedSnapshot);
+
+        const activeInstanceId = refreshedSnapshot.workspace.activeInstanceId;
+        const activeInstance =
+          activeInstanceId == null
+            ? null
+            : refreshedSnapshot.workspace.instances.find(
+                (instance) => instance.id === activeInstanceId,
+              ) ?? null;
+
+        setActiveAppFilter(activeInstance?.applicationId ?? null);
+        setCurrentPage(activeInstance ? 'workbench' : 'launch');
+        return;
       }
+
+      setActiveAppFilter(null);
+      setCurrentPage('launch');
     }
     init();
-  }, [setCurrentPage, setSnapshot]);
+  }, [setActiveAppFilter, setCurrentPage, setSnapshot]);
 }
 
 export function useAppBootstrap(): void {

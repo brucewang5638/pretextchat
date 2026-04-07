@@ -23,14 +23,16 @@ export function App() {
   const snapshot = useUIStore((s) => s.snapshot);
   const currentPage = useUIStore((s) => s.currentPage);
   const setCurrentPage = useUIStore((s) => s.setCurrentPage);
+  const setActiveAppFilter = useUIStore((s) => s.setActiveAppFilter);
 
   useEffect(() => {
-    // 如果当前页面还停在工作台，但已经没有激活实例，
-    // 说明实例都被关闭了，此时自动回到启动页，避免留下空工作台。
-    if (currentPage === 'workbench' && snapshot?.workspace.activeInstanceId == null) {
+    // 只有工作区里真的没有实例时，才回到启动页。
+    // 启动恢复阶段如果 activeInstanceId 还在恢复中，不要过早把页面打回 launch。
+    if (currentPage === 'workbench' && (snapshot?.workspace.instances.length ?? 0) === 0) {
+      setActiveAppFilter(null);
       setCurrentPage('launch');
     }
-  }, [currentPage, setCurrentPage, snapshot?.workspace.activeInstanceId]);
+  }, [currentPage, setActiveAppFilter, setCurrentPage, snapshot?.workspace.instances.length]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[var(--color-bg-primary)]">

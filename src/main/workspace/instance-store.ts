@@ -250,9 +250,11 @@ class InstanceStore {
   }
 
   restoreSnapshot(): PersistedWorkspaceState | null {
-    const state = localStore.getWorkspaceState();
-    if (state.instances.length === 0) return null;
-    return state;
+    if (this.workspace.instances.length === 0) return null;
+
+    this.ensureStartupActiveInstance();
+    this.persist();
+    return this.workspace;
   }
 
   // ─── 私有方法 ──────────────────────────────────────────
@@ -286,6 +288,34 @@ class InstanceStore {
       lastOpenedAt: instance.lastOpenedAt,
     };
     localStore.updateRecentInstance(entry);
+  }
+
+  private ensureStartupActiveInstance(): void {
+    const currentActiveId = this.workspace.activeInstanceId;
+    if (
+      currentActiveId &&
+      this.workspace.instances.some((instance) => instance.id === currentActiveId)
+    ) {
+      return;
+    }
+
+    const fallback = this.workspace.instances
+      .slice()
+      .sort((a, b) => {
+        if (b.lastOpenedAt !== a.lastOpenedAt) {
+          return b.lastOpenedAt - a.lastOpenedAt;
+        }
+
+        if (b.createdAt !== a.createdAt) {
+          return b.createdAt - a.createdAt;
+        }
+
+        return 0;
+      })[0];
+
+    if (!fallback) return;
+
+    this.workspace.activeInstanceId = fallback.id;
   }
 }
 

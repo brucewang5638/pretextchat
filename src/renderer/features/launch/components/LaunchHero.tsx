@@ -60,7 +60,7 @@ export function LaunchHero({
       : "neutral";
 
   return (
-    <section className="grid items-center gap-7 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-7 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr_auto] md:px-9">
+    <section className="grid items-center gap-6 rounded-[30px] border border-[rgba(148,163,184,0.2)] bg-[radial-gradient(circle_at_top_right,rgba(110,231,216,0.18),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.98),rgba(24,58,78,0.96))] px-8 py-6 shadow-[0_22px_48px_rgba(15,23,42,0.16)] md:grid-cols-[auto_1fr_minmax(280px,320px)] md:px-9">
       <div className="h-[84px] w-[84px] rounded-[28px] bg-white/10 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] max-md:h-16 max-md:w-16">
         <img
           src={resolveAssetPath(BRAND_LOGO_ASSET_PATH)}
@@ -78,122 +78,152 @@ export function LaunchHero({
         </p>
       </div>
 
-      <div className="mt-2 flex flex-col items-start gap-3 md:mt-0 md:items-end md:pl-4">
-        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-md">
-          <span className="whitespace-nowrap text-white/75">开机自启</span>
+      <div className="mt-1 flex w-full max-w-[460px] flex-col gap-2.5 md:mt-0 md:justify-self-end md:pl-4">
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-[20px] border border-white/10 bg-white/[0.05] px-4 py-2.5 text-[rgba(226,232,240,0.95)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[12px] font-semibold tracking-[0.18em] text-white/55">
+                  开机自启
+                </p>
+                <p className="mt-0.5 text-[14px] font-medium leading-tight text-white/90">
+                  {launchAtLoginEnabled ? "已开启" : "已关闭"}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                role="switch"
+                aria-checked={launchAtLoginEnabled}
+                disabled={!launchAtLoginSupported || isUpdatingLaunchAtLogin}
+                onClick={() => void onLaunchAtLoginChange(!launchAtLoginEnabled)}
+                className={[
+                  "inline-flex shrink-0 items-center rounded-full px-1.5 py-1 transition-all duration-200",
+                  launchAtLoginEnabled
+                    ? "bg-emerald-400/20"
+                    : "bg-white/10",
+                  !launchAtLoginSupported || isUpdatingLaunchAtLogin
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:bg-white/15",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "relative h-6 w-11 rounded-full transition-colors duration-200",
+                    launchAtLoginEnabled
+                      ? "bg-emerald-500/80"
+                      : "bg-white/15",
+                  ].join(" ")}
+                >
+                  <span
+                    className={[
+                      "absolute left-1 top-1 block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+                      launchAtLoginEnabled ? "translate-x-5" : "translate-x-0",
+                    ].join(" ")}
+                  />
+                </span>
+              </button>
+            </div>
+
+            {launchAtLoginState && (
+              <div className="mt-1.5 flex items-start gap-2 text-[11.5px] leading-[1.25] text-white/68">
+                <span
+                  className={[
+                    "mt-[4px] h-1.5 w-1.5 shrink-0 rounded-full shadow-[0_0_8px_currentColor]",
+                    launchAtLoginTone === "success"
+                      ? "bg-emerald-300 text-emerald-300"
+                      : launchAtLoginTone === "warning"
+                        ? "bg-amber-300 text-amber-300"
+                        : "bg-slate-300 text-slate-300",
+                    isUpdatingLaunchAtLogin ? "animate-pulse" : "",
+                  ].join(" ")}
+                />
+                <p className="min-w-0 leading-[1.25] text-white/68">
+                  {launchAtLoginState.message}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between gap-3 rounded-[20px] border border-white/10 bg-white/[0.05] px-4 py-2.5 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md">
+            <div className="min-w-0">
+              <p className="text-[12px] font-semibold tracking-[0.18em] text-white/55">
+                标签内存
+              </p>
+              <p className="mt-0.5 text-[14px] font-medium leading-tight text-white/90">
+                当前策略
+              </p>
+            </div>
+
+            <select
+              value={viewReleasePolicy}
+              onChange={handleChange}
+              className="min-w-0 cursor-pointer rounded-full border border-white/10 bg-[rgba(255,255,255,0.08)] px-3 py-1.5 text-[13px] font-semibold text-white outline-none transition hover:bg-[rgba(255,255,255,0.12)]"
+            >
+              {VIEW_RELEASE_POLICY_OPTIONS.map((option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                  className="bg-slate-900 text-white"
+                >
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5">
           <button
             type="button"
-            role="switch"
-            aria-checked={launchAtLoginEnabled}
-            disabled={!launchAtLoginSupported || isUpdatingLaunchAtLogin}
-            onClick={() => void onLaunchAtLoginChange(!launchAtLoginEnabled)}
-            className={[
-              "inline-flex items-center gap-2 rounded-full px-2 py-1 text-[12.5px] font-semibold tracking-wide transition-all duration-200",
-              launchAtLoginEnabled
-                ? "bg-emerald-400/15 text-emerald-200"
-                : "bg-white/5 text-slate-200",
-              !launchAtLoginSupported || isUpdatingLaunchAtLogin
-                ? "cursor-not-allowed opacity-60"
-                : "cursor-pointer hover:bg-white/10",
-            ].join(" ")}
+            onClick={() => void onCheckForUpdates()}
+            disabled={isCheckingUpdate}
+            className="group relative inline-flex min-h-[56px] w-full cursor-pointer select-none items-center justify-center gap-2 overflow-hidden rounded-[20px] bg-white/[0.05] px-4 py-2.5 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-white/10 ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-white/[0.09] hover:ring-white/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+            style={{
+              boxShadow:
+                "inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.1)",
+            }}
+          >
+            <div className="absolute inset-x-0 bottom-0 -z-10 h-full origin-bottom translate-y-full bg-gradient-to-t from-[rgba(110,231,216,0.15)] to-transparent opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
+            <span
+              className={[
+                "relative z-10 flex h-4 w-4 items-center justify-center text-[rgba(110,231,216,0.9)] transition-transform duration-500",
+                isCheckingUpdate ? "animate-spin" : "group-hover:rotate-180",
+              ].join(" ")}
+            >
+              {isCheckingUpdate ? (
+                <SpinnerArcIcon size={16} />
+              ) : (
+                <RefreshIcon size={16} />
+              )}
+            </span>
+            <span className="relative z-10">
+              {isCheckingUpdate ? "探测中..." : "检查更新"}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => void onClearEmbeddedSiteData()}
+            disabled={isClearingSiteData}
+            className="group relative inline-flex min-h-[56px] w-full cursor-pointer select-none items-center justify-center gap-2 overflow-hidden rounded-[20px] bg-[rgba(248,113,113,0.12)] px-4 py-2.5 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-[rgba(248,113,113,0.22)] ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-[rgba(248,113,113,0.18)] hover:ring-[rgba(248,113,113,0.35)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
           >
             <span
               className={[
-                "relative h-5 w-9 rounded-full p-0.5 transition-colors duration-200",
-                launchAtLoginEnabled
-                  ? "bg-emerald-500/80"
-                  : "bg-white/15",
+                "relative z-10 flex h-4 w-4 items-center justify-center text-[rgba(254,202,202,0.95)] transition-transform duration-300",
+                isClearingSiteData ? "animate-pulse" : "group-hover:scale-110",
               ].join(" ")}
             >
-              <span
-                className={[
-                  "block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200",
-                  launchAtLoginEnabled ? "translate-x-4" : "translate-x-0",
-                ].join(" ")}
-              />
+              <TrashIcon size={16} />
             </span>
-            <span className="min-w-[3.5rem] text-left">
-              {launchAtLoginEnabled ? "已开启" : "已关闭"}
+            <span className="relative z-10">
+              {isClearingSiteData ? "正在清理..." : "清理站点数据"}
             </span>
           </button>
         </div>
 
-        {launchAtLoginState && (
-          <StatusPill
-            message={launchAtLoginState.message}
-            tone={launchAtLoginTone}
-            animated={isUpdatingLaunchAtLogin}
-          />
-        )}
-
-        <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[12.5px] font-medium tracking-wide text-[rgba(226,232,240,0.95)] backdrop-blur-md">
-          <span className="whitespace-nowrap text-white/75">标签内存</span>
-          <select
-            value={viewReleasePolicy}
-            onChange={handleChange}
-            className="cursor-pointer appearance-none bg-transparent pr-4 text-[12.5px] font-semibold text-white outline-none"
-          >
-            {VIEW_RELEASE_POLICY_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-                className="bg-slate-900 text-white"
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <button
-          type="button"
-          onClick={() => void onCheckForUpdates()}
-          disabled={isCheckingUpdate}
-          className="group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full bg-white/[0.05] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-white/10 ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-white/[0.09] hover:ring-white/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
-          style={{
-            boxShadow:
-              "inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div className="absolute inset-x-0 bottom-0 -z-10 h-full origin-bottom translate-y-full bg-gradient-to-t from-[rgba(110,231,216,0.15)] to-transparent opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
-          <span
-            className={[
-              "relative z-10 flex h-4 w-4 items-center justify-center text-[rgba(110,231,216,0.9)] transition-transform duration-500",
-              isCheckingUpdate ? "animate-spin" : "group-hover:rotate-180",
-            ].join(" ")}
-          >
-            {isCheckingUpdate ? (
-              <SpinnerArcIcon size={16} />
-            ) : (
-              <RefreshIcon size={16} />
-            )}
-          </span>
-          <span className="relative z-10">
-            {isCheckingUpdate ? "极速探测中..." : "检查更新"}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => void onClearEmbeddedSiteData()}
-          disabled={isClearingSiteData}
-          className="group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full bg-[rgba(248,113,113,0.12)] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-[rgba(248,113,113,0.22)] ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-[rgba(248,113,113,0.18)] hover:ring-[rgba(248,113,113,0.35)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
-        >
-          <span
-            className={[
-              "relative z-10 flex h-4 w-4 items-center justify-center text-[rgba(254,202,202,0.95)] transition-transform duration-300",
-              isClearingSiteData ? "animate-pulse" : "group-hover:scale-110",
-            ].join(" ")}
-          >
-            <TrashIcon size={16} />
-          </span>
-          <span className="relative z-10">
-            {isClearingSiteData ? "正在清理..." : "清理站点数据"}
-          </span>
-        </button>
-
         {updateState && (
-          <div className="animate-in fade-in slide-in-from-right-2 duration-300 ease-out">
+          <div className="w-full animate-in fade-in slide-in-from-right-2 duration-300 ease-out">
             <StatusPill
               message={updateState.message}
               tone={getUpdateStatusTone(updateState.status)}

@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import type {
+  LaunchAtLoginState,
   MaintenanceActionResult,
   Preferences,
   UpdateCheckResult,

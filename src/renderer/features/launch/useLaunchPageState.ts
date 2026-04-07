@@ -104,6 +104,24 @@ export function useLaunchPageState(snapshot: StateSnapshot | null) {
     await window.api.setViewReleasePolicy(value);
   };
 
+  const handleLaunchAtLoginChange = async (enabled: boolean) => {
+    setIsUpdatingLaunchAtLogin(true);
+
+    try {
+      const state = await window.api.setLaunchAtLogin(enabled);
+      setLaunchAtLoginState(state);
+    } catch (error) {
+      setLaunchAtLoginState({
+        supported: launchAtLoginState?.supported ?? true,
+        enabled: launchAtLoginState?.enabled ?? false,
+        message:
+          error instanceof Error ? error.message : "开机自启设置失败。",
+      });
+    } finally {
+      setIsUpdatingLaunchAtLogin(false);
+    }
+  };
+
   const handleClearEmbeddedSiteData = async () => {
     if (
       !window.confirm(

@@ -3,6 +3,10 @@ import { IPC } from "../../shared/constants";
 import { getAppPartition } from "../../shared/app-runtime";
 import { localStore } from "../persistence/local-store";
 import { appRegistry } from "../catalog/app-registry";
+import {
+  applyLaunchAtLogin,
+  getLaunchAtLoginState,
+} from "../runtime/launch-at-login";
 import { updateManager } from "../runtime/update-manager";
 import { viewManager } from "../workspace/view-manager";
 import { requireAppId, syncState } from "./ipc-context";

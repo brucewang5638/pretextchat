@@ -178,7 +178,7 @@ export function LaunchHero({
             type="button"
             onClick={() => void onCheckForUpdates()}
             disabled={isCheckingUpdate}
-            className="group relative inline-flex min-h-[56px] w-full cursor-pointer select-none items-center justify-center gap-2 overflow-hidden rounded-[20px] bg-white/[0.05] px-4 py-2.5 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-white/10 ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-white/[0.09] hover:ring-white/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+            className="group relative inline-flex min-h-[44px] w-full cursor-pointer select-none items-center justify-center gap-2 overflow-hidden rounded-[16px] bg-white/[0.05] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-white/10 ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-white/[0.09] hover:ring-white/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
             style={{
               boxShadow:
                 "inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.1)",
@@ -206,7 +206,7 @@ export function LaunchHero({
             type="button"
             onClick={() => void onClearEmbeddedSiteData()}
             disabled={isClearingSiteData}
-            className="group relative inline-flex min-h-[56px] w-full cursor-pointer select-none items-center justify-center gap-2 overflow-hidden rounded-[20px] bg-[rgba(248,113,113,0.12)] px-4 py-2.5 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-[rgba(248,113,113,0.22)] ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-[rgba(248,113,113,0.18)] hover:ring-[rgba(248,113,113,0.35)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+            className="group relative inline-flex min-h-[44px] w-full cursor-pointer select-none items-center justify-center gap-2 overflow-hidden rounded-[16px] bg-[rgba(248,113,113,0.12)] px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ring-1 ring-[rgba(248,113,113,0.22)] ring-inset backdrop-blur-md transition-all duration-300 ease-out hover:bg-[rgba(248,113,113,0.18)] hover:ring-[rgba(248,113,113,0.35)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
           >
             <span
               className={[

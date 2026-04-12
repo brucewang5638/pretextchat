@@ -9,6 +9,8 @@ export const IPC = {
   CREATE_INSTANCE: 'instance:create',
   CLOSE_INSTANCE:  'instance:close',
   SWITCH_INSTANCE: 'instance:switch',
+  PREWARM_INSTANCE: 'instance:prewarm',
+  RELOAD_INSTANCE: 'instance:reload',
   RENAME_INSTANCE: 'instance:rename',
   REOPEN_RECENT_INSTANCE: 'instance:reopenRecent',
   RESTORE_SESSION: 'session:restore',

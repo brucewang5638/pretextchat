@@ -221,6 +221,10 @@ class InstanceStore {
     return Object.fromEntries(this.runtimeStates);
   }
 
+  getRuntimeState(id: string): RuntimeInstanceState | undefined {
+    return this.runtimeStates.get(id);
+  }
+
   getInstance(id: string): PersistedInstance | undefined {
     return this.workspace.instances.find((i) => i.id === id);
   }

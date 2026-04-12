@@ -43,6 +43,14 @@ const api = {
   switchInstance: (id: string | null): Promise<void> =>
     ipcRenderer.invoke(IPC.SWITCH_INSTANCE, id),
 
+  // 预热指定实例，让隐藏标签也能提前创建并开始加载。
+  prewarmInstance: (id: string): Promise<void> =>
+    ipcRenderer.invoke(IPC.PREWARM_INSTANCE, id),
+
+  // 刷新指定实例当前网页。
+  reloadInstance: (id: string): Promise<void> =>
+    ipcRenderer.invoke(IPC.RELOAD_INSTANCE, id),
+
   // 重命名实例标题。
   // 能力含义：标题真相源在主进程，renderer 只负责发起请求。
   renameInstance: (id: string, title: string): Promise<void> =>

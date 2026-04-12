@@ -19,8 +19,8 @@ import type {
 } from "../../shared/types";
 import {
   EMBEDDED_WEB_ACCEPT_LANGUAGES,
-  EMBEDDED_WEB_USER_AGENT,
   getAppPartition,
+  getEmbeddedWebUserAgent,
 } from "../../shared/app-runtime";
 import { appRegistry } from "../catalog/app-registry";
 import { localStore } from "../persistence/local-store";
@@ -82,9 +82,14 @@ class ViewManager {
   }
 
   /** 创建 WebContentsView 并加载 URL */
-  create(instance: PersistedInstance, app: Application): WebContentsView {
+  create(
+    instance: PersistedInstance,
+    app: Application,
+    options?: { visible?: boolean },
+  ): WebContentsView {
     if (!this.mainWindow) throw new Error("MainWindow not set");
     const instanceId = instance.id;
+    const isVisible = options?.visible ?? true;
     this.cancelRelease(instanceId);
     const partition = getAppPartition();
     const sessionRef = this.configureSession();
@@ -124,6 +129,7 @@ class ViewManager {
     });
     view.webContents.on("did-finish-load", () => {
       instanceStore.updateRuntimeStatus(instanceId, "ready");
+      this.syncHiddenViewActivity(instanceId, view);
     });
     view.webContents.on(
       "did-fail-load",
@@ -139,6 +145,7 @@ class ViewManager {
           errorCode,
           errorDescription,
         });
+        this.syncHiddenViewActivity(instanceId, view);
       },
     );
 
@@ -158,12 +165,12 @@ class ViewManager {
     // 记录 webContentsId
     instanceStore.setWebContentsId(instanceId, view.webContents.id);
 
-    // 添加到窗口并加载
-    this.mainWindow.contentView.addChildView(view);
     view.setBounds(this.contentBounds);
-    // 视图先挂进窗口，再 loadURL。
-    // 这样后续 did-start-loading / did-finish-load 生命周期与可见区域是一致的。
-    this.applyViewActivity(instanceId, view, true);
+    if (isVisible) {
+      // 可见标签仍沿用“先挂载再加载”的策略，避免激活页首帧抖动。
+      this.mainWindow.contentView.addChildView(view);
+    }
+    this.applyViewActivity(instanceId, view, isVisible);
     view.webContents.loadURL(instance.lastUrl || app.startUrl);
 
     this.views.set(instanceId, view);
@@ -214,6 +221,37 @@ class ViewManager {
   /** 检查 View 是否已创建 */
   hasView(instanceId: string): boolean {
     return this.getReusableView(instanceId) !== null;
+  }
+
+  prewarm(instanceId: string): void {
+    const activeId = instanceStore.getWorkspaceState().activeInstanceId;
+    const reusableView = this.getReusableView(instanceId);
+
+    if (reusableView) {
+      if (instanceId === activeId) {
+        this.show(instanceId);
+      } else {
+        this.applyViewActivity(instanceId, reusableView, false);
+      }
+      return;
+    }
+
+    const instance = instanceStore.getInstance(instanceId);
+    const app = instance ? appRegistry.get(instance.applicationId) : undefined;
+    if (!instance || !app) {
+      return;
+    }
+
+    this.create(instance, app, { visible: instanceId === activeId });
+  }
+
+  reload(instanceId: string): void {
+    const view = this.ensureView(instanceId);
+    if (!view || !this.isViewUsable(view)) {
+      return;
+    }
+
+    view.webContents.reload();
   }
 
   /** 销毁所有 View */
@@ -337,6 +375,7 @@ class ViewManager {
 
   private configureSession(): Session {
     const partition = getAppPartition();
+    const userAgent = getEmbeddedWebUserAgent();
     const sessionRef = session.fromPartition(partition);
     if (this.configuredPartitions.has(partition)) {
       return sessionRef;
@@ -345,7 +384,7 @@ class ViewManager {
     // Session 级别统一设置 UA / Accept-Language，
     // 这样同一 partition 下的后续请求会保持一致身份特征。
     sessionRef.setUserAgent(
-      EMBEDDED_WEB_USER_AGENT,
+      userAgent,
       EMBEDDED_WEB_ACCEPT_LANGUAGES,
     );
 
@@ -353,7 +392,7 @@ class ViewManager {
       callback({
         requestHeaders: {
           ...details.requestHeaders,
-          "User-Agent": EMBEDDED_WEB_USER_AGENT,
+          "User-Agent": userAgent,
           "Accept-Language": EMBEDDED_WEB_ACCEPT_LANGUAGES,
         },
       });
@@ -364,7 +403,7 @@ class ViewManager {
   }
 
   private applyUserAgent(webContents: WebContents): void {
-    webContents.setUserAgent(EMBEDDED_WEB_USER_AGENT);
+    webContents.setUserAgent(getEmbeddedWebUserAgent());
   }
 
   private applyViewActivity(
@@ -376,7 +415,9 @@ class ViewManager {
       this.cancelRelease(instanceId);
     }
     view.webContents.setAudioMuted(!isActive);
-    view.webContents.setBackgroundThrottling(!isActive);
+    const isLoading = instanceStore.getRuntimeState(instanceId)?.status === "loading";
+    // 隐藏但仍在首轮加载的标签先不要节流，避免用户快速切换时网页初始化被挂起。
+    view.webContents.setBackgroundThrottling(!isActive && !isLoading);
     // hostingState 描述的是“资源占用状态”，不是业务成功失败状态。
     // 因此它与 status(loading/ready/error) 分开维护。
     instanceStore.setHostingState(
@@ -408,6 +449,18 @@ class ViewManager {
       this.release(instanceId);
     }, policy.releaseAfterHiddenMs);
     this.releaseTimers.set(instanceId, timer);
+  }
+
+  private syncHiddenViewActivity(
+    instanceId: string,
+    view: WebContentsView,
+  ): void {
+    const activeId = instanceStore.getWorkspaceState().activeInstanceId;
+    if (activeId === instanceId || !this.isViewUsable(view)) {
+      return;
+    }
+
+    this.applyViewActivity(instanceId, view, false);
   }
 
   private cancelRelease(instanceId: string): void {

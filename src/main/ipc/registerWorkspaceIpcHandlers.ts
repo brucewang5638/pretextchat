@@ -67,6 +67,16 @@ export function registerWorkspaceIpcHandlers(): void {
     eventLogger.log("instance_switched", { instanceId });
   });
 
+  ipcMain.handle(IPC.PREWARM_INSTANCE, (_event, id: unknown) => {
+    const instanceId = requireInstanceId(id);
+    viewManager.prewarm(instanceId);
+  });
+
+  ipcMain.handle(IPC.RELOAD_INSTANCE, (_event, id: unknown) => {
+    const instanceId = requireInstanceId(id);
+    viewManager.reload(instanceId);
+  });
+
   ipcMain.handle(IPC.RENAME_INSTANCE, (_event, id: unknown, title: unknown) => {
     const instanceId = requireInstanceId(id);
     if (typeof title !== "string" || title.length === 0 || title.length > 100) {
@@ -86,6 +96,11 @@ export function registerWorkspaceIpcHandlers(): void {
     }
 
     if (snapshot && snapshot.instances.length > 0) {
+      for (const instanceId of snapshot.tabOrder) {
+        if (instanceStore.has(instanceId)) {
+          viewManager.prewarm(instanceId);
+        }
+      }
       showCurrentActiveInstance();
       eventLogger.log("restore_success", {
         instanceCount: snapshot.instances.length,

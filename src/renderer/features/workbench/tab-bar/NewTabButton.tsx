@@ -14,7 +14,7 @@ export function NewTabButton({ appId, appName }: NewTabButtonProps) {
       title={`新建 ${appName} 实例`}
     >
       <PlusIcon size={14} />
-      新建 {appName} 标签页
+      新建标签页
     </IconButton>
   );
 }

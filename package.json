@@ -1,7 +1,7 @@
 {
   "name": "pretextchat",
   "productName": "PretextChat",
-  "version": "0.1.6",
+  "version": "0.1.0-beta.1",
   "description": "AI-only multi-instance work client powered by Pretext",
   "main": ".vite/build/main.js",
   "private": true,

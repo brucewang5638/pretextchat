@@ -20,7 +20,6 @@ import type {
 import {
   EMBEDDED_WEB_ACCEPT_LANGUAGES,
   getAppPartition,
-  getEmbeddedWebUserAgent,
 } from "../../shared/app-runtime";
 import { appRegistry } from "../catalog/app-registry";
 import { localStore } from "../persistence/local-store";
@@ -49,6 +48,22 @@ const VIEW_RELEASE_POLICIES: Record<ViewReleasePolicy, ReleasePolicyConfig> = {
     keepAliveRecentCount: Number.MAX_SAFE_INTEGER,
   },
 };
+
+function sanitizeAppUserAgent(userAgent: string): string {
+  return userAgent
+    .replace(/PretextChat\/[0-9.-]+\s*/g, "")
+    .replace(/Electron\/[0-9.-]+\s*/g, "")
+    .trim();
+}
+
+function isGoogleHost(url: string): boolean {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    return hostname === "google.com" || hostname.endsWith(".google.com");
+  } catch {
+    return false;
+  }
+}
 
 class ViewManager {
   private views: Map<string, WebContentsView> = new Map();
@@ -103,7 +118,7 @@ class ViewManager {
       },
     });
 
-    this.applyUserAgent(view.webContents);
+    this.applyUserAgent(view.webContents, "sanitized");
 
     // 绑定导航策略
     const policy = new NavigationPolicy(app);
@@ -366,7 +381,7 @@ class ViewManager {
           },
         });
 
-        this.applyUserAgent(popup.webContents);
+        this.applyUserAgent(popup.webContents, "native");
         popup.once("ready-to-show", () => popup.show());
         return popup.webContents;
       },
@@ -375,20 +390,25 @@ class ViewManager {
 
   private configureSession(): Session {
     const partition = getAppPartition();
-    const userAgent = getEmbeddedWebUserAgent();
     const sessionRef = session.fromPartition(partition);
     if (this.configuredPartitions.has(partition)) {
       return sessionRef;
     }
 
+    const nativeUserAgent = sessionRef.getUserAgent();
+    const sanitizedUserAgent = sanitizeAppUserAgent(nativeUserAgent);
+
     // Session 级别统一设置 UA / Accept-Language，
     // 这样同一 partition 下的后续请求会保持一致身份特征。
     sessionRef.setUserAgent(
-      userAgent,
+      sanitizedUserAgent,
       EMBEDDED_WEB_ACCEPT_LANGUAGES,
     );
 
     sessionRef.webRequest.onBeforeSendHeaders((details, callback) => {
+      const userAgent = isGoogleHost(details.url)
+        ? nativeUserAgent
+        : sanitizedUserAgent;
       callback({
         requestHeaders: {
           ...details.requestHeaders,
@@ -402,8 +422,15 @@ class ViewManager {
     return sessionRef;
   }
 
-  private applyUserAgent(webContents: WebContents): void {
-    webContents.setUserAgent(getEmbeddedWebUserAgent());
+  private applyUserAgent(
+    webContents: WebContents,
+    mode: "native" | "sanitized",
+  ): void {
+    const nativeUserAgent = webContents.userAgent;
+    const userAgent = mode === "native"
+      ? nativeUserAgent
+      : sanitizeAppUserAgent(nativeUserAgent);
+    webContents.setUserAgent(userAgent);
   }
 
   private applyViewActivity(

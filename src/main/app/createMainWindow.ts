@@ -18,12 +18,22 @@ const APP_ICON_PATH = path.join(__dirname, BRAND_WINDOWS_ICON_RELATIVE_PATH);
 export function createMainWindow(
   shouldMinimizeToTrayOnClose: () => boolean,
 ): BrowserWindow {
+  const restoreVisibleContent = () => {
+    if (mainWindow.isDestroyed() || mainWindow.isMinimized()) {
+      return;
+    }
+
+    const activeInstanceId = instanceStore.getWorkspaceState().activeInstanceId;
+    viewManager.show(activeInstanceId);
+  };
+
   const syncContentBounds = () => {
     // 用 setImmediate 把布局更新放到当前事件循环尾部，
     // 避免窗口刚 resize 时同步读取尺寸导致抖动。
     setImmediate(() => {
       if (!mainWindow.isDestroyed()) {
         updateContentBounds(mainWindow);
+        restoreVisibleContent();
       }
     });
   };
@@ -77,6 +87,8 @@ export function createMainWindow(
   mainWindow.on("resize", syncContentBounds);
   mainWindow.on("maximize", syncContentBounds);
   mainWindow.on("unmaximize", syncContentBounds);
+  mainWindow.on("restore", syncContentBounds);
+  mainWindow.on("show", syncContentBounds);
   mainWindow.on("enter-full-screen", syncContentBounds);
   mainWindow.on("leave-full-screen", syncContentBounds);
 
